@@ -1,5 +1,5 @@
 {
-  "hot-pan": {
+  "actor-sheet-locker": {
     "setting": {
       "modVersion": {
         "name": "Version",
@@ -10,8 +10,8 @@
         "hint": "Client-side setting enabling extended debug logging."
       },
       "isActive": {
-        "name": "Always active",
-        "hint": "Keep module always activated (unless overridden by macro code)."
+        "name": "Active",
+        "hint": "Activate this module (i.e.: LOCK all character sheets)."
       },
       "hideChatInfo": {
         "name": "Hide module info in chat window",
@@ -21,25 +21,38 @@
         "name": "UI messages on toggle",
         "hint": "Show temporary UI messages whenever toggling on and off (also works when switching via macro code)."
       },
-      "warnWhenON": {
+      "notifyPermanentlyWhileLOCKED": {
         "name": "Warning on activate",
         "hint": "Show extra prominent UI message (warning) when toggling ON. Needs option \"UI messages on toggle\" to be enabled."
       },
-      "warnWhenOFF": {
+      "notifyPermanentlyWhileUNLOCKED": {
         "name": "Warning on deactivate",
         "hint": "Show extra prominent UI message (warning) when toggling OFF. Needs option \"UI messages on toggle\" to be enabled."
+      },
+      "alertGMOnReject": {
+        "name": "GM alert on reject",
+        "hint": "Show a sceen warning for the GM when a player tries to edit a locked sheet."
+      },
+      "lockForGM": {
+        "name": "Lock changes by GM",
+        "hint": "Same rules for all! Apply locking to me as the GM as well (protecting myself from doing unintended changes)."
       }
     },
     "chatInfoContent": {
-      "title": "Hot Pan & Zoom!",
-      "text1": "&quot;One Thing to Pan Them! One Thing to Find Them! One Thing to Zoom them and to the GM's Canvas Bind Them!&quot;",
-      "text2": "Hot Pan & Zoom! is a systems-agnostic utility for keeping players' canvas position & zoom in sync with the GM's screen. It runs in the backend, but is also controllable through macro code.",
+      "title": "Actor Sheet Locker",
+      "text1": "[TODO]",
+      "text2": "[TODO]. It runs in the backend, but is also controllable through macro code.",
       "text3": "Please refer to the various module preferences under game settings. Find even more details on GitHub",
       "footer": "This chat card will only be shown once. Activate once more in the module settings if needed."
     },
     "onOffUIMessage": {
-      "whenON": "Screen is remote controlled by the gamemaster!",
-      "whenOFF": "Screen control has been released."
+      "whenON": "Character Sheets are LOCKED!",
+      "whenOFF": "Character Sheets have been unlocked."
+    },
+    "sheetEditRejected": {
+      "playerMsg": "Character sheets are LOCKED! Your change won't be saved.",
+      "gmMsgSheet": "[{userName}] is attempting to modify actor [{sheetName}].",
+      "gmMsgItem": "[{userName}] is attempting to change or delete item [{itemName}] from character sheet."
     }
   }
 }

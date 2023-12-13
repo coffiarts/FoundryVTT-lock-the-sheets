@@ -31,7 +31,7 @@ export class Logger {
     }
 
     static warn(suppressUIMsg = false, ...args) {
-        console.warn(`${Config?.data?.modTitle ?? "" } | WARNING | `, ...args);
+        console.warn(`${Config?.data?.modTitle ?? "" } [${Config?.data?.modID ?? "" }] | WARNING | `, ...args);
         if (!suppressUIMsg)
             ui.notifications.warn(`[${Config?.data?.modTitle ?? "" }] [${Config?.data?.modID ?? "" }] | ${args[0]}`);
     }

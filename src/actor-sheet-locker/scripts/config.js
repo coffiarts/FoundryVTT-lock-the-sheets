@@ -31,30 +31,23 @@ export class Config {
                 }
             },
             isActive: {
-                scope: 'world', config: true, type: Boolean, default: false,
+                scope: 'world', config: true, type: Boolean, default: true,
             },
             notifyOnChange: {
-                scope: 'world', config: true, type: Boolean, default: true
-            },
-            warnWhenON: {
-                scope: 'world', config: true, type: Boolean, default: true
-            },
-            warnWhenOFF: {
-                scope: 'world', config: true, type: Boolean, default: false
-            }/*,
-            },
-            lockForGM: {
-                scope: 'world', config: true, type: Boolean, default: false
-            },
-            notifyOnChange: {
-                scope: 'world', config: true, type: Boolean, default: true
+                scope: 'world', config: true,  type: Boolean, default: true
             },
             notifyPermanentlyWhileLOCKED: {
                 scope: 'world', config: true, type: Boolean, default: false
             },
             notifyPermanentlyWhileUNLOCKED: {
                 scope: 'world', config: true, type: Boolean, default: false
-            }*/
+            },
+            lockForGM: {
+                scope: 'world', config: true, type: Boolean, default: false
+            },
+            alertGMOnReject: {
+                scope: 'world', config: true, type: Boolean, default: true
+            }
         };
         Config.registerSettings(data);
 

@@ -1,5 +1,5 @@
 {
-  "hot-pan": {
+  "actor-sheet-locker": {
     "setting": {
       "modVersion": {
         "name": "Version",
@@ -10,8 +10,8 @@
         "hint": "Aktiviert das Debug Logging."
       },
       "isActive": {
-        "name": "Immer aktiviert",
-        "hint": "Modul permanent aktivieren (kann durch Macros übersteuert werden)."
+        "name": "Aktiviert",
+        "hint": "Modul aktivieren (d.h. Charakterbögen sperren)."
       },
       "hideChatInfo": {
         "name": "Modulinfo im Chat ausblenden",
@@ -21,25 +21,38 @@
         "name": "UI-Meldungen beim Umschalten",
         "hint": "Zeige kurze Bannermeldungen an, wenn das Panning & Zooming aus- oder eingeschaltet wird (funktioniert auch beim Umschalten via Macro)."
       },
-      "warnWhenON": {
-        "name": "Warnung bei Aktivierung",
-        "hint": "Bannermeldung beim Anschalten hervorheben (Warnung). Nur wirksam, wenn \"UI-Meldungen beim Umschalten\" aktiviert ist."
+      "notifyPermanentlyWhileLOCKED": {
+        "name": "Status 'Gesperrt' anzeigen",
+        "hint": "Im Sperrzustand permanente Bannermeldung anzeigen (bis zur Entsperrung). Nur wirksam, wenn \"UI-Meldungen beim Umschalten\" aktiviert ist."
       },
-      "warnWhenOFF": {
-        "name": "Warnung bei Deaktivierung",
-        "hint": "Bannermeldung beim Abschalten hervorheben (Warnung). Nur wirksam, wenn \"UI-Meldungen beim Umschalten\" aktiviert ist."
+      "notifyPermanentlyWhileUNLOCKED": {
+        "name": "Status 'Entsperrt' anzeigen",
+        "hint": "Im entsperrten Zustand permanente Bannermeldung anzeigen (bis zur Sperrung). Nur wirksam, wenn \"UI-Meldungen beim Umschalten\" aktiviert ist."
+      },
+      "alertGMOnReject": {
+        "name": "Spielleiter alarmieren",
+        "hint": "Bildschirmwarnung für den SL anzeigen, wenn ein Spieler ein gesperrten Charakterbogen ändern will."
+      },
+      "lockForGM": {
+        "name": "Sperrung auch für Spielleiter anwenden",
+        "hint": "Gleiche Regeln für alle! Sperrung gilt auch für den SL (als Schutz vor unbeabsichtigten Änderungen)."
       }
     },
     "chatInfoContent": {
-      "title": "Hot Pan & Zoom!",
-      "text1": "&quot;One Thing to Pan Them! One Thing to Find Them! One Thing to Zoom them and to the GM's Canvas Bind Them!&quot;",
-      "text2": "Hot Pan & Zoom! ist ein system-unabhängiges Helferlein, mit dem Bildschirmposition und -zoom zwischen Spielleiter und Spielern synchronisiert werden kann. Es funktioniert sowohl im Hintergrund als auch steuerbar via Makros.",
-      "text3": "Bitte Moduleinstellungen in den Spieleinstellungen beachten. Mehr Details außerdem auf GitHub",
+      "title": "Actor Sheet Locker",
+      "text1": "[TODO]]",
+      "text2": "[TODO]. Es funktioniert sowohl im Hintergrund als auch steuerbar via Makros.",
+      "text3": "Bitte Moduleinstellungen in den Spieleinstellungen beachten. Mehr Details außerdem auf GitHub.",
       "footer": "Diese Nachricht wird nur einmal angezeigt. Zum Wiederanzeigen bitte die entsprechende Option in den Moduleinstellungen verwenden."
     },
     "onOffUIMessage": {
-      "whenON": "Bildschirm wird vom Spielleiter gesteuert!",
-      "whenOFF": "Bildschirm ist wieder freigegeben."
+      "whenON": "Charakterbögen sind GESPERRT!",
+      "whenOFF": "Charakterbögen sind freigeschaltet."
+    },
+    "sheetEditRejected": {
+      "playerMsg": "Charakterbögen sind GESPERRT! Änderung wird nicht übernommen.",
+      "gmMsgSheet": "[{userName}] versucht, den Akteur [{sheetName}] zu verändern.",
+      "gmMsgItem": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] zu ändern oder zu löschen."
     }
   }
 }

@@ -1,7 +1,6 @@
 # TODO
-- repo
-- reality check
 - config params
+- remove permanent notifications
 - socket msg
 - macro button
 

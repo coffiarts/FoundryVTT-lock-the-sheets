@@ -10,6 +10,7 @@ const SUBMODULES = {
 
 let ready2play;
 let socket;
+let permanentUIMsgID;
 
 /**
  * Global initializer block:
@@ -33,20 +34,20 @@ let socket;
         });
 
         Hooks.on("preUpdateActor", function (actor, data, options, userid) {
-            return ActorSheetLocker.onCharacterSheetChanged(actor, data, options, userid);
+            return ActorSheetLocker.onSheetChanged(actor, data, options, userid);
         });
         Hooks.on("preUpdateItem", function (item, data, options, userid) {
-            return ActorSheetLocker.onCharacterSheetChanged(item, data, options, userid);
+            return ActorSheetLocker.onItemChangedInSheet(item, data, options, userid);
         });
         Hooks.on("preDeleteItem", function (item, data, options, userid) {
-            return ActorSheetLocker.onCharacterSheetChanged(item, data, options, userid);
+            return ActorSheetLocker.onItemChangedInSheet(item, data, options, userid);
         });
-        Hooks.on("preUpdateItem", function (item, data, options, userid) {
-            return ActorSheetLocker.onCharacterSheetChanged(item, data, options, userid);
+        /*Hooks.on("preUpdateItem", function (item, data, options, userid) {
+            return ActorSheetLocker.onSheetChanged(item, data, options, userid);
         });
         Hooks.on("preCreateItem", function (item, data, options, userid) {
-            return ActorSheetLocker.onCharacterSheetChanged(item, data, options, userid);
-        });
+            return ActorSheetLocker.onSheetChanged(item, data, options, userid);
+        });*/
     }
 )
 ();
@@ -94,8 +95,11 @@ async function initExposedClasses() {
 async function initSocketlib() {
     socket = socketlib.registerModule(Config.data.modID);
     socket.register("stateChangeUIMessage", ActorSheetLocker.stateChangeUIMessage);
+    socket.register("sheetEditGMAlertUIMessage", ActorSheetLocker.sheetEditGMAlertUIMessage);
+    socket.register("itemDeleteGMAlertUIMessage", ActorSheetLocker.itemChangedGMAlertUIMessage);
     Logger.debug(`Module ${Config.data.modID} registered in socketlib.`);
 }
+
 /**
  * Public class for accessing this module through macro code
  */
@@ -118,6 +122,14 @@ export class ActorSheetLocker {
      */
     static switchOff(silentMode = false) {
         this.#switch(false, silentMode);
+    }
+
+    /**
+     *
+     * @param silentMode if true, any UI messages related to this switch action will be suppressed (overriding game settings)
+     */
+    static toggle(silentMode = false) {
+        this.#switch(!this.#isActive, silentMode);
     }
 
     static isOn() {
@@ -143,17 +155,45 @@ export class ActorSheetLocker {
         await Config.modifySetting('isActive', newStateIsON);
     }
 
-    static onCharacterSheetChanged(actorOrItem, data, options, userid) {
-        Logger.info("actorOrItem:", actorOrItem);
-        Logger.info("data: ", data);
-        Logger.info("options: ", options);
-        Logger.info("userid: ", userid, "game.user.id: ", game.user.id);
-        if (!game.user.isGM && Config.setting('isActive')) {
-            ui.notifications.warn(Config.data.modTitle + " | Sheet editing is locked! Change won't be saved.", {
-                permanent: false,
-                localize: false,
-                console: false
-            });
+    static onSheetChanged(actorOrItem, data, options, userid) {
+        Logger.debug("actorOrItem:", actorOrItem);
+        Logger.debug("data: ", data);
+        Logger.debug("options: ", options);
+        Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
+        if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
+            if (!this.#isSilentMode) {
+                ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
+                    permanent: false,
+                    localize: false,
+                    console: false
+                });
+                if (Config.setting('alertGMOnReject')) {
+                    socket.executeForAllGMs("sheetEditGMAlertUIMessage", game.users.get(userid).name, actorOrItem.name);
+                }
+            } else {
+                this.#isSilentMode = false;
+            }
+            return false;
+        }
+    }
+
+    static onItemChangedInSheet(actorOrItem, options, userid) {
+        Logger.debug("actorOrItem:", actorOrItem);
+        Logger.debug("options: ", options);
+        Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
+        if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
+            if (!this.#isSilentMode) {
+                ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
+                    permanent: false,
+                    localize: false,
+                    console: false
+                });
+                if (Config.setting('alertGMOnReject')) {
+                    socket.executeForAllGMs("itemChangedGMAlertUIMessage", game.users.get(userid).name, actorOrItem.name);
+                }
+            } else {
+                this.#isSilentMode = false;
+            }
             return false;
         }
     }
@@ -176,24 +216,60 @@ export class ActorSheetLocker {
         let message =
             (ActorSheetLocker.#isActive ? Config.localize('onOffUIMessage.whenON') : Config.localize('onOffUIMessage.whenOFF'));
 
-        if (ActorSheetLocker.#isActive && Config.setting('warnWhenON') ||
-            !ActorSheetLocker.#isActive && Config.setting('warnWhenOFF')) {
-            if (Config.setting('notifyOnChange')) {
-                ui.notifications.warn(Config.data.modTitle + " " + message, {
-                    permanent: false,
+        if (Config.setting('notifyOnChange')) {
+
+            let isPermanent = (
+                ActorSheetLocker.#isActive &&  Config.setting('notifyPermanentlyWhileLOCKED')
+                ||
+                !ActorSheetLocker.#isActive &&  Config.setting('notifyPermanentlyWhileUNLOCKED')
+            );
+
+            // Clear previous permanent msg (if any)
+            if (permanentUIMsgID != null) {
+                ui.notifications.remove(permanentUIMsgID);
+            }
+
+            if (ActorSheetLocker.#isActive) {
+                permanentUIMsgID = ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
+                    permanent: isPermanent,
                     localize: false,
                     console: false
                 });
-            }
-            Logger.warn(true, message);
-        } else {
-            ui.notifications.info(Config.data.modTitle + " " + message, {
-                permanent: false,
-                localize: false,
-                console: false
-            });
-            Logger.info(message);
+            } else {
+                permanentUIMsgID = ui.notifications.info(`[${Config.data.modTitle}] ${message}`, {
+                    permanent: isPermanent,
+                    localize: false,
+                    console: false
+                });
+            };
+            if (!isPermanent) permanentUIMsgID = null;
         }
+        Logger.info(message);
     }
 
+    static sheetEditGMAlertUIMessage(userName, sheetName) {
+        let message =
+            Config.localize('sheetEditRejected.gmMsgSheet')
+                .replace('{userName}', userName)
+                .replace('{sheetName}', sheetName);
+        ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
+            permanent: true,
+            localize: false,
+            console: false
+        });
+        Logger.warn(message);
+    }
+
+    static itemChangedGMAlertUIMessage(userName, itemName) {
+        let message =
+            Config.localize('sheetEditRejected.gmMsgItem')
+                .replace('{userName}', userName)
+                .replace('{itemName}', itemName);
+        ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
+            permanent: false,
+            localize: false,
+            console: false
+        });
+        Logger.warn(message);
+    }
 }
