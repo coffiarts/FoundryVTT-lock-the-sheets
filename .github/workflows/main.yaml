@@ -15,7 +15,7 @@ jobs:
 
       - name: Zip Files
         working-directory: ./
-        run: zip -r ./module.zip ./src/shake-them-all/*
+        run: zip -r ./module.zip ./src/actor-sheet-locker/*
 
       - name: Get Version
         shell: bash
@@ -31,5 +31,5 @@ jobs:
           draft: false
           prerelease: true
           token: ${{secrets.GITHUB_TOKEN}}
-          artifacts: './module.zip, ./src/shake-them-all/module.json'
+          artifacts: './module.zip, ./src/actor-sheet-locker/module.json'
           tag: ${{ steps.get-version.outputs.version }}
