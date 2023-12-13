@@ -28,8 +28,8 @@ jobs:
         with:
           allowUpdates: true
           name: Release ${{ steps.get-version.outputs.version }}
-          draft: false
-          prerelease: true
+          draft: true
+          prerelease: false
           token: ${{secrets.GITHUB_TOKEN}}
           artifacts: './module.zip, ./src/actor-sheet-locker/module.json'
           tag: ${{ steps.get-version.outputs.version }}
