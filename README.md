@@ -1,6 +1,6 @@
 # TODO
-- macro button design + package
 - UI button
+- macro button design + package
 
 - 
 # Actor Sheet Locker for Foundry VTT

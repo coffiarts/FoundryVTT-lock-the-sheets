@@ -54,6 +54,9 @@
       "gmMsgSheet": "[{userName}] is attempting to modify actor [{sheetName}].",
       "gmMsgItem": "[{userName}] is attempting to create or change item [{itemName}] in character sheet.",
       "gmMsgItemDeleted": "[{userName}] is attempting to delete item [{itemName}] from character sheet."
+    },
+    "controlButton": {
+      "label": "Toggle Actor Sheet Locker on/off"
     }
   }
 }

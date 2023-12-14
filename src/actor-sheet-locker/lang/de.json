@@ -54,6 +54,9 @@
       "gmMsgSheet": "[{userName}] versucht, den Akteur [{sheetName}] zu verändern.",
       "gmMsgItem": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] hinzuzufügen oder zu ändern.",
       "gmMsgItemDeleted": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] zu löschen."
+    },
+    "controlButton": {
+      "label": "Actor Sheet Locker ein- und ausschalten"
     }
   }
 }
