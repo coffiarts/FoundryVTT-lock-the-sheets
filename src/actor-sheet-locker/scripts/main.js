@@ -33,21 +33,29 @@ let permanentUIMsgID;
             }
         });
 
+        Hooks.on("preCreateItem", function (item, data, options, userid) {
+            return ActorSheetLocker.onItemChangedInSheet(item, data, options, userid);
+        });
+        Hooks.on("preCreateActiveEffect", function (item, data, options, userid) {
+            return ActorSheetLocker.onItemChangedInSheet(item, data, options, userid);
+        });
+
         Hooks.on("preUpdateActor", function (actor, data, options, userid) {
             return ActorSheetLocker.onSheetChanged(actor, data, options, userid);
         });
         Hooks.on("preUpdateItem", function (item, data, options, userid) {
             return ActorSheetLocker.onItemChangedInSheet(item, data, options, userid);
         });
-        Hooks.on("preDeleteItem", function (item, data, options, userid) {
+        Hooks.on("preUpdateActiveEffect", function (item, data, options, userid) {
             return ActorSheetLocker.onItemChangedInSheet(item, data, options, userid);
         });
-        /*Hooks.on("preUpdateItem", function (item, data, options, userid) {
-            return ActorSheetLocker.onSheetChanged(item, data, options, userid);
+
+        Hooks.on("preDeleteItem", function (item, options, userid) {
+            return ActorSheetLocker.onItemDeletedFromSheet(item, options, userid);
         });
-        Hooks.on("preCreateItem", function (item, data, options, userid) {
-            return ActorSheetLocker.onSheetChanged(item, data, options, userid);
-        });*/
+        Hooks.on("preDeleteActiveEffect", function (item, options, userid) {
+            return ActorSheetLocker.onItemDeletedFromSheet(item, options, userid);
+        });
     }
 )
 ();
@@ -96,7 +104,8 @@ async function initSocketlib() {
     socket = socketlib.registerModule(Config.data.modID);
     socket.register("stateChangeUIMessage", ActorSheetLocker.stateChangeUIMessage);
     socket.register("sheetEditGMAlertUIMessage", ActorSheetLocker.sheetEditGMAlertUIMessage);
-    socket.register("itemDeleteGMAlertUIMessage", ActorSheetLocker.itemChangedGMAlertUIMessage);
+    socket.register("itemChangedGMAlertUIMessage", ActorSheetLocker.itemChangedGMAlertUIMessage);
+    socket.register("itemDeletedGMAlertUIMessage", ActorSheetLocker.itemDeletedGMAlertUIMessage);
     Logger.debug(`Module ${Config.data.modID} registered in socketlib.`);
 }
 
@@ -129,7 +138,7 @@ export class ActorSheetLocker {
      * @param silentMode if true, any UI messages related to this switch action will be suppressed (overriding game settings)
      */
     static toggle(silentMode = false) {
-        this.#switch(!this.#isActive, silentMode);
+        this.#switch(!Config.setting('isActive'), silentMode);
     }
 
     static isOn() {
@@ -168,7 +177,7 @@ export class ActorSheetLocker {
                     console: false
                 });
                 if (Config.setting('alertGMOnReject')) {
-                    socket.executeForAllGMs("sheetEditGMAlertUIMessage", game.users.get(userid).name, actorOrItem.name);
+                    socket.executeForAllGMs("sheetEditGMAlertUIMessage", game.users.get(userid)?.name, actorOrItem.name);
                 }
             } else {
                 this.#isSilentMode = false;
@@ -177,8 +186,36 @@ export class ActorSheetLocker {
         }
     }
 
-    static onItemChangedInSheet(actorOrItem, options, userid) {
-        Logger.debug("actorOrItem:", actorOrItem);
+    static onItemChangedInSheet(item, data, options, userid) {
+        Logger.debug("item:", item);
+        Logger.debug("data: ", data);
+        Logger.debug("options: ", options);
+        Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
+        if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
+
+            // check if event is allowed
+            if (
+                data?.system?.worn != null
+            ) return true;
+
+            if (!this.#isSilentMode) {
+                ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
+                    permanent: false,
+                    localize: false,
+                    console: false
+                });
+                if (Config.setting('alertGMOnReject')) {
+                    socket.executeForAllGMs("itemChangedGMAlertUIMessage", game.users.get(userid)?.name, item.name);
+                }
+            } else {
+                this.#isSilentMode = false;
+            }
+            return false;
+        }
+    }
+
+    static onItemDeletedFromSheet(item, options, userid) {
+        Logger.debug("item:", item);
         Logger.debug("options: ", options);
         Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
         if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
@@ -189,7 +226,7 @@ export class ActorSheetLocker {
                     console: false
                 });
                 if (Config.setting('alertGMOnReject')) {
-                    socket.executeForAllGMs("itemChangedGMAlertUIMessage", game.users.get(userid).name, actorOrItem.name);
+                    socket.executeForAllGMs("itemDeletedGMAlertUIMessage", game.users.get(userid)?.name, item.name);
                 }
             } else {
                 this.#isSilentMode = false;
@@ -253,7 +290,7 @@ export class ActorSheetLocker {
                 .replace('{userName}', userName)
                 .replace('{sheetName}', sheetName);
         ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
-            permanent: true,
+            permanent: false,
             localize: false,
             console: false
         });
@@ -263,6 +300,19 @@ export class ActorSheetLocker {
     static itemChangedGMAlertUIMessage(userName, itemName) {
         let message =
             Config.localize('sheetEditRejected.gmMsgItem')
+                .replace('{userName}', userName)
+                .replace('{itemName}', itemName);
+        ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
+            permanent: false,
+            localize: false,
+            console: false
+        });
+        Logger.warn(message);
+    }
+
+    static itemDeletedGMAlertUIMessage(userName, itemName) {
+        let message =
+            Config.localize('sheetEditRejected.gmMsgItemDeleted')
                 .replace('{userName}', userName)
                 .replace('{itemName}', itemName);
         ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {

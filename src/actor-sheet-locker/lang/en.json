@@ -22,12 +22,12 @@
         "hint": "Show temporary UI messages whenever toggling on and off (also works when switching via macro code)."
       },
       "notifyPermanentlyWhileLOCKED": {
-        "name": "Warning on activate",
-        "hint": "Show extra prominent UI message (warning) when toggling ON. Needs option \"UI messages on toggle\" to be enabled."
+        "name": "Sticky screen message on activate",
+        "hint": "Show permanent UI message when toggling ON (visible until deactivation). Needs option \"UI messages on toggle\" to be enabled."
       },
       "notifyPermanentlyWhileUNLOCKED": {
-        "name": "Warning on deactivate",
-        "hint": "Show extra prominent UI message (warning) when toggling OFF. Needs option \"UI messages on toggle\" to be enabled."
+        "name": "Sticky screen message on deactivate",
+        "hint": "Show permanent UI message when toggling OFF (visible until reactivation). Needs option \"UI messages on toggle\" to be enabled."
       },
       "alertGMOnReject": {
         "name": "GM alert on reject",
@@ -52,7 +52,8 @@
     "sheetEditRejected": {
       "playerMsg": "Character sheets are LOCKED! Your change won't be saved.",
       "gmMsgSheet": "[{userName}] is attempting to modify actor [{sheetName}].",
-      "gmMsgItem": "[{userName}] is attempting to change or delete item [{itemName}] from character sheet."
+      "gmMsgItem": "[{userName}] is attempting to create or change item [{itemName}] in character sheet.",
+      "gmMsgItemDeleted": "[{userName}] is attempting to delete item [{itemName}] from character sheet."
     }
   }
 }

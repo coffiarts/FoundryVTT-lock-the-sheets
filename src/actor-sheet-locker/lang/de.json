@@ -22,11 +22,11 @@
         "hint": "Zeige kurze Bannermeldungen an, wenn das Panning & Zooming aus- oder eingeschaltet wird (funktioniert auch beim Umschalten via Macro)."
       },
       "notifyPermanentlyWhileLOCKED": {
-        "name": "Status 'Gesperrt' anzeigen",
+        "name": "Status 'Gesperrt' permanent anzeigen",
         "hint": "Im Sperrzustand permanente Bannermeldung anzeigen (bis zur Entsperrung). Nur wirksam, wenn \"UI-Meldungen beim Umschalten\" aktiviert ist."
       },
       "notifyPermanentlyWhileUNLOCKED": {
-        "name": "Status 'Entsperrt' anzeigen",
+        "name": "Status 'Entsperrt' permanent anzeigen",
         "hint": "Im entsperrten Zustand permanente Bannermeldung anzeigen (bis zur Sperrung). Nur wirksam, wenn \"UI-Meldungen beim Umschalten\" aktiviert ist."
       },
       "alertGMOnReject": {
@@ -52,7 +52,8 @@
     "sheetEditRejected": {
       "playerMsg": "Charakterbögen sind GESPERRT! Änderung wird nicht übernommen.",
       "gmMsgSheet": "[{userName}] versucht, den Akteur [{sheetName}] zu verändern.",
-      "gmMsgItem": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] zu ändern oder zu löschen."
+      "gmMsgItem": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] hinzuzufügen oder zu ändern.",
+      "gmMsgItemDeleted": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] zu löschen."
     }
   }
 }

@@ -1,9 +1,8 @@
 # TODO
-- config params
-- remove permanent notifications
-- socket msg
-- macro button
+- macro button design + package
+- UI button
 
+- 
 # Actor Sheet Locker for Foundry VTT
 <table style="border:0">
   <tr>
@@ -36,36 +35,7 @@
 
 
 ## Changelog
-<table style="border:0">
-    <tr>
-        <th colspan="3" style="text-align: left">Latest Version</th>
-    </tr>
-    <tr>
-        <td>xxx</td>
-        <td>YYYY-MM-DD</td>
-        <td>
-            <ul>
-                <li><b>Change topic:</b><br/>
-                    Description</li>
-            </ul>
-        </td>
-    </tr>
-</table>
-
-<details><summary>Click to see older versions</summary>
-<table>
-    <tr>
-        <th>Release</th>
-        <th>Date</th>
-        <th>Changes</th>
-    </tr>
-    <tr>
-        <td>xyz</td>
-        <td>YYYY-MM-DD</td>
-        <td>Description</td>
-    </tr>
-</table>
-</details>
+See [CHANGELOG.md](CHANGELOG.md)
 
 ## Upcoming features
 Feel free to follow the ["dev" branch on GitHub](https://github.com/coffiarts/FoundryVTT-actor-sheet-locker/tree/dev) to stay tuned: [https://github.com/coffiarts/FoundryVTT-actor-sheet-locker/tree/dev](https://github.com/coffiarts/FoundryVTT-actor-sheet-locker/tree/dev)
