@@ -25,12 +25,8 @@ let permanentUIMsgID;
             ready2play = true;
             Logger.infoGreen(`Ready to play! Version: ${game.modules.get(Config.data.modID).version}`);
             Logger.info(Config.data.modDescription);
-            if (Config.setting('isActive')) {
-                ActorSheetLocker.switchOn();
-                stateChangeUIMessage();
-            } else {
-                ActorSheetLocker.switchOff();
-            }
+            ActorSheetLocker.isActive = Config.setting('isActive')
+            stateChangeUIMessage();
         });
 
         Hooks.on("preCreateItem", function (item, data, options, userid) {
