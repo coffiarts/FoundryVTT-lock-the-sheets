@@ -54,7 +54,7 @@ let permanentUIMsgID;
         });
 
         Hooks.on("getSceneControlButtons", (controls) => {
-            renderControlButton(controls);
+            createControlButton(controls);
         });
     }
 )
@@ -109,8 +109,8 @@ async function initSocketlib() {
     Logger.debug(`Module ${Config.data.modID} registered in socketlib.`);
 }
 
-function renderControlButton(controls) {
-    if (game.user.isGM) {
+function createControlButton(controls) {
+    if (game.user.isGM && Config.setting('showUIButton')) {
         let tokenControls = controls.find(control => control.name === "token")
         tokenControls.tools.push({
             name: "toggleActorSheetLocker",
@@ -196,6 +196,10 @@ function onItemDeletedFromSheet(item, options, userid) {
     }
 }
 
+function getButton() {
+    return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleActorSheetLocker");
+}
+
 function onGameSettingChanged() {
     ActorSheetLocker.isActive = Config.setting('isActive');
 
@@ -209,9 +213,22 @@ function onGameSettingChanged() {
         }
     }
 
-    // Refresh scene control button to reflect new state of "isActive".
-    ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleActorSheetLocker").active = ActorSheetLocker.isActive;
-    ui.controls.render();
+    if (game.user.isGM) {
+        let button = getButton();
+        // Refresh scene control button (if active) to reflect the potentially new state.
+        if (Config.setting('showUIButton')) {
+            if (button == null) {
+                createControlButton(ui.controls.controls);
+                button = getButton();
+            }
+            button.active = ActorSheetLocker.isActive;
+            ui.controls.render();
+        } else if (button != null) {
+            // if button has been deactivated, remove it from the scene controls
+            ui.controls.controls.find(control => control.name === "token").tools.pop(button);
+            ui.controls.render();
+        }
+    }
 }
 
 function stateChangeUIMessage() {

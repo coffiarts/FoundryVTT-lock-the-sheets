@@ -33,6 +33,9 @@ export class Config {
             isActive: {
                 scope: 'world', config: true, type: Boolean, default: true,
             },
+            showUIButton: {
+                scope: 'world', config: true, type: Boolean, default: true,
+            },
             notifyOnChange: {
                 scope: 'world', config: true,  type: Boolean, default: true
             },

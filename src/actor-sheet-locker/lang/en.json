@@ -13,6 +13,10 @@
         "name": "Active",
         "hint": "Activate this module (i.e.: LOCK all character sheets)."
       },
+      "showUIButton": {
+        "name": "Show UI Button",
+        "hint": "Display a button in the scene controls menu on the left hand for toggling Actor Sheet Lock on and off."
+      },
       "hideChatInfo": {
         "name": "Hide module info in chat window",
         "hint": "Hides the info text about this module in the chat window on game start (deactivate this option to see it again)."

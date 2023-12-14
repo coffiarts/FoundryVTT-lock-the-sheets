@@ -13,6 +13,10 @@
         "name": "Aktiviert",
         "hint": "Modul aktivieren (d.h. Charakterbögen sperren)."
       },
+      "showUIButton": {
+        "name": "UI Button anzeigen",
+        "hint": "Button in der linken Menüleiste anzeigen, um Actor Sheet Lock an- und auszuschalten."
+      },
       "hideChatInfo": {
         "name": "Modulinfo im Chat ausblenden",
         "hint": "Blendet beim Start den Chat-Infotext zu diesem Modul wieder ein (zum Wiederanzeigen hier deaktivieren)."
