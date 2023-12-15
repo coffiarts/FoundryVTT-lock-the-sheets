@@ -7,7 +7,7 @@ export class ChatInfo {
         <div style="text-align: justify; color: #000000; padding: 10px; background-color: #CCD0CC; border: 2px solid #FFFFFF; border-radius: 15px;">
             <p style="text-align: center;">
                 <a href="${Config.data.modlink}">
-                    <img src="modules/sheet-locker/artwork/sheet-locker.gif" alt="${Config.data.modTitle} - Logo" style="border:0"/>
+                    <img src="modules/sheet-locker/artwork/user-lock-solid.svg" alt="${Config.data.modTitle} - Logo" style="border:0;width:100px"/>
                 </a>
             </p>
             <hr><div>

@@ -1,14 +1,11 @@
 # TODO
-- macro button design + package
-- logo img
 - readme =)> chatinfo vereinfachen
 - token flag?
-
-- 
+ 
 # Sheet Locker for Foundry VTT
 <table style="border:0">
   <tr>
-    <td><img src="src/sheet-locker/artwork/sheet-locker-logo.png" width="600" alt="Sheet Locker Logo"/></td>
+    <td><img src="src/sheet-locker/artwork/user-lock-solid.svg" width="600" alt="Sheet Locker Logo"/></td>
     <td><span style="color:#da6502"></span><br/>
         <br/>
         <i><strong>"Here goes ...<br/>

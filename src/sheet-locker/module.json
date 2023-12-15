@@ -1,6 +1,5 @@
 {
   "id": "sheet-locker",
-  "name": "sheet-locker",
   "title": "Sheet Locker",
   "description": "Lock and unlock all character sheets at once as the GM with just one click! Protect your players from accidental changes, or prevent cheating.",
   "version": "1.0.0",
@@ -14,12 +13,13 @@
     "verified": "11",
     "maximum": "11"
   },
-  "minimumCoreVersion": "11",
   "media": [
     {
       "type": "setup",
-      "url": "modules/sheet-locker/artwork/sheet-locker-logo.gif",
-      "thumbnail": "modules/sheet-locker/artwork/sheet-locker-logo.gif"
+      "url": "modules/sheet-locker/artwork/user-lock-solid.svg",
+      "thumbnail": "modules/sheet-locker/artwork/user-lock-solid.svg",
+      "loop": false,
+      "flags": {}
     }
   ],
   "authors": [
@@ -37,8 +37,6 @@
           "verified": "1.0.13"
         }
       }
-    ],
-    "recommends": [
     ]
   },
   "esmodules": [
@@ -65,8 +63,12 @@
     {
       "name": "sheet-locker-macros",
       "label": "Sheet Locker - Macros",
-      "path": "./packs/sheet-locker-macros.db",
-      "type": "Macro"
+      "path": "packs/sheet-locker-macros",
+      "type": "Macro",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     }
   ],
   "socket": true
