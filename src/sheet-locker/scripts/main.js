@@ -17,7 +17,7 @@ let permanentUIMsgID;
  * First of all, we need to initialize a lot of stuff in correct order:
  */
 (async () => {
-        console.log("Actor Sheet Locker | Initializing Module");
+        console.log("Sheet Locker | Initializing Module");
 
         await allPrerequisitesReady();
 
@@ -25,7 +25,7 @@ let permanentUIMsgID;
             ready2play = true;
             Logger.infoGreen(`Ready to play! Version: ${game.modules.get(Config.data.modID).version}`);
             Logger.info(Config.data.modDescription);
-            ActorSheetLocker.isActive = Config.setting('isActive')
+            SheetLocker.isActive = Config.setting('isActive');
             stateChangeUIMessage();
         });
 
@@ -91,7 +91,7 @@ async function initDependencies() {
 }
 
 async function initExposedClasses() {
-    window.ActorSheetLocker = ActorSheetLocker;
+    window.SheetLocker = SheetLocker;
     Hooks.on("updateSetting", async function (setting) {
         if (setting.key.startsWith(Config.data.modID)) {
             onGameSettingChanged();
@@ -113,7 +113,7 @@ function createControlButton(controls) {
     if (game.user.isGM && Config.setting('showUIButton')) {
         let tokenControls = controls.find(control => control.name === "token")
         tokenControls.tools.push({
-            name: "toggleActorSheetLocker",
+            name: "toggleSheetLocker",
             title: Config.localize('controlButton.label'),
             icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
             toggle: true,
@@ -131,7 +131,7 @@ function onSheetChanged(actorOrItem, data, options, userid) {
     Logger.debug("options: ", options);
     Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
     if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
-        if (!ActorSheetLocker.isSilentMode) {
+        if (!SheetLocker.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
                 permanent: false,
                 localize: false,
@@ -141,7 +141,7 @@ function onSheetChanged(actorOrItem, data, options, userid) {
                 socket.executeForAllGMs("sheetEditGMAlertUIMessage", game.users.get(userid)?.name, actorOrItem.name);
             }
         } else {
-            ActorSheetLocker.isSilentMode = false;
+            SheetLocker.isSilentMode = false;
         }
         return false;
     }
@@ -159,7 +159,7 @@ function onItemChangedInSheet(item, data, options, userid) {
             data?.system?.worn != null
         ) return true;
 
-        if (!ActorSheetLocker.isSilentMode) {
+        if (!SheetLocker.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
                 permanent: false,
                 localize: false,
@@ -169,7 +169,7 @@ function onItemChangedInSheet(item, data, options, userid) {
                 socket.executeForAllGMs("itemChangedGMAlertUIMessage", game.users.get(userid)?.name, item.name);
             }
         } else {
-            ActorSheetLocker.isSilentMode = false;
+            SheetLocker.isSilentMode = false;
         }
         return false;
     }
@@ -180,7 +180,7 @@ function onItemDeletedFromSheet(item, options, userid) {
     Logger.debug("options: ", options);
     Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
     if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
-        if (!ActorSheetLocker.isSilentMode) {
+        if (!SheetLocker.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
                 permanent: false,
                 localize: false,
@@ -190,26 +190,26 @@ function onItemDeletedFromSheet(item, options, userid) {
                 socket.executeForAllGMs("itemDeletedGMAlertUIMessage", game.users.get(userid)?.name, item.name);
             }
         } else {
-            ActorSheetLocker.isSilentMode = false;
+            SheetLocker.isSilentMode = false;
         }
         return false;
     }
 }
 
 function getButton() {
-    return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleActorSheetLocker");
+    return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleSheetLocker");
 }
 
 function onGameSettingChanged() {
-    ActorSheetLocker.isActive = Config.setting('isActive');
+    SheetLocker.isActive = Config.setting('isActive');
 
     if (game.user.isGM && Config.setting('notifyOnChange')) {
         // UI messages should only be triggered by the GM via sockets.
         // This seems to be the only way to suppress them if needed.
-        if (!ActorSheetLocker.isSilentMode) {
+        if (!SheetLocker.isSilentMode) {
             socket.executeForEveryone("stateChangeUIMessage");
         } else {
-            ActorSheetLocker.isSilentMode = false;
+            SheetLocker.isSilentMode = false;
         }
     }
 
@@ -221,7 +221,7 @@ function onGameSettingChanged() {
                 createControlButton(ui.controls.controls);
                 button = getButton();
             }
-            button.active = ActorSheetLocker.isActive;
+            button.active = SheetLocker.isActive;
             ui.controls.render();
         } else if (button != null) {
             // if button has been deactivated, remove it from the scene controls
@@ -233,14 +233,14 @@ function onGameSettingChanged() {
 
 function stateChangeUIMessage() {
     let message =
-        (ActorSheetLocker.isActive ? Config.localize('onOffUIMessage.whenON') : Config.localize('onOffUIMessage.whenOFF'));
+        (SheetLocker.isActive ? Config.localize('onOffUIMessage.whenON') : Config.localize('onOffUIMessage.whenOFF'));
 
     if (Config.setting('notifyOnChange')) {
 
         let isPermanent = (
-            ActorSheetLocker.isActive &&  Config.setting('notifyPermanentlyWhileLOCKED')
+            SheetLocker.isActive &&  Config.setting('notifyPermanentlyWhileLOCKED')
             ||
-            !ActorSheetLocker.isActive &&  Config.setting('notifyPermanentlyWhileUNLOCKED')
+            !SheetLocker.isActive &&  Config.setting('notifyPermanentlyWhileUNLOCKED')
         );
 
         // Clear previous permanent msg (if any)
@@ -248,7 +248,7 @@ function stateChangeUIMessage() {
             ui.notifications.remove(permanentUIMsgID);
         }
 
-        if (ActorSheetLocker.isActive) {
+        if (SheetLocker.isActive) {
             permanentUIMsgID = ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
                 permanent: isPermanent,
                 localize: false,
@@ -309,7 +309,7 @@ function itemDeletedGMAlertUIMessage(userName, itemName) {
 /**
  * Public class for accessing this module through macro code
  */
-export class ActorSheetLocker {
+export class SheetLocker {
     static isActive = false;
     static #previousState;
     static isSilentMode;
@@ -353,7 +353,7 @@ export class ActorSheetLocker {
      * @returns {Promise<void>}
      */
     static async #switch(newStateIsON, silentMode = false) {
-        ActorSheetLocker.isSilentMode = silentMode;
+        SheetLocker.isSilentMode = silentMode;
         this.#previousState = this.isActive;
         // propagate change to the game settings, and wait for it to complete
         // It turned out to be much more stable here by waiting for game.settings to be updated.

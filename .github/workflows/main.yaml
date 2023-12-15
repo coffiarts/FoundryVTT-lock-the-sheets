@@ -15,7 +15,7 @@ jobs:
 
       - name: Zip Files
         working-directory: ./
-        run: zip -r ./module.zip ./src/actor-sheet-locker/*
+        run: zip -r ./module.zip ./src/sheet-locker/*
 
       - name: Get Version
         shell: bash
@@ -31,5 +31,5 @@ jobs:
           draft: true
           prerelease: false
           token: ${{secrets.GITHUB_TOKEN}}
-          artifacts: './module.zip, ./src/actor-sheet-locker/module.json'
+          artifacts: './module.zip, ./src/sheet-locker/module.json'
           tag: ${{ steps.get-version.outputs.version }}

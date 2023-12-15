@@ -1,12 +1,11 @@
 # TODO
-- UI button
 - macro button design + package
 
 - 
-# Actor Sheet Locker for Foundry VTT
+# Sheet Locker for Foundry VTT
 <table style="border:0">
   <tr>
-    <td><img src="src/actor-sheet-locker/artwork/actor-sheet-locker-logo.png" width="600" alt="Actor Sheet Locker Logo"/></td>
+    <td><img src="src/sheet-locker/artwork/sheet-locker-logo.png" width="600" alt="Sheet Locker Logo"/></td>
     <td><span style="color:#da6502"></span><br/>
         <br/>
         <i><strong>"Here goes ...<br/>
@@ -17,9 +16,9 @@
 </table>
 
 ## Video demo on youtube
-[actor-sheet-locker Demo](https://youtu.be/actor-sheet-locker)
+[sheet-locker Demo](https://youtu.be/sheet-locker)
 
-[<img src="src/actor-sheet-locker/artwork/actor-sheet-locker-video-thumb.png" alt="actor-sheet-locker - Video demo on youtube" width="600"/>](https://youtu.be/actor-sheet-locker)
+[<img src="src/sheet-locker/artwork/sheet-locker-video-thumb.png" alt="sheet-locker - Video demo on youtube" width="600"/>](https://youtu.be/sheet-locker)
 
 - [What does it do ...](#what-does-it-do-)
 - [Changelog](#changelog)
@@ -38,7 +37,7 @@
 See [CHANGELOG.md](CHANGELOG.md)
 
 ## Upcoming features
-Feel free to follow the ["dev" branch on GitHub](https://github.com/coffiarts/FoundryVTT-actor-sheet-locker/tree/dev) to stay tuned: [https://github.com/coffiarts/FoundryVTT-actor-sheet-locker/tree/dev](https://github.com/coffiarts/FoundryVTT-actor-sheet-locker/tree/dev)
+Feel free to follow the ["dev" branch on GitHub](https://github.com/coffiarts/FoundryVTT-sheet-locker/tree/dev) to stay tuned: [https://github.com/coffiarts/FoundryVTT-sheet-locker/tree/dev](https://github.com/coffiarts/FoundryVTT-sheet-locker/tree/dev)
 
 Some things I am *considering* to do (feedback welcome!):
 
@@ -49,12 +48,12 @@ Some things I am *considering* to do (feedback welcome!):
 ### Adjustable module settings (i.e. game settings)
 This screenshot shows the default values.
 
-<img src="src/actor-sheet-locker/artwork/actor-sheet-locker-settings.png" alt="actor-sheet-locker settings"/>
+<img src="src/sheet-locker/artwork/sheet-locker-settings.png" alt="sheet-locker settings"/>
 
 ### Control it by macro!
 Use the exposed `class MyModuleMacroAPI` - just like this, it's a no-brainer:
 
-<img src="src/actor-sheet-locker/artwork/actor-sheet-locker-toggle-macro.png" alt="actor-sheet-locker macro example"/>
+<img src="src/sheet-locker/artwork/sheet-locker-toggle-macro.png" alt="sheet-locker macro example"/>
 
 Some more variants:
 

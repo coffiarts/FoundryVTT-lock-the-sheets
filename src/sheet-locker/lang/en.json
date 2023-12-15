@@ -1,5 +1,5 @@
 {
-  "actor-sheet-locker": {
+  "sheet-locker": {
     "setting": {
       "modVersion": {
         "name": "Version",
@@ -43,7 +43,7 @@
       }
     },
     "chatInfoContent": {
-      "title": "Actor Sheet Locker",
+      "title": "Sheet Locker",
       "text1": "[TODO]",
       "text2": "[TODO]. It runs in the backend, but is also controllable through macro code.",
       "text3": "Please refer to the various module preferences under game settings. Find even more details on GitHub",
@@ -60,7 +60,7 @@
       "gmMsgItemDeleted": "[{userName}] is attempting to delete item [{itemName}] from character sheet."
     },
     "controlButton": {
-      "label": "Toggle Actor Sheet Locker on/off"
+      "label": "Toggle Sheet Locker on/off"
     }
   }
 }

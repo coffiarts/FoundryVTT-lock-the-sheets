@@ -1,5 +1,5 @@
 {
-  "actor-sheet-locker": {
+  "sheet-locker": {
     "setting": {
       "modVersion": {
         "name": "Version",
@@ -43,7 +43,7 @@
       }
     },
     "chatInfoContent": {
-      "title": "Actor Sheet Locker",
+      "title": "Sheet Locker",
       "text1": "[TODO]]",
       "text2": "[TODO]. Es funktioniert sowohl im Hintergrund als auch steuerbar via Makros.",
       "text3": "Bitte Moduleinstellungen in den Spieleinstellungen beachten. Mehr Details außerdem auf GitHub.",
@@ -60,7 +60,7 @@
       "gmMsgItemDeleted": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] zu löschen."
     },
     "controlButton": {
-      "label": "Actor Sheet Locker ein- und ausschalten"
+      "label": "Sheet Locker ein- und ausschalten"
     }
   }
 }
