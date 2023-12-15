@@ -3,7 +3,7 @@ import {Config} from './config.js'
 
 export class ChatInfo {
     static contentCardHTML = `
-    <div class="div-styled" style= "padding: 5px;">
+    <div class="div-styled" style= "padding: 5px; text-align: left">
         <div style="text-align: justify; color: #000000; padding: 10px; background-color: #CCD0CC; border: 2px solid #FFFFFF; border-radius: 15px;">
             <p style="text-align: center;">
                 <a href="${Config.data.modlink}">

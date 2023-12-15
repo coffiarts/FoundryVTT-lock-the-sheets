@@ -1,5 +1,8 @@
 # TODO
 - macro button design + package
+- logo img
+- readme =)> chatinfo vereinfachen
+- token flag?
 
 - 
 # Sheet Locker for Foundry VTT
