@@ -43,10 +43,10 @@
       }
     },
     "chatInfoContent": {
-      "title": "Herzlich willkommen zu<br/>Sheet Locker<br/>(by coffiarts)",
-      "text1": "Alle Charakterbögen mit einem Klick sperren und entsperren!",
-      "text2": "Mit diesem kleinen, aber nützlichen Hilfsmodul kann der Game Master auf Knopfdruck jegliche Änderungen am Inhalt von Charakterbögen durch die Spieler sperren und entsperren. Dadurch können z.B. die Spieler vor unbeabsichtigten \"Fehlklicks\" geschützt werden (wie etwa das versehentliche Löschen von Ausrüstungsgegenständen). Für paranoide Game Masters mag es auch als Schutz gegen Schummelei dienen.<br/><br/>ACHTUNG: Die Sperrung verhindert  auch jegliche automatischen (spielgesteuerten) Änderungen, sofern sie durch die Spieler selbst in ihrer lokalen Session ausgelöst werden: so z.B. das Anwenden von Kampfschaden via Chat oder das Aufnehmen von Items aus Schätzen! Bei Sperrung können solche Aktionen aber immer noch durch den GM durchgeführt werden. Das Locking sollte jedenfalls mit Bedacht eingesetzt und nicht permanent aktiviert werden.",
-      "text3": "Funktioniert wahlweise per Spielinstellungen, mit einem (optionalen) UI Button, oder via Macro Code und Macro Button. Bitte Konfigurationsoptionen in den Spieleinstellungen beachten.<br/><br/>Mehr Details außerdem auf GitHub.",
+      "title": "Sheet Locker<br/>(by coffiarts)",
+      "text1": "Sei der Türsteher!<br/>Alle Charakterbögen mit einem Klick sperren und entsperren!",
+      "text2": "Mit diesem kleinen, aber nützlichen Hilfsmodul kann der Game Master auf Knopfdruck jegliche Änderungen am Inhalt von Charakterbögen durch die Spieler sperren und entsperren.",
+      "text3": "Ein- und ausschaltbar wahlweise per Spielinstellungen, mit einem (optionalen) UI Button, oder via Macro Code und Macro Button.<br/>Bitte Konfigurationsoptionen in den Spieleinstellungen beachten.<br/><br/>Mehr Details auf GitHub.",
       "footer": "Diese Nachricht wird nur einmal angezeigt. Zum Wiederanzeigen bitte die entsprechende Option in den Moduleinstellungen verwenden."
     },
     "onOffUIMessage": {
@@ -60,7 +60,7 @@
       "gmMsgItemDeleted": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] zu löschen."
     },
     "controlButton": {
-      "label": "Sheet Locker ein- und ausschalten"
+      "label": "Sheet Locker EIN/AUS"
     }
   }
 }

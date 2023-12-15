@@ -31,7 +31,7 @@ export class Config {
                 }
             },
             isActive: {
-                scope: 'world', config: true, type: Boolean, default: true,
+                scope: 'world', config: true, type: Boolean, default: false,
             },
             showUIButton: {
                 scope: 'world', config: true, type: Boolean, default: true,

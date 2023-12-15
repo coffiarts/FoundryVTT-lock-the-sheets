@@ -43,10 +43,10 @@
       }
     },
     "chatInfoContent": {
-      "title": "Welcome to<br/>Sheet Locker<br/>(by coffiarts)",
-      "text1": "Lock and unlock all character sheets at once with just one click!",
-      "text2": "With this nice little helper module the Game Master can block and unblock any edits to character sheets by the players. This helps, for instance, to protect them from accidental changes. And of course, if you're of the paranoid type, it prevents cheating.<br/><br/>BE AWARE: Locking also suppresses any automatic (game-induced) changes, as long as they're triggered by the players themselves - such as applying damage by chat message button, or picking up items from loot chests. Such changes can still be applied from within the GM's session. But the lock should not be kept active at all times. Use it with some care.",
-      "text3": "Toggling on/off works in various ways: By game settings, or with a nice UI Button (optional), or by macro code or macro button. Please refer to the various module preferences under game settings.<br/><br/>Find even more details on GitHub",
+      "title": "Sheet Locker<br/>(by coffiarts)",
+      "text1": "Be the gatekeeper!<br/>Lock and unlock all character sheets at once with just one click!",
+      "text2": "With this nice little helper module the Game Master can block and unblock any edits to character sheets by the players.",
+      "text3": "Toggling on/off works in various ways: By game settings, or with a nice UI Button (optional), or by macro code or macro button. <br/><br/>Refer to the module preferences under game settings.<br/><br/>Find more details on GitHub",
       "footer": "This chat card will only be shown once. Activate once more in the module settings if needed."
     },
     "onOffUIMessage": {
@@ -60,7 +60,7 @@
       "gmMsgItemDeleted": "[{userName}] is attempting to delete item [{itemName}] from character sheet."
     },
     "controlButton": {
-      "label": "Toggle Sheet Locker on/off"
+      "label": "Sheet Locker ON/OFF"
     }
   }
 }
