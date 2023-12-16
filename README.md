@@ -1,5 +1,4 @@
 # TODO
-- introduce green icon as well, and make icons configurable
 - get rid of permanent messages
 - identify and support more allowed actions
 - make allowed actions configurable in settings (i.e. equip/unequip)
