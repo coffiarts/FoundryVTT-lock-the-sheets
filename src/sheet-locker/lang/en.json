@@ -13,6 +13,10 @@
         "name": "Active",
         "hint": "Activate this module (i.e.: LOCK all character sheets)."
       },
+      "allowEquip": {
+        "name": "Allow: Equipping",
+        "hint": "Should equipping/unequipping items from the inventory be allowed while sheet lock is active?"
+      },
       "showUIButton": {
         "name": "Show UI Button",
         "hint": "Display a button in the scene controls menu on the left hand for toggling Actor Sheet Lock on and off."

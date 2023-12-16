@@ -50,6 +50,9 @@ export class Config {
             },
             overlayIconOpen: {
                 scope: 'world', config: true, type: String, filePicker: "image", default: `${Config.data.modPath}/artwork/lock-green-open.png`
+            },
+            allowEquip: {
+                scope: 'world', config: true, type: Boolean, default: true
             }
         };
         Config.registerSettings(data);

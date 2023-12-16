@@ -13,6 +13,10 @@
         "name": "Aktiviert",
         "hint": "Modul aktivieren (d.h. Charakterbögen sperren)."
       },
+      "allowEquip": {
+        "name": "Aktion zulassen: Ausrüsten",
+        "hint": "Soll das An- und Ablegen (\"Ausrüsten\") von Gegenständen im Inventory auch bei aktiviertem Lock erlaubt sein?"
+      },
       "showUIButton": {
         "name": "UI Button anzeigen",
         "hint": "Button in der linken Menüleiste anzeigen, um Actor Sheet Lock an- und auszuschalten."

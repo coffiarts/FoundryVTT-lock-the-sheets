@@ -165,7 +165,7 @@ function onItemChangedInSheet(item, data, options, userid) {
 
         // check if event is allowed
         if (
-            data?.system?.worn != null
+            data?.system?.worn != null && Config.setting('allowEquip')
         ) return true;
 
         if (!SheetLocker.isSilentMode) {
