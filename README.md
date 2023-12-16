@@ -1,4 +1,6 @@
 # TODO
+- test movement
+- test actions/check rolls/attacks
 - run renderToken/renderOverlay by single token, not for all
 - introduce green icon as well
 - get rid of permanent messages
