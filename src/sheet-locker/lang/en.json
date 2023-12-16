@@ -40,6 +40,10 @@
       "lockForGM": {
         "name": "Lock changes by GM",
         "hint": "Same rules for all! Apply locking to me as the GM as well (protecting myself from doing unintended changes)."
+      },
+      "lockedStatusIcon": {
+        "name": "Status Icon when locked (optional)",
+        "hint": "Pick which icon to display on tokens and actors when locked (leave empty to disable)?"
       }
     },
     "chatInfoContent": {

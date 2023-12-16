@@ -1,7 +1,3 @@
-# TODO
-- readme =)> chatinfo vereinfachen
-- token flag?
- 
 # Sheet Locker for Foundry VTT
 <table style="border:0">
   <tr>

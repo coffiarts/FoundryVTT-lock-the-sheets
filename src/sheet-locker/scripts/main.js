@@ -26,35 +26,43 @@ let permanentUIMsgID;
             Logger.infoGreen(`Ready to play! Version: ${game.modules.get(Config.data.modID).version}`);
             Logger.info(Config.data.modDescription);
             SheetLocker.isActive = Config.setting('isActive');
+
+            Hooks.on("preCreateItem", function (item, data, options, userid) {
+                return onItemChangedInSheet(item, data, options, userid);
+            });
+            Hooks.on("preCreateActiveEffect", function (item, data, options, userid) {
+                return onItemChangedInSheet(item, data, options, userid);
+            });
+
+            Hooks.on("preUpdateActor", function (actor, data, options, userid) {
+                return onSheetChanged(actor, data, options, userid);
+            });
+            Hooks.on("preUpdateItem", function (item, data, options, userid) {
+                return onItemChangedInSheet(item, data, options, userid);
+            });
+            Hooks.on("preUpdateActiveEffect", function (item, data, options, userid) {
+                return onItemChangedInSheet(item, data, options, userid);
+            });
+
+            Hooks.on("preDeleteItem", function (item, options, userid) {
+                return onItemDeletedFromSheet(item, options, userid);
+            });
+            Hooks.on("preDeleteActiveEffect", function (item, options, userid) {
+                return onItemDeletedFromSheet(item, options, userid);
+            });
+
+            Hooks.on("getSceneControlButtons", (controls) => {
+                createControlButton(controls);
+            });
+
+            if (game.user.isGM) {
+                Hooks.on("refreshToken", async () => {
+                    await renderTokenOverlays();
+                });
+            }
+
+            renderTokenOverlays();
             stateChangeUIMessage();
-        });
-
-        Hooks.on("preCreateItem", function (item, data, options, userid) {
-            return onItemChangedInSheet(item, data, options, userid);
-        });
-        Hooks.on("preCreateActiveEffect", function (item, data, options, userid) {
-            return onItemChangedInSheet(item, data, options, userid);
-        });
-
-        Hooks.on("preUpdateActor", function (actor, data, options, userid) {
-            return onSheetChanged(actor, data, options, userid);
-        });
-        Hooks.on("preUpdateItem", function (item, data, options, userid) {
-            return onItemChangedInSheet(item, data, options, userid);
-        });
-        Hooks.on("preUpdateActiveEffect", function (item, data, options, userid) {
-            return onItemChangedInSheet(item, data, options, userid);
-        });
-
-        Hooks.on("preDeleteItem", function (item, options, userid) {
-            return onItemDeletedFromSheet(item, options, userid);
-        });
-        Hooks.on("preDeleteActiveEffect", function (item, options, userid) {
-            return onItemDeletedFromSheet(item, options, userid);
-        });
-
-        Hooks.on("getSceneControlButtons", (controls) => {
-            createControlButton(controls);
         });
     }
 )
@@ -196,11 +204,25 @@ function onItemDeletedFromSheet(item, options, userid) {
     }
 }
 
+/**
+ * inspired by // https://github.com/LeafWulf/deathmark/blob/master/scripts/deathmark.js
+ */
+async function renderTokenOverlays() {
+    let img = (SheetLocker.isActive) ? Config.setting('lockedStatusIcon') : "";
+    /*if (token != null && aToken.actorLink) {
+        await token.update({overlayEffect: img});
+        return;
+    } else */for (const aToken of game.scenes.current.tokens) {
+        if (aToken.actorLink) {
+            await aToken.update({overlayEffect: img});
+        }
+    }
+}
 function getButton() {
     return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleSheetLocker");
 }
 
-function onGameSettingChanged() {
+async function onGameSettingChanged() {
     SheetLocker.isActive = Config.setting('isActive');
 
     if (game.user.isGM && Config.setting('notifyOnChange')) {
@@ -214,8 +236,9 @@ function onGameSettingChanged() {
     }
 
     if (game.user.isGM) {
-        let button = getButton();
+
         // Refresh scene control button (if active) to reflect the potentially new state.
+        let button = getButton();
         if (Config.setting('showUIButton')) {
             if (button == null) {
                 createControlButton(ui.controls.controls);
@@ -228,6 +251,10 @@ function onGameSettingChanged() {
             ui.controls.controls.find(control => control.name === "token").tools.pop(button);
             ui.controls.render();
         }
+
+        // Refresh status overlays
+        await renderTokenOverlays();
+
     }
 }
 
@@ -260,7 +287,7 @@ function stateChangeUIMessage() {
                 localize: false,
                 console: false
             });
-        };
+        }
         if (!isPermanent) permanentUIMsgID = null;
     }
     Logger.info(message);

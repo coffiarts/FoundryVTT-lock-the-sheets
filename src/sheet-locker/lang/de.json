@@ -40,6 +40,10 @@
       "lockForGM": {
         "name": "Sperrung auch für Spielleiter anwenden",
         "hint": "Gleiche Regeln für alle! Sperrung gilt auch für den SL (als Schutz vor unbeabsichtigten Änderungen)."
+      },
+      "lockedStatusIcon": {
+        "name": "Status Icon bei Sperrung (optional)",
+        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie gesperrt sind (zum Deaktivieren leer lassen)?"
       }
     },
     "chatInfoContent": {

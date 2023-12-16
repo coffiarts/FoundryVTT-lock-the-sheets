@@ -50,6 +50,9 @@ export class Config {
             },
             alertGMOnReject: {
                 scope: 'world', config: true, type: Boolean, default: true
+            },
+            lockedStatusIcon: {
+                scope: 'world', config: true, type: String, filePicker: "image", default: `${Config.data.modPath}/artwork/red-lock.png`
             }
         };
         Config.registerSettings(data);
