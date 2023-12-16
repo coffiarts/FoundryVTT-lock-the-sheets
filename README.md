@@ -1,6 +1,5 @@
 # TODO
-- get rid of permanent messages
-- identify and support more allowed actions
+- identify and add support for more allowed actions
 - make allowed actions configurable in settings (i.e. equip/unequip)
 - test with actor prototypes => overlay in actors list?
 - dnd5e test
