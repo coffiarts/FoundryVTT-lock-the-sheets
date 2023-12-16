@@ -1,3 +1,13 @@
+# TODO
+- run renderToken/renderOverlay by single token, not for all
+- introduce green icon as well
+- get rid of permanent messages
+- identify and support more allowed actions
+- test with actor prototypes
+- dnd5e test
+- video (dnd5)
+- finalize readme
+
 # Sheet Locker for Foundry VTT
 <table style="border:0">
   <tr>
