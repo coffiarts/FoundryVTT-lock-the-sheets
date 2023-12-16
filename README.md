@@ -1,11 +1,9 @@
 # TODO
-- test movement
-- test actions/check rolls/attacks
-- run renderToken/renderOverlay by single token, not for all
-- introduce green icon as well
+- introduce green icon as well, and make icons configurable
 - get rid of permanent messages
 - identify and support more allowed actions
-- test with actor prototypes
+- make allowed actions configurable in settings (i.e. equip/unequip)
+- test with actor prototypes => overlay in actors list?
 - dnd5e test
 - video (dnd5)
 - finalize readme
@@ -45,10 +43,15 @@ With this nice little helper module the Game Master can block and unblock any ed
 This helps, for instance, to protect them from accidental changes.
 And of course, if you're of the paranoid type, it prevents cheating.
 
-***BE AWARE, though***: As long as the lock is active, it also suppresses automatic (game-induced) changes, given that they're triggered by the players themselves - such as applying damage by chat message button, or picking up items from loot chests.
-Such changes can still be applied from within the GM's session. But the lock should not be kept active at all times. Use it with some care.
+***A slight warning:*** While sheets are locked, some intended changes may be suppressed, such as macro or chat triggered actions. But rest assured: There will be a screen message whenever that happens.
+In such cases, just unlock the sheets and repeat the blocked action.
 
-Toggling on/off works in various ways: By game settings, or with a nice UI Button (optional), or by macro code or macro button. Please refer to the various module preferences under game settings.
+Toggling on/off works in various ways:
+1. By a checkbox in the module settings 
+2. Through a nice UI Button in the scene control on the left (which is optional and can be turned off in the setings, if you don't like it)
+3. By macro code (a ready-to-use macro button is already included as a compendium pack).
+ 
+Please refer to the various module preferences under game settings (as explained below).
 
 ## Changelog
 See [CHANGELOG.md](CHANGELOG.md)

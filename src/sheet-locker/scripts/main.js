@@ -55,13 +55,13 @@ let permanentUIMsgID;
                 createControlButton(controls);
             });
 
-            if (game.user.isGM) {
-                Hooks.on("refreshToken", async () => {
-                    await renderTokenOverlays();
-                });
-            }
+            Hooks.on("drawToken", () => {
+                renderTokenOverlays();
+            });
+            Hooks.on("refreshToken", () => {
+                renderTokenOverlays();
+            });
 
-            renderTokenOverlays();
             stateChangeUIMessage();
         });
     }
@@ -209,12 +209,13 @@ function onItemDeletedFromSheet(item, options, userid) {
  */
 async function renderTokenOverlays() {
     let img = (SheetLocker.isActive) ? Config.setting('lockedStatusIcon') : "";
-    /*if (token != null && aToken.actorLink) {
-        await token.update({overlayEffect: img});
-        return;
-    } else */for (const aToken of game.scenes.current.tokens) {
+    for (const aToken of game.scenes.current.tokens) {
         if (aToken.actorLink) {
-            await aToken.update({overlayEffect: img});
+            const ownedActor = game.actors.find((actor)=>{return (actor.id === game.users.current.character?.id)});
+            if (game.user.isGM || aToken.actorId === ownedActor?.id) {
+                //Logger.debug("aToken.actorId", aToken.actorId, "ownedActor?.id", ownedActor?.id);
+                await aToken.update({overlayEffect: img});
+            }
         }
     }
 }
