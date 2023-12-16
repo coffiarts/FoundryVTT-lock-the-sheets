@@ -14,8 +14,8 @@
         "hint": "Activate this module (i.e.: LOCK all character sheets)."
       },
       "allowEquip": {
-        "name": "Allow: Equipping",
-        "hint": "Should equipping/unequipping items from the inventory be allowed while sheet lock is active?"
+        "name": "Allow: Equip & Unequip",
+        "hint": "Should equipping/unequipping of inventory items be allowed while sheet lock is active?"
       },
       "showUIButton": {
         "name": "Show UI Button",
@@ -38,8 +38,8 @@
         "hint": "Show permanent UI message when toggling OFF (visible until reactivation). Needs option \"UI messages on toggle\" to be enabled."
       },
       "alertGMOnReject": {
-        "name": "GM alert on reject",
-        "hint": "Show a sceen warning for the GM when a player tries to edit a locked sheet."
+        "name": "Alert GM about rejected edits",
+        "hint": "Show a sceen warning for the GM whenever a player tries to edit a locked sheet."
       },
       "lockForGM": {
         "name": "Lock changes by GM",

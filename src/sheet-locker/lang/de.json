@@ -30,7 +30,7 @@
         "hint": "Zeige kurze Bannermeldungen an, wenn das Panning & Zooming aus- oder eingeschaltet wird (funktioniert auch beim Umschalten via Macro)."
       },
       "alertGMOnReject": {
-        "name": "Spielleiter alarmieren",
+        "name": "Spielleiter bei blockierten Änderungen alarmieren",
         "hint": "Bildschirmwarnung für den SL anzeigen, wenn ein Spieler ein gesperrten Charakterbogen ändern will."
       },
       "lockForGM": {

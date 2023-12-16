@@ -10,7 +10,6 @@ const SUBMODULES = {
 
 let ready2play;
 let socket;
-let permanentUIMsgID;
 
 /**
  * Global initializer block:
@@ -52,7 +51,7 @@ let permanentUIMsgID;
             });
 
             Hooks.on("getSceneControlButtons", (controls) => {
-                createControlButton(controls);
+                renderControlButton(controls);
             });
 
             Hooks.on("drawToken", () => {
@@ -118,7 +117,7 @@ async function initSocketlib() {
     Logger.debug(`Module ${Config.data.modID} registered in socketlib.`);
 }
 
-function createControlButton(controls) {
+function renderControlButton(controls) {
     if (game.user.isGM && Config.setting('showUIButton')) {
         let tokenControls = controls.find(control => control.name === "token")
         tokenControls.tools.push({
@@ -163,9 +162,14 @@ function onItemChangedInSheet(item, data, options, userid) {
     Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
     if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
 
-        // check if event is allowed
+        // Check for allowed actions
         if (
-            data?.system?.worn != null && Config.setting('allowEquip')
+            // Allow equip/unequip
+            Config.setting('allowEquip') && (
+                data?.system?.worn != null // tde5
+                ||
+                data?.system?.equipped != null // dnd5e
+            )
         ) return true;
 
         if (!SheetLocker.isSilentMode) {
@@ -244,7 +248,7 @@ async function onGameSettingChanged() {
         let button = getButton();
         if (Config.setting('showUIButton')) {
             if (button == null) {
-                createControlButton(ui.controls.controls);
+                renderControlButton(ui.controls.controls);
                 button = getButton();
             }
             button.active = SheetLocker.isActive;
