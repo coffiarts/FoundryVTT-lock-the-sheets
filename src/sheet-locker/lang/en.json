@@ -41,9 +41,13 @@
         "name": "Lock changes by GM",
         "hint": "Same rules for all! Apply locking to me as the GM as well (protecting myself from doing unintended changes)."
       },
-      "lockedStatusIcon": {
+      "overlayIconLocked": {
         "name": "Status Icon when locked (optional)",
-        "hint": "Pick which icon to display on tokens and actors when locked (leave empty to disable)?"
+        "hint": "Pick which icon to display on tokens and actors when locked (leave empty to disable icon)?"
+      },
+      "overlayIconOpen": {
+        "name": "Status Icon when unlocked (optional)",
+        "hint": "Pick which icon to display on tokens and actors when unlocked (leave empty to disable icon)?"
       }
     },
     "chatInfoContent": {

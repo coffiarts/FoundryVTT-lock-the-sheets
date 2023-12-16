@@ -208,7 +208,7 @@ function onItemDeletedFromSheet(item, options, userid) {
  * inspired by // https://github.com/LeafWulf/deathmark/blob/master/scripts/deathmark.js
  */
 async function renderTokenOverlays() {
-    let img = (SheetLocker.isActive) ? Config.setting('lockedStatusIcon') : "";
+    let img = (SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
     for (const aToken of game.scenes.current.tokens) {
         if (aToken.actorLink) {
             const ownedActor = game.actors.find((actor)=>{return (actor.id === game.users.current.character?.id)});

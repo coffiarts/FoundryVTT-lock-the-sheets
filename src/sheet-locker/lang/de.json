@@ -41,9 +41,13 @@
         "name": "Sperrung auch für Spielleiter anwenden",
         "hint": "Gleiche Regeln für alle! Sperrung gilt auch für den SL (als Schutz vor unbeabsichtigten Änderungen)."
       },
-      "lockedStatusIcon": {
+      "overlayIconLocked": {
         "name": "Status Icon bei Sperrung (optional)",
-        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie gesperrt sind (zum Deaktivieren leer lassen)?"
+        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie gesperrt sind (leer lassen, falls kein Icon angezeigt werden soll)?"
+      },
+      "overlayIconOpen": {
+        "name": "Status Icon bei Entsperrung (optional)",
+        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie freigeschaltet sind (leer lassen, falls kein Icon angezeigt werden soll)?"
       }
     },
     "chatInfoContent": {

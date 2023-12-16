@@ -51,8 +51,11 @@ export class Config {
             alertGMOnReject: {
                 scope: 'world', config: true, type: Boolean, default: true
             },
-            lockedStatusIcon: {
-                scope: 'world', config: true, type: String, filePicker: "image", default: `${Config.data.modPath}/artwork/red-lock.png`
+            overlayIconLocked: {
+                scope: 'world', config: true, type: String, filePicker: "image", default: `${Config.data.modPath}/artwork/lock-red-closed.png`
+            },
+            overlayIconOpen: {
+                scope: 'world', config: true, type: String, filePicker: "image", default: `${Config.data.modPath}/artwork/lock-green-open.png`
             }
         };
         Config.registerSettings(data);
