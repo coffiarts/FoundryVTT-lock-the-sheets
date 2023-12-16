@@ -54,11 +54,15 @@ let socket;
                 renderControlButton(controls);
             });
 
+            // Hooks related to rendering the status icon overlays
             Hooks.on("drawToken", () => {
                 renderTokenOverlays();
             });
             Hooks.on("refreshToken", () => {
                 renderTokenOverlays();
+            });
+            Hooks.on("renderSidebarTab", (directory, sections, css) => {
+                renderSidebarTabOverlays(directory, sections, css);
             });
 
             stateChangeUIMessage();
@@ -223,8 +227,30 @@ async function renderTokenOverlays() {
                 await aToken.update({overlayEffect: overlayImg});
             }
         }
-   }
+    }
+    ui.sidebar.render(true);
 }
+
+async function renderSidebarTabOverlays(directory, sections, css) {
+    // We're only interested in the "Actor" documents that happen to be in the ActorDirectory.
+    // There seems to be no easy way to indentify it, so in the first step we're ruling out anything without documents in it
+    if (!directory.documents) {
+        return;
+    }
+
+    //Logger.debug("renderSidebarTabOverlays: directory", directory.documents);
+    for(const anActor of directory.documents) {
+        // Next, we eliminate every document that's not a "character"
+        if (anActor.type !== "character") continue;
+        const overlayImg =(SheetLocker.isActive) ?
+            Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
+        //if(anActor.isOwner && !game.user.isGM) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
+            Logger.debug("renderSidebarTabOverlays: anActor", anActor);
+            await anActor.update({img: overlayImg});
+        //}
+    }
+}
+
 function getButton() {
     return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleSheetLocker");
 }
@@ -260,7 +286,7 @@ async function onGameSettingChanged() {
         }
 
         // Refresh status overlays
-        socket.executeForEveryone("renderTokenOverlays")
+        socket.executeForEveryone("renderTokenOverlays");
 
     }
 }
