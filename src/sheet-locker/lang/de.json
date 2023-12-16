@@ -25,14 +25,6 @@
         "name": "UI-Meldungen beim Umschalten",
         "hint": "Zeige kurze Bannermeldungen an, wenn das Panning & Zooming aus- oder eingeschaltet wird (funktioniert auch beim Umschalten via Macro)."
       },
-      "notifyPermanentlyWhileLOCKED": {
-        "name": "Status 'Gesperrt' permanent anzeigen",
-        "hint": "Im Sperrzustand permanente Bannermeldung anzeigen (bis zur Entsperrung). Nur wirksam, wenn \"UI-Meldungen beim Umschalten\" aktiviert ist."
-      },
-      "notifyPermanentlyWhileUNLOCKED": {
-        "name": "Status 'Entsperrt' permanent anzeigen",
-        "hint": "Im entsperrten Zustand permanente Bannermeldung anzeigen (bis zur Sperrung). Nur wirksam, wenn \"UI-Meldungen beim Umschalten\" aktiviert ist."
-      },
       "alertGMOnReject": {
         "name": "Spielleiter alarmieren",
         "hint": "Bildschirmwarnung für den SL anzeigen, wenn ein Spieler ein gesperrten Charakterbogen ändern will."
@@ -43,11 +35,11 @@
       },
       "overlayIconLocked": {
         "name": "Status Icon bei Sperrung (optional)",
-        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie gesperrt sind (leer lassen, falls kein Icon angezeigt werden soll)?"
+        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie gesperrt sind (leer lassen, falls kein Icon angezeigt werden soll)? (Standard: modules/sheet-locker/artwork/lock-red-closed.png)"
       },
       "overlayIconOpen": {
         "name": "Status Icon bei Entsperrung (optional)",
-        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie freigeschaltet sind (leer lassen, falls kein Icon angezeigt werden soll)?"
+        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie freigeschaltet sind (leer lassen, falls kein Icon angezeigt werden soll)? (Standard: modules/sheet-locker/artwork/lock-green-open.png)"
       }
     },
     "chatInfoContent": {

@@ -43,11 +43,11 @@
       },
       "overlayIconLocked": {
         "name": "Status Icon when locked (optional)",
-        "hint": "Pick which icon to display on tokens and actors when locked (leave empty to disable icon)?"
+        "hint": "Pick which icon to display on tokens and actors when locked (leave empty to disable icon)? (Default: modules/sheet-locker/artwork/lock-red-closed.png)"
       },
       "overlayIconOpen": {
         "name": "Status Icon when unlocked (optional)",
-        "hint": "Pick which icon to display on tokens and actors when unlocked (leave empty to disable icon)?"
+        "hint": "Pick which icon to display on tokens and actors when unlocked (leave empty to disable icon)? (Default: modules/sheet-locker/artwork/lock-green-open.png)"
       }
     },
     "chatInfoContent": {

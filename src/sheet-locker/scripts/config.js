@@ -39,12 +39,6 @@ export class Config {
             notifyOnChange: {
                 scope: 'world', config: true,  type: Boolean, default: true
             },
-            notifyPermanentlyWhileLOCKED: {
-                scope: 'world', config: true, type: Boolean, default: false
-            },
-            notifyPermanentlyWhileUNLOCKED: {
-                scope: 'world', config: true, type: Boolean, default: false
-            },
             lockForGM: {
                 scope: 'world', config: true, type: Boolean, default: false
             },

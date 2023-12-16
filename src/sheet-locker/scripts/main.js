@@ -267,31 +267,19 @@ function stateChangeUIMessage() {
 
     if (Config.setting('notifyOnChange')) {
 
-        let isPermanent = (
-            SheetLocker.isActive &&  Config.setting('notifyPermanentlyWhileLOCKED')
-            ||
-            !SheetLocker.isActive &&  Config.setting('notifyPermanentlyWhileUNLOCKED')
-        );
-
-        // Clear previous permanent msg (if any)
-        if (permanentUIMsgID != null) {
-            ui.notifications.remove(permanentUIMsgID);
-        }
-
         if (SheetLocker.isActive) {
-            permanentUIMsgID = ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
-                permanent: isPermanent,
+            ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
+                permanent: false,
                 localize: false,
                 console: false
             });
         } else {
-            permanentUIMsgID = ui.notifications.info(`[${Config.data.modTitle}] ${message}`, {
-                permanent: isPermanent,
+            ui.notifications.info(`[${Config.data.modTitle}] ${message}`, {
+                permanent: false,
                 localize: false,
                 console: false
             });
         }
-        if (!isPermanent) permanentUIMsgID = null;
     }
     Logger.info(message);
 }
