@@ -114,6 +114,7 @@ async function initSocketlib() {
     socket.register("sheetEditGMAlertUIMessage", sheetEditGMAlertUIMessage);
     socket.register("itemChangedGMAlertUIMessage", itemChangedGMAlertUIMessage);
     socket.register("itemDeletedGMAlertUIMessage", itemDeletedGMAlertUIMessage);
+    socket.register("renderTokenOverlays", renderTokenOverlays);
     Logger.debug(`Module ${Config.data.modID} registered in socketlib.`);
 }
 
@@ -208,16 +209,17 @@ function onItemDeletedFromSheet(item, options, userid) {
  * inspired by // https://github.com/LeafWulf/deathmark/blob/master/scripts/deathmark.js
  */
 async function renderTokenOverlays() {
-    let img = (SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
     for (const aToken of game.scenes.current.tokens) {
         if (aToken.actorLink) {
-            const ownedActor = game.actors.find((actor)=>{return (actor.id === game.users.current.character?.id)});
-            if (game.user.isGM || aToken.actorId === ownedActor?.id) {
-                //Logger.debug("aToken.actorId", aToken.actorId, "ownedActor?.id", ownedActor?.id);
-                await aToken.update({overlayEffect: img});
+            // ensure that overlay is only rendered for the token's owner (the GM will implicitely see them for all owned tokens)
+            const actor = game.actors.find((actor)=>{return (actor.id === aToken.actorId)});
+            const overlayImg =(SheetLocker.isActive) ?
+                        Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
+            if(actor.isOwner && !game.user.isGM) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
+                await aToken.update({overlayEffect: overlayImg});
             }
         }
-    }
+   }
 }
 function getButton() {
     return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleSheetLocker");
@@ -254,7 +256,7 @@ async function onGameSettingChanged() {
         }
 
         // Refresh status overlays
-        await renderTokenOverlays();
+        socket.executeForEveryone("renderTokenOverlays")
 
     }
 }
