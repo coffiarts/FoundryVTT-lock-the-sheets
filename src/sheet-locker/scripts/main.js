@@ -260,7 +260,7 @@ async function onGameSettingChanged() {
         }
 
         // Refresh status overlays
-        socket.executeForEveryone("renderTokenOverlays")
+        socket.executeForEveryone("renderTokenOverlays");
 
     }
 }

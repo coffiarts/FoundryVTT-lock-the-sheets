@@ -1,6 +1,4 @@
 # TODO
-- test with actor prototypes => overlay in actors list?
-- dnd5e test
 - video (dnd5)
 - finalize readme
 
