@@ -222,7 +222,7 @@ async function renderTokenOverlays() {
         if (aToken.actorLink) {
             // ensure that overlay is only rendered for the token's owner (the GM will implicitely see the change for all owned tokens)
             const actor = game.actors.find((actor)=>{return (actor.id === aToken.actorId)});
-            const owner = findOwnerByActorByName(actor.name);
+            const owner = findOwnerForActorName(actor.name);
             //Logger.debug("owner", owner);
             if(owner != null) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
                 const overlayImg = (owner.active || game.user.isGM) ? ((SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
@@ -235,22 +235,14 @@ async function renderTokenOverlays() {
 async function renderActorDirectoryOverlays(app, html) {
     html.find('.directory-item').each((i, element) => {
         const actorName = element.children[0].title;
-        const owner = findOwnerByActorByName(actorName);
-        Logger.debug("owner", owner);
-        Logger.debug("actorName", actorName, "\nowner", owner);
+        const owner = findOwnerForActorName(actorName);
+        //Logger.debug("\nactorName", actorName, "\nowner", owner);
         if (owner != null) { // skip any unowned characters
             const imgPath = (SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
             element.innerHTML = overlayIconAsHTML(actorName, imgPath) + element.innerHTML;
             element.innerHTML = element.innerHTML.replace('data-src', 'src');
         }
-    })
-
-/*
-    if (anActor.isOwner && !game.user.isGM) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
-        Logger.debug("renderSidebarTabOverlays: anActor", anActor);
-        await anActor.update({img: overlayImg});
-    }
-*/
+    });
 }
 
 function overlayIconAsHTML(title, imgPath){
@@ -360,7 +352,7 @@ function itemDeletedGMAlertUIMessage(userName, itemName) {
     Logger.warn(message);
 }
 
-function findOwnerByActorByName(actorName) {
+function findOwnerForActorName(actorName) {
     const actor = game.actors.find((actor) => {
         return actor?.name === actorName
     });
