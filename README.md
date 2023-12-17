@@ -5,7 +5,7 @@
 # Lock The Sheets! for Foundry VTT
 <table style="border:0">
   <tr>
-    <td><img src="src/lock-the-sheets/artwork/lock-the-sheets-banner.png" alt="Lock The Sheets! Logo"/></td>
+    <td><img src="src/lock-the-sheets/artwork/lock-the-sheets-logo.png" alt="Lock The Sheets! Logo"/></td>
     <td><span style="color:#da6502"></span><br/>
         <br/>
         <i><strong>Be a gatekeeper! Be the keymaster!</strong><br/>
