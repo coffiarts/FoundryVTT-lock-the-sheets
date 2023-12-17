@@ -16,7 +16,7 @@ let socket;
  * First of all, we need to initialize a lot of stuff in correct order:
  */
 (async () => {
-        console.log("Sheet Locker | Initializing Module");
+        console.log("Lock The Sheets! | Initializing Module");
 
         await allPrerequisitesReady();
 
@@ -24,7 +24,7 @@ let socket;
             ready2play = true;
             Logger.infoGreen(`Ready to play! Version: ${game.modules.get(Config.data.modID).version}`);
             Logger.info(Config.data.modDescription);
-            SheetLocker.isActive = Config.setting('isActive');
+            LockTheSheets.isActive = Config.setting('isActive');
 
             Hooks.on("preCreateItem", function (item, data, options, userid) {
                 return onItemChangedInSheet(item, data, options, userid);
@@ -50,7 +50,7 @@ let socket;
                 return onItemDeletedFromSheet(item, options, userid);
             });
 
-            Hooks.on("getSceneControlButtons", (controls) => {
+            Hooks.on("renderSceneControls", (controls) => {
                 renderControlButton(controls);
             });
 
@@ -61,8 +61,8 @@ let socket;
             Hooks.on("refreshToken", () => {
                 renderTokenOverlays();
             });
-            Hooks.on("renderActorDirectory", (app, html, context) => {
-                renderActorDirectoryOverlays(app, html, context);
+            Hooks.on("renderActorDirectory", (app, html) => {
+                renderActorDirectoryOverlays(app, html);
             });
 
             ui.sidebar.render(true);
@@ -103,7 +103,7 @@ async function initDependencies() {
 }
 
 async function initExposedClasses() {
-    window.SheetLocker = SheetLocker;
+    window.LockTheSheets = LockTheSheets;
     Hooks.on("updateSetting", async function (setting) {
         if (setting.key.startsWith(Config.data.modID)) {
             onGameSettingChanged();
@@ -126,7 +126,7 @@ function renderControlButton(controls) {
     if (game.user.isGM && Config.setting('showUIButton')) {
         let tokenControls = controls.find(control => control.name === "token")
         tokenControls.tools.push({
-            name: "toggleSheetLocker",
+            name: "toggleLockTheSheets",
             title: Config.localize('controlButton.label'),
             icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
             toggle: true,
@@ -144,7 +144,7 @@ function onSheetChanged(actorOrItem, data, options, userid) {
     Logger.debug("options: ", options);
     Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
     if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
-        if (!SheetLocker.isSilentMode) {
+        if (!LockTheSheets.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
                 permanent: false,
                 localize: false,
@@ -154,7 +154,7 @@ function onSheetChanged(actorOrItem, data, options, userid) {
                 socket.executeForAllGMs("sheetEditGMAlertUIMessage", game.users.get(userid)?.name, actorOrItem.name);
             }
         } else {
-            SheetLocker.isSilentMode = false;
+            LockTheSheets.isSilentMode = false;
         }
         return false;
     }
@@ -177,7 +177,7 @@ function onItemChangedInSheet(item, data, options, userid) {
             )
         ) return true;
 
-        if (!SheetLocker.isSilentMode) {
+        if (!LockTheSheets.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
                 permanent: false,
                 localize: false,
@@ -187,7 +187,7 @@ function onItemChangedInSheet(item, data, options, userid) {
                 socket.executeForAllGMs("itemChangedGMAlertUIMessage", game.users.get(userid)?.name, item.name);
             }
         } else {
-            SheetLocker.isSilentMode = false;
+            LockTheSheets.isSilentMode = false;
         }
         return false;
     }
@@ -198,7 +198,7 @@ function onItemDeletedFromSheet(item, options, userid) {
     Logger.debug("options: ", options);
     Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
     if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
-        if (!SheetLocker.isSilentMode) {
+        if (!LockTheSheets.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
                 permanent: false,
                 localize: false,
@@ -208,7 +208,7 @@ function onItemDeletedFromSheet(item, options, userid) {
                 socket.executeForAllGMs("itemDeletedGMAlertUIMessage", game.users.get(userid)?.name, item.name);
             }
         } else {
-            SheetLocker.isSilentMode = false;
+            LockTheSheets.isSilentMode = false;
         }
         return false;
     }
@@ -225,7 +225,7 @@ async function renderTokenOverlays() {
             const owner = findOwnerForActorName(actor.name);
             //Logger.debug("owner", owner);
             if(owner != null) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
-                const overlayImg = (owner.active || game.user.isGM) ? ((SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
+                const overlayImg = (owner.active || game.user.isGM) ? ((LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
                 if (owner === game.user || !owner.active && game.user.isGM) await aToken.update({overlayEffect: overlayImg});
             }
         }
@@ -238,7 +238,7 @@ async function renderActorDirectoryOverlays(app, html) {
         const owner = findOwnerForActorName(actorName);
         //Logger.debug("\nactorName", actorName, "\nowner", owner);
         if (owner != null) { // skip any unowned characters
-            const imgPath = (SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
+            const imgPath = (LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
             element.innerHTML = overlayIconAsHTML(actorName, imgPath) + element.innerHTML;
             element.innerHTML = element.innerHTML.replace('data-src', 'src');
         }
@@ -250,19 +250,19 @@ function overlayIconAsHTML(title, imgPath){
 }
 
 function getButton() {
-    return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleSheetLocker");
+    return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleLockTheSheets");
 }
 
 async function onGameSettingChanged() {
-    SheetLocker.isActive = Config.setting('isActive');
+    LockTheSheets.isActive = Config.setting('isActive');
 
     if (game.user.isGM && Config.setting('notifyOnChange')) {
         // UI messages should only be triggered by the GM via sockets.
         // This seems to be the only way to suppress them if needed.
-        if (!SheetLocker.isSilentMode) {
+        if (!LockTheSheets.isSilentMode) {
             socket.executeForEveryone("stateChangeUIMessage");
         } else {
-            SheetLocker.isSilentMode = false;
+            LockTheSheets.isSilentMode = false;
         }
     }
 
@@ -275,7 +275,7 @@ async function onGameSettingChanged() {
                 renderControlButton(ui.controls.controls);
                 button = getButton();
             }
-            button.active = SheetLocker.isActive;
+            button.active = LockTheSheets.isActive;
             ui.controls.render();
         } else if (button != null) {
             // if button has been deactivated, remove it from the scene controls
@@ -292,11 +292,11 @@ async function onGameSettingChanged() {
 
 function stateChangeUIMessage() {
     let message =
-        (SheetLocker.isActive ? Config.localize('onOffUIMessage.whenON') : Config.localize('onOffUIMessage.whenOFF'));
+        (LockTheSheets.isActive ? Config.localize('onOffUIMessage.whenON') : Config.localize('onOffUIMessage.whenOFF'));
 
     if (Config.setting('notifyOnChange')) {
 
-        if (SheetLocker.isActive) {
+        if (LockTheSheets.isActive) {
             ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
                 permanent: false,
                 localize: false,
@@ -365,7 +365,7 @@ function findOwnerForActorName(actorName) {
 /**
  * Public class for accessing this module through macro code
  */
-export class SheetLocker {
+export class LockTheSheets {
     static isActive = false;
     static #previousState;
     static isSilentMode;
@@ -409,7 +409,7 @@ export class SheetLocker {
      * @returns {Promise<void>}
      */
     static async #switch(newStateIsON, silentMode = false) {
-        SheetLocker.isSilentMode = silentMode;
+        LockTheSheets.isSilentMode = silentMode;
         this.#previousState = this.isActive;
         // propagate change to the game settings, and wait for it to complete
         // It turned out to be much more stable here by waiting for game.settings to be updated.

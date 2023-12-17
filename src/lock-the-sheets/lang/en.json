@@ -1,5 +1,5 @@
 {
-  "sheet-locker": {
+  "lock-the-sheets": {
     "setting": {
       "modVersion": {
         "name": "Version",
@@ -47,15 +47,15 @@
       },
       "overlayIconLocked": {
         "name": "Status Icon when locked (optional)",
-        "hint": "Pick which icon to display on tokens and actors when locked (leave empty to disable icon)? (Default: modules/sheet-locker/artwork/lock-red-closed.png)"
+        "hint": "Pick which icon to display on tokens and actors when locked (leave empty to disable icon)? (Default: modules/lock-the-sheets/artwork/lock-red-closed.png)"
       },
       "overlayIconOpen": {
         "name": "Status Icon when unlocked (optional)",
-        "hint": "Pick which icon to display on tokens and actors when unlocked (leave empty to disable icon)? (Default: modules/sheet-locker/artwork/lock-green-open.png)"
+        "hint": "Pick which icon to display on tokens and actors when unlocked (leave empty to disable icon)? (Default: modules/lock-the-sheets/artwork/lock-green-open.png)"
       }
     },
     "chatInfoContent": {
-      "title": "Sheet Locker<br/>(by coffiarts)",
+      "title": "Lock The Sheets!<br/>(by coffiarts)",
       "text1": "Be the gatekeeper!<br/>Lock and unlock all character sheets at once with just one click!",
       "text2": "With this nice little helper module the Game Master can block and unblock any edits to character sheets by the players.",
       "text3": "Toggling on/off works in various ways: By game settings, or with a nice UI Button (optional), or by macro code or macro button. <br/><br/>Refer to the module preferences under game settings.<br/><br/>Find more details on GitHub",
@@ -72,7 +72,7 @@
       "gmMsgItemDeleted": "[{userName}] is attempting to delete item [{itemName}] from character sheet."
     },
     "controlButton": {
-      "label": "Sheet Locker ON/OFF"
+      "label": "Lock The Sheets! ON/OFF"
     }
   }
 }

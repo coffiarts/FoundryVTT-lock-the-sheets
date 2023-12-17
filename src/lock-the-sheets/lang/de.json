@@ -1,5 +1,5 @@
 {
-  "sheet-locker": {
+  "lock-the-sheets": {
     "setting": {
       "modVersion": {
         "name": "Version",
@@ -39,15 +39,15 @@
       },
       "overlayIconLocked": {
         "name": "Status Icon bei Sperrung (optional)",
-        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie gesperrt sind (leer lassen, falls kein Icon angezeigt werden soll)? (Standard: modules/sheet-locker/artwork/lock-red-closed.png)"
+        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie gesperrt sind (leer lassen, falls kein Icon angezeigt werden soll)? (Standard: modules/lock-the-sheets/artwork/lock-red-closed.png)"
       },
       "overlayIconOpen": {
         "name": "Status Icon bei Entsperrung (optional)",
-        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie freigeschaltet sind (leer lassen, falls kein Icon angezeigt werden soll)? (Standard: modules/sheet-locker/artwork/lock-green-open.png)"
+        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie freigeschaltet sind (leer lassen, falls kein Icon angezeigt werden soll)? (Standard: modules/lock-the-sheets/artwork/lock-green-open.png)"
       }
     },
     "chatInfoContent": {
-      "title": "Sheet Locker<br/>(by coffiarts)",
+      "title": "Lock The Sheets!<br/>(by coffiarts)",
       "text1": "Sei der Türsteher!<br/>Alle Charakterbögen mit einem Klick sperren und entsperren!",
       "text2": "Mit diesem kleinen, aber nützlichen Hilfsmodul kann der Game Master auf Knopfdruck jegliche Änderungen am Inhalt von Charakterbögen durch die Spieler sperren und entsperren.",
       "text3": "Ein- und ausschaltbar wahlweise per Spielinstellungen, mit einem (optionalen) UI Button, oder via Macro Code und Macro Button.<br/>Bitte Konfigurationsoptionen in den Spieleinstellungen beachten.<br/><br/>Mehr Details auf GitHub.",
@@ -64,7 +64,7 @@
       "gmMsgItemDeleted": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] zu löschen."
     },
     "controlButton": {
-      "label": "Sheet Locker EIN/AUS"
+      "label": "Lock The Sheets! EIN/AUS"
     }
   }
 }

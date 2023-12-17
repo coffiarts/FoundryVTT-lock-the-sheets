@@ -1,13 +1,13 @@
 {
-  "id": "sheet-locker",
-  "title": "Sheet Locker",
+  "id": "lock-the-sheets",
+  "title": "Lock The Sheets!",
   "description": "Lock and unlock all character sheets at once as the GM with just one click! Protect your players from accidental changes, or prevent cheating.",
   "version": "1.0.0",
-  "url": "https://github.com/coffiarts/FoundryVTT-sheet-locker",
-  "manifest": "https://github.com/coffiarts/FoundryVTT-sheet-locker/releases/download/latest/module.json",
-  "download": "https://github.com/coffiarts/FoundryVTT-sheet-locker/releases/download/latest/module.zip",
-  "readme": "https://github.com/coffiarts/FoundryVTT-sheet-locker/releases/download/latest/README.md",
-  "changelog": "https://github.com/coffiarts/FoundryVTT-sheet-locker/releases/download/latest/CHANGELOG.md",
+  "url": "https://github.com/coffiarts/FoundryVTT-lock-the-sheets",
+  "manifest": "https://github.com/coffiarts/FoundryVTT-lock-the-sheets/releases/download/latest/module.json",
+  "download": "https://github.com/coffiarts/FoundryVTT-lock-the-sheets/releases/download/latest/module.zip",
+  "readme": "https://github.com/coffiarts/FoundryVTT-lock-the-sheets/releases/download/latest/README.md",
+  "changelog": "https://github.com/coffiarts/FoundryVTT-lock-the-sheets/releases/download/latest/CHANGELOG.md",
   "compatibility": {
     "minimum": "11",
     "verified": "11",
@@ -16,8 +16,8 @@
   "media": [
     {
       "type": "setup",
-      "url": "modules/sheet-locker/artwork/user-lock-solid.svg",
-      "thumbnail": "modules/sheet-locker/artwork/user-lock-solid.svg",
+      "url": "modules/lock-the-sheets/artwork/lock-the-sheets-logo.png",
+      "thumbnail": "modules/lock-the-sheets/artwork/lock-the-sheets-banner.png",
       "loop": false,
       "flags": {}
     }
@@ -61,9 +61,9 @@
   ],
   "packs": [
     {
-      "name": "sheet-locker-macros",
-      "label": "Sheet Locker - Macros",
-      "path": "packs/sheet-locker-macros",
+      "name": "lock-the-sheets-macros",
+      "label": "Lock The Sheets! - Macros",
+      "path": "packs/lock-the-sheets-macros",
       "type": "Macro",
       "ownership": {
         "PLAYER": "OBSERVER",

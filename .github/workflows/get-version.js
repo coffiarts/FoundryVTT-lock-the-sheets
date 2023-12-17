@@ -1,2 +1,2 @@
 let fs = require('fs');
-console.log(JSON.parse(fs.readFileSync('./src/sheet-locker/module.json', 'utf8')).version);
+console.log(JSON.parse(fs.readFileSync('./src/lock-the-sheets/module.json', 'utf8')).version);

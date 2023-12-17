@@ -1,9 +1,9 @@
 import {Logger} from './logger.js';
 
 // keep values in sync with module.json!
-const MOD_ID = "sheet-locker";
+const MOD_ID = "lock-the-sheets";
 const MOD_PATH = `/modules/${MOD_ID}`;
-const MOD_TITLE = "Sheet Locker";
+const MOD_TITLE = "Lock The Sheets!";
 const MOD_DESCRIPTION = "[TODO]";
 const MOD_LINK = `https://github.com/coffiarts/FoundryVTT-${MOD_ID}`;
 

@@ -2,10 +2,10 @@
 - video (dnd5)
 - finalize readme
 
-# Sheet Locker for Foundry VTT
+# Lock The Sheets! for Foundry VTT
 <table style="border:0">
   <tr>
-    <td><img src="src/sheet-locker/artwork/sheet-locker-logo.png" width="400" alt="Sheet Locker Logo"/></td>
+    <td><img src="src/lock-the-sheets/artwork/lock-the-sheets-logo.png" width="200" alt="Lock The Sheets! Logo"/></td>
     <td><span style="color:#da6502"></span><br/>
         <br/>
         <i><strong>Be the gatekeeper!</strong><br/>
@@ -18,9 +18,9 @@
 </table>
 
 ## Video demo on youtube
-[sheet-locker Demo](https://youtu.be/sheet-locker)
+[lock-the-sheets Demo](https://youtu.be/lock-the-sheets)
 
-[<img src="src/sheet-locker/artwork/sheet-locker-video-thumb.png" alt="sheet-locker - Video demo on youtube" width="600"/>](https://youtu.be/sheet-locker)
+[<img src="src/lock-the-sheets/artwork/lock-the-sheets-video-thumb.png" alt="lock-the-sheets - Video demo on youtube" width="600"/>](https://youtu.be/lock-the-sheets)
 
 - [What does it do ...](#what-does-it-do-)
 - [Changelog](#changelog)
@@ -51,7 +51,7 @@ Please refer to the various module preferences under game settings (as explained
 See [CHANGELOG.md](CHANGELOG.md)
 
 ## Upcoming features
-Feel free to follow the ["dev" branch on GitHub](https://github.com/coffiarts/FoundryVTT-sheet-locker/tree/dev) to stay tuned: [https://github.com/coffiarts/FoundryVTT-sheet-locker/tree/dev](https://github.com/coffiarts/FoundryVTT-sheet-locker/tree/dev)
+Feel free to follow the ["dev" branch on GitHub](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/tree/dev) to stay tuned: [https://github.com/coffiarts/FoundryVTT-lock-the-sheets/tree/dev](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/tree/dev)
 
 Some things I am *considering* to do (feedback welcome!):
 
@@ -62,19 +62,19 @@ Some things I am *considering* to do (feedback welcome!):
 ### Adjustable module settings
 This screenshot shows the default values.
 
-<img src="src/sheet-locker/artwork/sheet-locker-settings.png" alt="sheet-locker settings"/>
+<img src="src/lock-the-sheets/artwork/lock-the-sheets-settings.png" alt="lock-the-sheets settings"/>
 
 ### Control it by macro
 Use the exposed `class MyModuleMacroAPI` - just like this, it's a no-brainer:
 
-<img src="src/sheet-locker/artwork/sheet-locker-toggle-macro.png" alt="sheet-locker macro example"/>
+<img src="src/lock-the-sheets/artwork/lock-the-sheets-toggle-macro.png" alt="lock-the-sheets macro example"/>
 
 Some more variants:
 
     // Toggle specifically on and off (pretty obvious)
-    SheetLocker.toggle();
-    SheetLocker.switchOn();
-    SheetLocker.switchOff();
+    LockTheSheets.toggle();
+    LockTheSheets.switchOn();
+    LockTheSheets.switchOff();
 
 ### Compatibility and Dependencies
-- Sheet Locker uses [socketlib](https://github.com/manuelVo/foundryvtt-socketlib) for sending sync messages between the GM's session and the clients.
+- Lock The Sheets! uses [socketlib](https://github.com/manuelVo/foundryvtt-socketlib) for sending sync messages between the GM's session and the clients.
