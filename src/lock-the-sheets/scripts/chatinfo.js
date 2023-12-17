@@ -7,7 +7,8 @@ export class ChatInfo {
         <div style="text-align: justify; color: #000000; padding: 10px; background-color: #CCD0CC; border: 2px solid #FFFFFF; border-radius: 15px;">
             <p style="text-align: center;">
                 <a href="${Config.data.modlink}">
-                    <img src="modules/lock-the-sheets/artwork/lock-the-sheets-logo.png" alt="${Config.data.modTitle} - Logo" style="border:0;width:100px"/>
+                    <img src="modules/lock-the-sheets/artwork/lock-the-sheets-banner.jpg" alt="${Config.data.modTitle} - Logo" style="border:0"/><br/>
+                    <img src="modules/lock-the-sheets/artwork/lock-the-sheets-macro-button.png" alt="${Config.data.modTitle} - Logo" style="border:0"/>
                 </a>
             </p>
             <hr><div>

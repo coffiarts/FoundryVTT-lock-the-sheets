@@ -1,7 +1,7 @@
 {
   "id": "lock-the-sheets",
   "title": "Lock The Sheets!",
-  "description": "Lock and unlock all character sheets at once as the GM with just one click! Protect your players from accidental changes, or prevent cheating.",
+  "description": "Oh Game Master, thou shalt be the gatekeeper! Lock and unlock all your players' character sheets at once with just one click. May you never ever again watch them accidentally delete that beloved item from their inventory (\"Uuuugh... NOOOOO!\")... or let those nasty cheaters among them mess around secretly with their hitpoints (\"AAAAArrrrgh!\").",
   "version": "1.0.0",
   "url": "https://github.com/coffiarts/FoundryVTT-lock-the-sheets",
   "manifest": "https://github.com/coffiarts/FoundryVTT-lock-the-sheets/releases/download/latest/module.json",
@@ -16,8 +16,8 @@
   "media": [
     {
       "type": "setup",
-      "url": "modules/lock-the-sheets/artwork/lock-the-sheets-logo.png",
-      "thumbnail": "modules/lock-the-sheets/artwork/lock-the-sheets-banner.png",
+      "url": "modules/lock-the-sheets/artwork/lock-the-sheets-banner.jpg",
+      "thumbnail": "modules/lock-the-sheets/artwork/lock-the-sheets-banner.jpg",
       "loop": false,
       "flags": {}
     }

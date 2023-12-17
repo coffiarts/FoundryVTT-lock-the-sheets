@@ -3,16 +3,19 @@
 - finalize readme
 
 # Lock The Sheets! for Foundry VTT
-<table style="border:0">
+<table style="border:0;width:840px">
   <tr>
-    <td><img src="src/lock-the-sheets/artwork/lock-the-sheets-logo.png" alt="Lock The Sheets! Logo"/></td>
-    <td><span style="color:#da6502"></span><br/>
+    <td colspan="2"><img src="src/lock-the-sheets/artwork/lock-the-sheets-banner.jpg" width="840" alt="Lock The Sheets! Logo"/></td>
+  </tr>
+  <tr>
+    <td style="width:200px"><img src="src/lock-the-sheets/artwork/lock-the-sheets-macro-button.png" width="200" alt="Lock The Sheets! Macro Button"/></td>
+    <td style="width:640px"><br/>
         <br/>
-        <i><strong>Be a gatekeeper! Be the keymaster!</strong><br/>
-          <br/>
-          Lock and unlock all character sheets at once with just one click.<br/>
-          Never ever watch your players accidentally delete that beloved item from their inventory again ("Uuuugh... NOOOOO!")... 
-          or let that nasty cheater among them mess around secretly with his hitpoints ("AAAAArrrrgh!").</i>
+        <i><strong style="color:#da6502">Oh Game Master, thou shalt be the gatekeeper!</strong><br/>
+            <br/>
+            Lock and unlock all your players' character sheets at once with just one click.<br/>
+            May you never ever again watch them accidentally delete that beloved item from their inventory ("Uuuugh... NOOOOO!")... 
+            or let those nasty cheaters among them mess around secretly with their hitpoints ("AAAAArrrrgh!").</i>
     </td>
   </tr>
 </table>
