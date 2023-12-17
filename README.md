@@ -44,11 +44,11 @@ In default settings, lock status is indicated by overlay icons, both in the scen
 
 **Lock OFF:**
 
-![](src/lock-the-sheets/artwork/llock-the-sheets-readme-lock-off.png)
+![](src/lock-the-sheets/artwork/lock-the-sheets-readme-lock-off.png)
 
 **And it is even indicated in the Combat Tracker:**
 
-![](src/lock-the-sheets/artwork/llock-the-sheets-readme-combat.png)
+![](src/lock-the-sheets/artwork/lock-the-sheets-readme-combat.png)
 
 ## Why I created this ...
 No, I did **not** create this out of paranoia towards my players!
