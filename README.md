@@ -52,11 +52,11 @@ In **default settings**, lock status is indicated by overlay icons, both in the 
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-combat.png)
 
-Let's see, what happens if players try to **manipulate their hitpoints:**
+Let's see what happens if players try to **manipulate their hitpoints:**
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-blocked-action-1.png)
 
-But as we said that this is not about cheating prevention in the first place, let's see what happens if a player accidentally happens to **delete an inventory item:**
+But apart from cheating prevention, let's see what happens if a player **accidentally** happens to **delete an inventory item:**
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-blocked-action-2.png)
 

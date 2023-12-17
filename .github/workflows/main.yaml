@@ -28,7 +28,7 @@ jobs:
         with:
           allowUpdates: true
           name: Release ${{ steps.get-version.outputs.version }}
-          draft: true
+          draft: false
           prerelease: false
           token: ${{secrets.GITHUB_TOKEN}}
           artifacts: './module.zip, ./src/lock-the-sheets/module.json'

@@ -1,2 +1,2 @@
 ## 1.0.0
-### 2024-??-?? - Going out into the world!
+### 2023-12-18 - Into the great wide open (initial release)
