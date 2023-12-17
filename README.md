@@ -16,7 +16,7 @@
   </tr>
 </table>
 
-- [What it does exactly ...](#what-it-does-exactly-)
+- [What it does ...](#what-it-does-)
 - [Why I created this ...](#why-i-created-this-)
 - [Changelog](#changelog)
 - [Adjustable module settings](#adjustable-module-settings)
@@ -26,17 +26,19 @@
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
-## What it does exactly ...
+## What it does ...
 With this nice little helper module the Game Master can block and unblock any edits to character sheets by the players.
 This helps, for instance, to protect them from accidental changes.
 And of course, if you're of the paranoid type, it prevents cheating.
 
 Toggling on/off works in various ways:
 1. By a checkbox in the module settings
-2. Through a nice UI Button in the scene control on the left (which is optional and can be turned off in the setings, if you don't like it)
+2. Through a nice UI Button in the scene control on the left (optional, turn it off in the settings, if you don't like it)
 3. By macro code (see below - a ready-to-use macro is already included).
 
-In default settings, lock status is indicated by overlay icons, both in the scene and in the sidebar's actors list:
+In **default settings**, lock status is indicated by overlay icons, both in the scene and in the sidebar's actors list:
+
+**These icons can be configured and also switched off in the module settings!**
 
 **Lock ON:**
 
@@ -50,13 +52,25 @@ In default settings, lock status is indicated by overlay icons, both in the scen
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-combat.png)
 
+Let's see, what happens if players try to **manipulate their hitpoints:**
+
+![](src/lock-the-sheets/artwork/lock-the-sheets-readme-blocked-action-1.png)
+
+But as we said that this is not about cheating prevention in the first place, let's see what happens if a player accidentally happens to **delete an inventory item:**
+
+![](src/lock-the-sheets/artwork/lock-the-sheets-readme-blocked-action-2.png)
+
+Even more, the **GM receives alerts about it** (optional, can be turned off):
+
+![](src/lock-the-sheets/artwork/lock-the-sheets-readme-gm-alert.png)
+
 ## Why I created this ...
 No, I did **not** create this out of paranoia towards my players!
 IMO, role-playing is and has always been (since the Pen & Paper era) based on trust!
 
 So it is not about cheating prevention (though it may serve for it as well!).
 
-Instead, I am usually running hybrid, in-person game sessions with children of ag 10+, who are permanently at risk of messing around with their character sheets.
+Instead, I am usually running hybrid, in-person game sessions with **children of age 10+**, who are permanently at risk of messing around with their character sheets.
 I just wanted to protect them against arbitrary havok clicks.
 
 Even more, it turned out that locking character sheets from time to time can bring even much more focus and relaxedness into the more narrative parts of role-playing (which I love more than combat action).
