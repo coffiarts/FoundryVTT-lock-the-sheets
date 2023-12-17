@@ -225,8 +225,8 @@ async function renderTokenOverlays() {
             const owner = findOwnerByActorByName(actor.name);
             //Logger.debug("owner", owner);
             if(owner != null) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
-                const overlayImg = (owner.active) ? ((SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
-                await aToken.update({overlayEffect: overlayImg});
+                const overlayImg = (owner.active || game.user.isGM) ? ((SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
+                if (owner === game.user || !owner.active && game.user.isGM) await aToken.update({overlayEffect: overlayImg});
             }
         }
     }
@@ -239,7 +239,7 @@ async function renderActorDirectoryOverlays(app, html) {
         Logger.debug("owner", owner);
         Logger.debug("actorName", actorName, "\nowner", owner);
         if (owner != null) { // skip any unowned characters
-            const imgPath = (owner.active) ? ((SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
+            const imgPath = (SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
             element.innerHTML = overlayIconAsHTML(actorName, imgPath) + element.innerHTML;
             element.innerHTML = element.innerHTML.replace('data-src', 'src');
         }
