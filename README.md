@@ -5,10 +5,10 @@
 # Lock The Sheets! for Foundry VTT
 <table style="border:0">
   <tr>
-    <td><img src="src/lock-the-sheets/artwork/lock-the-sheets-logo.png" width="200" alt="Lock The Sheets! Logo"/></td>
+    <td><img src="src/lock-the-sheets/artwork/lock-the-sheets-banner.png" alt="Lock The Sheets! Logo"/></td>
     <td><span style="color:#da6502"></span><br/>
         <br/>
-        <i><strong>Be the gatekeeper!</strong><br/>
+        <i><strong>Be a gatekeeper! Be the keymaster!</strong><br/>
           <br/>
           Lock and unlock all character sheets at once with just one click.<br/>
           Never ever watch your players accidentally delete that beloved item from their inventory again ("Uuuugh... NOOOOO!")... 
