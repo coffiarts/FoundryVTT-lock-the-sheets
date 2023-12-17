@@ -61,10 +61,11 @@ let socket;
             Hooks.on("refreshToken", () => {
                 renderTokenOverlays();
             });
-            Hooks.on("renderSidebarTab", (directory, sections, css) => {
-                renderSidebarTabOverlays(directory, sections, css);
+            Hooks.on("renderActorDirectory", (app, html, context) => {
+                renderActorDirectoryOverlays(app, html, context);
             });
 
+            ui.sidebar.render(true);
             stateChangeUIMessage();
         });
     }
@@ -219,36 +220,41 @@ function onItemDeletedFromSheet(item, options, userid) {
 async function renderTokenOverlays() {
     for (const aToken of game.scenes.current.tokens) {
         if (aToken.actorLink) {
-            // ensure that overlay is only rendered for the token's owner (the GM will implicitely see them for all owned tokens)
+            // ensure that overlay is only rendered for the token's owner (the GM will implicitely see the change for all owned tokens)
             const actor = game.actors.find((actor)=>{return (actor.id === aToken.actorId)});
-            const overlayImg =(SheetLocker.isActive) ?
-                        Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
-            if(actor.isOwner && !game.user.isGM) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
+            const owner = findOwnerByActorByName(actor.name);
+            //Logger.debug("owner", owner);
+            if(owner != null) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
+                const overlayImg = (owner.active) ? ((SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
                 await aToken.update({overlayEffect: overlayImg});
             }
         }
     }
-    ui.sidebar.render(true);
 }
 
-async function renderSidebarTabOverlays(directory, sections, css) {
-    // We're only interested in the "Actor" documents that happen to be in the ActorDirectory.
-    // There seems to be no easy way to indentify it, so in the first step we're ruling out anything without documents in it
-    if (!directory.documents) {
-        return;
-    }
+async function renderActorDirectoryOverlays(app, html) {
+    html.find('.directory-item').each((i, element) => {
+        const actorName = element.children[0].title;
+        const owner = findOwnerByActorByName(actorName);
+        Logger.debug("owner", owner);
+        Logger.debug("actorName", actorName, "\nowner", owner);
+        if (owner != null) { // skip any unowned characters
+            const imgPath = (owner.active) ? ((SheetLocker.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
+            element.innerHTML = overlayIconAsHTML(actorName, imgPath) + element.innerHTML;
+            element.innerHTML = element.innerHTML.replace('data-src', 'src');
+        }
+    })
 
-    //Logger.debug("renderSidebarTabOverlays: directory", directory.documents);
-    for(const anActor of directory.documents) {
-        // Next, we eliminate every document that's not a "character"
-        if (anActor.type !== "character") continue;
-        const overlayImg =(SheetLocker.isActive) ?
-            Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
-        //if(anActor.isOwner && !game.user.isGM) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
-            Logger.debug("renderSidebarTabOverlays: anActor", anActor);
-            await anActor.update({img: overlayImg});
-        //}
+/*
+    if (anActor.isOwner && !game.user.isGM) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
+        Logger.debug("renderSidebarTabOverlays: anActor", anActor);
+        await anActor.update({img: overlayImg});
     }
+*/
+}
+
+function overlayIconAsHTML(title, imgPath){
+    return (imgPath !== "") ? `<img style="position:absolute" title="${title}" src="${imgPath}" alt="${title}"></i>` : imgPath;
 }
 
 function getButton() {
@@ -285,10 +291,11 @@ async function onGameSettingChanged() {
             ui.controls.render();
         }
 
-        // Refresh status overlays
-        socket.executeForEveryone("renderTokenOverlays");
-
     }
+
+    // Refresh status overlays
+    renderTokenOverlays();
+    ui.sidebar.render(true);
 }
 
 function stateChangeUIMessage() {
@@ -351,6 +358,15 @@ function itemDeletedGMAlertUIMessage(userName, itemName) {
         console: false
     });
     Logger.warn(message);
+}
+
+function findOwnerByActorByName(actorName) {
+    const actor = game.actors.find((actor) => {
+        return actor?.name === actorName
+    });
+    return game.users.find((user) => {
+        return user.character?.id === actor?.id
+    });
 }
 
 
