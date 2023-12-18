@@ -50,7 +50,7 @@
       "title": "Lock The Sheets!<br/>(by coffiarts)",
       "text1": "Sei der Türsteher!<br/>Alle Charakterbögen mit einem Klick sperren und entsperren!",
       "text2": "Mit diesem kleinen, aber nützlichen Hilfsmodul kann der Game Master auf Knopfdruck jegliche Änderungen am Inhalt von Charakterbögen durch die Spieler sperren und entsperren.",
-      "text3": "Ein- und ausschaltbar wahlweise per Spielinstellungen, mit einem (optionalen) UI Button, oder via Macro Code und Macro Button.<br/>Bitte Konfigurationsoptionen in den Spieleinstellungen beachten.<br/><br/>Mehr Details auf GitHub.",
+      "text3": "Ein- und ausschaltbar wahlweise per Spielinstellungen, mit einem (optionalen) UI Button, oder via Macro Code und Macro Button.<br/>Bitte Konfigurationsoptionen in den Spieleinstellungen beachten.<br/><br/>Mehr Details auf GitHub",
       "footer": "Diese Nachricht wird nur einmal angezeigt. Zum Wiederanzeigen bitte die entsprechende Option in den Moduleinstellungen verwenden."
     },
     "onOffUIMessage": {
