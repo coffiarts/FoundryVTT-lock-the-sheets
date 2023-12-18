@@ -48,7 +48,7 @@ In **default settings**, lock status is indicated by overlay icons, both in the 
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-lock-off.png)
 
-**And it is even indicated in the Combat Tracker:**
+And it is even indicated in the **Combat Tracker** (thus reminding you that it should always bee **green** there, naturally):
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-combat.png)
 
