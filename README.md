@@ -22,7 +22,10 @@
 - [Adjustable module settings](#adjustable-module-settings)
 - [Control it by macro](#control-it-by-macro)
 - [Compatibility and Dependencies](#compatibility-and-dependencies)
-- [Credits](#credits)
+- [Copyrights and Credits for used assets](#copyrights-and-credits-for-used-assets)
+  * [Goblins](#goblins)
+  * [Banner](#banner)
+  * [Lock icons](#lock-icons)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -107,6 +110,12 @@ Use it as it is, or have a look inside how it works - it uses the exposed class 
 - ***Mild warning:*** While sheets are locked, some intended changes _may_ (in rare situations) be suppressed, such as macro or chat triggered actions. I put much effort into testing and I assume it's a rare case. Rest assured: There will be a screen message whenever that happens.
   In such cases, just unlock the sheets and repeat the blocked action. If this doesn't help, please report it as an issue on guithub.
 
-## Credits
-- [David Wilson](https://tools.2minutetabletop.com/token-editor/author?a=David%20Wilson) and [Hammertheshark](https://tools.2minutetabletop.com/token-editor/author?a=Hammertheshark) for the cute badass goblins used in my screenshots. They have been published and licensed for free use thankfully on [https://tools.2minutetabletop.com](https://tools.2minutetabletop.com/) under [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/)
-- The banner image with the portal is AI created by myself.
+## Copyrights and Credits for used assets
+### Goblins
+The cute, beloved badass goblins used in my screenshots have thankfully been published by [David Wilson](https://tools.2minutetabletop.com/token-editor/author?a=David%20Wilson) and [Hammertheshark](https://tools.2minutetabletop.com/token-editor/author?a=Hammertheshark) for free use on [https://tools.2minutetabletop.com](https://tools.2minutetabletop.com/) under the [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/). I have grown so fond of them that they've become my special module demo'ing pets.
+### Banner
+The banner image with the dark fantasy portal was AI-created by myself.
+### Lock icons
+- ![](src/lock-the-sheets/artwork/lock-red-closed-solo-small.png) The **red** lock symbol was published by [UIHuBoro](https://commons.wikimedia.org/w/index.php?title=Template:UIHuBoro&action=edit&redlink=1) on [wikipedia](https://de.m.wikipedia.org/wiki/Datei:Ambox_padlock_red.svg) for free use under the [CC BY-SA 4.0 License](https://creativecommons.org/licenses/by-sa/4.0/). I have slightly edited it for my needs, as it is granted by that license
+- The **green** lock symbol was created by myself by editing the red icon
+- ![](src/lock-the-sheets/artwork/lock-the-sheets-macro-button.png) The blue/violet UI/macro button image is actually the unmodified [user-lock](https://fontawesome.com/icons/user-lock?f=classic&s=solid) icon from [fontawesome.com](https://fontawesome.com/). There it is published under the [Font Awesome Free License](https://fontawesome.com/license/free), which in turn is (basically) a [CC BY 4.0 License](https://creativecommons.org/licenses/by/4.0/) 
