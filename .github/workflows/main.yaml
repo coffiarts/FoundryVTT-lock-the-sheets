@@ -28,8 +28,8 @@ jobs:
         with:
           allowUpdates: true
           name: Release ${{ steps.get-version.outputs.version }}
-          draft: true
-          prerelease: false
+          draft: false
+          prerelease: true
           token: ${{secrets.GITHUB_TOKEN}}
           artifacts: './module.zip, ./src/lock-the-sheets/module.json'
           tag: ${{ steps.get-version.outputs.version }}
