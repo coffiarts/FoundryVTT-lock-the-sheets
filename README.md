@@ -103,8 +103,10 @@ Use it as it is, or have a look inside how it works - it uses the exposed class 
 
 ## Compatibility and Dependencies
 - Lock The Sheets! uses [socketlib](https://github.com/manuelVo/foundryvtt-socketlib) for sending sync messages between the GM's session and the clients.
+- Heavily factory tested it myself with **dnd5e** and **tde5**. I cannot guarantee compatibility with other systems. But I consider it system-agnostic for now.
 - ***Mild warning:*** While sheets are locked, some intended changes _may_ (in rare situations) be suppressed, such as macro or chat triggered actions. I put much effort into testing and I assume it's a rare case. Rest assured: There will be a screen message whenever that happens.
   In such cases, just unlock the sheets and repeat the blocked action. If this doesn't help, please report it as an issue on guithub.
 
 ## Credits
 - [David Wilson](https://tools.2minutetabletop.com/token-editor/author?a=David%20Wilson) and [Hammertheshark](https://tools.2minutetabletop.com/token-editor/author?a=Hammertheshark) for the cute badass goblins used in my screenshots. They have been published and licensed for free use thankfully on [https://tools.2minutetabletop.com](https://tools.2minutetabletop.com/) under [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/)
+- The banner image with the portal is AI created by myself.
