@@ -122,22 +122,6 @@ async function initSocketlib() {
     Logger.debug(`Module ${Config.data.modID} registered in socketlib.`);
 }
 
-function renderControlButton(controls) {
-    if (game.user.isGM && Config.setting('showUIButton')) {
-        let tokenControls = controls.find(control => control.name === "token")
-        tokenControls.tools.push({
-            name: "toggleLockTheSheets",
-            title: Config.localize('controlButton.label'),
-            icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
-            toggle: true,
-            active: Config.setting('isActive'),
-            onClick: (active) => {
-                Config.modifySetting('isActive', active);
-            }
-        });
-    }
-}
-
 function onSheetChanged(actorOrItem, data, options, userid) {
     Logger.debug("actorOrItem:", actorOrItem);
     Logger.debug("data: ", data);
@@ -214,45 +198,6 @@ function onItemDeletedFromSheet(item, options, userid) {
     }
 }
 
-/**
- * inspired by // https://github.com/LeafWulf/deathmark/blob/master/scripts/deathmark.js
- */
-async function renderTokenOverlays() {
-    for (const aToken of game.scenes.current.tokens) {
-        if (aToken.actorLink) {
-            // ensure that overlay is only rendered for the token's owner (the GM will implicitely see the change for all owned tokens)
-            const actor = game.actors.find((actor)=>{return (actor.id === aToken.actorId)});
-            const owner = findOwnerForActorName(actor.name);
-            //Logger.debug("owner", owner);
-            if(owner != null) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
-                const overlayImg = (owner.active || game.user.isGM) ? ((LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
-                if (owner === game.user || !owner.active && game.user.isGM) await aToken.update({overlayEffect: overlayImg});
-            }
-        }
-    }
-}
-
-async function renderActorDirectoryOverlays(app, html) {
-    html.find('.directory-item').each((i, element) => {
-        const actorName = element.children[0].title;
-        const owner = findOwnerForActorName(actorName);
-        //Logger.debug("\nactorName", actorName, "\nowner", owner);
-        if (owner != null) { // skip any unowned characters
-            const imgPath = (LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
-            element.innerHTML = overlayIconAsHTML(actorName, imgPath) + element.innerHTML;
-            element.innerHTML = element.innerHTML.replace('data-src', 'src');
-        }
-    });
-}
-
-function overlayIconAsHTML(title, imgPath){
-    return (imgPath !== "") ? `<img style="position:absolute" title="${title}" src="${imgPath}" alt="${title}"></i>` : imgPath;
-}
-
-function getButton() {
-    return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleLockTheSheets");
-}
-
 async function onGameSettingChanged() {
     LockTheSheets.isActive = Config.setting('isActive');
 
@@ -266,14 +211,14 @@ async function onGameSettingChanged() {
         }
     }
 
-    if (game.user.isGM) {
+    /*if (game.user.isGM) {
 
         // Refresh scene control button (if active) to reflect the potentially new state.
-        let button = getButton();
+        let button = getControlButton();
         if (Config.setting('showUIButton')) {
             if (button == null) {
                 renderControlButton(ui.controls.controls);
-                button = getButton();
+                button = getControlButton();
             }
             button.active = LockTheSheets.isActive;
             ui.controls.render();
@@ -282,12 +227,80 @@ async function onGameSettingChanged() {
             ui.controls.controls.find(control => control.name === "token").tools.pop(button);
             ui.controls.render();
         }
-
-    }
+    }*/
 
     // Refresh status overlays
-    renderTokenOverlays();
     ui.sidebar.render(true);
+    renderTokenOverlays();
+}
+
+function renderControlButton(controls) {
+    return;
+    if (game.user.isGM && Config.setting('showUIButton')) {
+        //Logger.debug(controls);
+        let tokenControls = controls.controls.find(control => control.name === "token");
+        if (!tokenControls) return;
+        tokenControls.tools.push({
+            name: "toggleLockTheSheets",
+            title: Config.localize('controlButton.label'),
+            icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
+            toggle: true,
+            active: Config.setting('isActive'),
+            onClick: (active) => {
+                Config.modifySetting('isActive', active);
+            }
+        });
+    }
+}
+
+/**
+ * inspired by // https://github.com/LeafWulf/deathmark/blob/master/scripts/deathmark.js
+ */
+async function renderTokenOverlays() {
+    for (const aToken of game.scenes.current.tokens) {
+        if (aToken.actorLink) {
+            // ensure that overlay is only rendered for the token's owner (the GM will implicitely see the change for all owned tokens)
+            const actor = game.actors.find((actor)=>{return (actor.id === aToken.actorId)});
+            const owner = findOwnerForActorName(actor.name);
+            if (owner) Logger.debug("owner", owner, "actor", actor);
+            if(owner != null) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
+                const overlayImg = (owner.active || game.user.isGM) ? ((LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
+                if (owner === game.user || !owner.active && game.user.isGM) await aToken.update({overlayEffect: overlayImg});
+            }
+        }
+    }
+}
+
+async function renderActorDirectoryOverlays(app, html) {
+    html.find('.directory-item.document.actor').each((i, element) => {
+        //Logger.debug(element);
+        const actorName = element.children[0].title;
+        const owner = findOwnerForActorName(actorName);
+        //if (owner) Logger.debug("\nactorName", actorName, "\nowner", owner);
+        if (owner != null) { // skip any unowned characters
+            const imgPath = (LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
+            element.innerHTML = overlayIconAsHTML(actorName, imgPath) + element.innerHTML;
+            element.innerHTML = element.innerHTML.replace('data-src', 'src');
+        }
+    });
+}
+
+function findOwnerForActorName(actorName) {
+    const actor = game.actors.find((actor) => {
+        return actor.name === actorName
+    });
+    return game.users.find((user) => {
+        return user.character?.id === actor?.id ||
+            !user.isGM && actor?.testUserPermission(user, "OWNER")
+    });
+}
+
+function overlayIconAsHTML(title, imgPath){
+    return (imgPath !== "") ? `<img style="position:absolute" title="${title}" src="${imgPath}" alt="${title}"></i>` : imgPath;
+}
+
+function getControlButton() {
+    return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleLockTheSheets");
 }
 
 function stateChangeUIMessage() {
@@ -351,16 +364,6 @@ function itemDeletedGMAlertUIMessage(userName, itemName) {
     });
     Logger.warn(message);
 }
-
-function findOwnerForActorName(actorName) {
-    const actor = game.actors.find((actor) => {
-        return actor?.name === actorName
-    });
-    return game.users.find((user) => {
-        return user.character?.id === actor?.id
-    });
-}
-
 
 /**
  * Public class for accessing this module through macro code
