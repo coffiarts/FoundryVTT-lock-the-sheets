@@ -211,7 +211,7 @@ async function onGameSettingChanged() {
         }
     }
 
-    /*if (game.user.isGM) {
+    if (game.user.isGM) {
 
         // Refresh scene control button (if active) to reflect the potentially new state.
         let button = getControlButton();
@@ -227,20 +227,19 @@ async function onGameSettingChanged() {
             ui.controls.controls.find(control => control.name === "token").tools.pop(button);
             ui.controls.render();
         }
-    }*/
+    }
 
     // Refresh status overlays
-    ui.sidebar.render(true);
     renderTokenOverlays();
+    ui.sidebar.render(true);
 }
 
 function renderControlButton(controls) {
-    return;
     if (game.user.isGM && Config.setting('showUIButton')) {
         //Logger.debug(controls);
         let tokenControls = controls.controls.find(control => control.name === "token");
         if (!tokenControls) return;
-        tokenControls.tools.push({
+        const button = {
             name: "toggleLockTheSheets",
             title: Config.localize('controlButton.label'),
             icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
@@ -249,7 +248,11 @@ function renderControlButton(controls) {
             onClick: (active) => {
                 Config.modifySetting('isActive', active);
             }
-        });
+        };
+        let existing = tokenControls.tools.find((tool) => tool.name === button.name);
+        if (!existing || existing.length === 0) {
+            tokenControls.tools.push(button);
+        }
     }
 }
 
@@ -262,7 +265,7 @@ async function renderTokenOverlays() {
             // ensure that overlay is only rendered for the token's owner (the GM will implicitely see the change for all owned tokens)
             const actor = game.actors.find((actor)=>{return (actor.id === aToken.actorId)});
             const owner = findOwnerForActorName(actor.name);
-            if (owner) Logger.debug("owner", owner, "actor", actor);
+            //if (owner) Logger.debug("owner", owner, "actor", actor);
             if(owner != null) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
                 const overlayImg = (owner.active || game.user.isGM) ? ((LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
                 if (owner === game.user || !owner.active && game.user.isGM) await aToken.update({overlayEffect: overlayImg});
