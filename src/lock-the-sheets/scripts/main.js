@@ -98,7 +98,7 @@ async function isSocketlibReady() {
 async function initDependencies() {
     Object.values(SUBMODULES).forEach(function (cl) {
         cl.init(); // includes loading each module's settings
-        Logger.debug("Submodule loaded:", cl.name);
+        Logger.debug("(initDependencies) Submodule loaded:", cl.name);
     });
 }
 
@@ -109,7 +109,7 @@ async function initExposedClasses() {
             onGameSettingChanged();
         }
     });
-    Logger.debug("Exposed classes are ready");
+    Logger.debug("(initExposedClasses) Exposed classes are ready");
 }
 
 async function initSocketlib() {
@@ -119,11 +119,11 @@ async function initSocketlib() {
     socket.register("itemChangedGMAlertUIMessage", itemChangedGMAlertUIMessage);
     socket.register("itemDeletedGMAlertUIMessage", itemDeletedGMAlertUIMessage);
     socket.register("renderTokenOverlays", renderTokenOverlays);
-    Logger.debug(`Module ${Config.data.modID} registered in socketlib.`);
+    Logger.debug(`(initSocketlib) Module ${Config.data.modID} registered in socketlib.`);
 }
 
 function onSheetChanged(actorOrItem, data, options, userid) {
-    Logger.debug(
+    Logger.debug("(onSheetChanged) ",
         "actorOrItem:", actorOrItem,
         "data: ", data,
         "options: ", options,
@@ -147,7 +147,7 @@ function onSheetChanged(actorOrItem, data, options, userid) {
 }
 
 function onItemChangedInSheet(item, data, options, userid) {
-    Logger.debug(
+    Logger.debug("(onItemChangedInSheet) ",
         "item:", item,
         "data: ", data,
         "options: ", options,
@@ -183,9 +183,11 @@ function onItemChangedInSheet(item, data, options, userid) {
 }
 
 function onItemDeletedFromSheet(item, options, userid) {
-    Logger.debug("item:", item);
-    Logger.debug("options: ", options);
-    Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
+    Logger.debug("(onItemDeletedFromSheet) ",
+        "item:", item,
+        "options: ", options,
+        "userid: ", userid,
+        "game.user.id: ", game.user.id);
     if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
         if (!LockTheSheets.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
