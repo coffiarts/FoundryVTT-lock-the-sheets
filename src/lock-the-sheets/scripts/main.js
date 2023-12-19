@@ -123,10 +123,12 @@ async function initSocketlib() {
 }
 
 function onSheetChanged(actorOrItem, data, options, userid) {
-    Logger.debug("actorOrItem:", actorOrItem);
-    Logger.debug("data: ", data);
-    Logger.debug("options: ", options);
-    Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
+    Logger.debug(
+        "actorOrItem:", actorOrItem,
+        "data: ", data,
+        "options: ", options,
+        "userid: ", userid,
+        "game.user.id: ", game.user.id);
     if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
         if (!LockTheSheets.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
@@ -145,10 +147,13 @@ function onSheetChanged(actorOrItem, data, options, userid) {
 }
 
 function onItemChangedInSheet(item, data, options, userid) {
-    Logger.debug("item:", item);
-    Logger.debug("data: ", data);
-    Logger.debug("options: ", options);
-    Logger.debug("userid: ", userid, "game.user.id: ", game.user.id);
+    Logger.debug(
+        "item:", item,
+        "data: ", data,
+        "options: ", options,
+        "userid: ", userid,
+        "game.user.id: ", game.user.id);
+
     if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
 
         // Check for allowed actions

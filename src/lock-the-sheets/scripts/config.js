@@ -61,7 +61,7 @@ export class Config {
         // the manifest. Otherwise, module updates won't be reflected in its value (users would always see their first
         // installed version ever in the settings menu).
         game.settings.set(Config.data.modID, 'modVersion', game.modules.get(MOD_ID).version);
-        Logger.debug("Settings registered)");
+        Logger.debug("All game settings registered)");
 
     }
 
