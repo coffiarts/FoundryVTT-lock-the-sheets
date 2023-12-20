@@ -1,3 +1,5 @@
+![](https://img.shields.io/badge/Foundry-v11-informational) ![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/latest/total?label=Downloads+latest+release)
+
 # Lock The Sheets! for Foundry VTT
 <table style="border:0;width:840px">
   <tr>
