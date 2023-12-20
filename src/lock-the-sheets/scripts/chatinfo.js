@@ -55,7 +55,7 @@ export class ChatInfo {
                             .replace('chatInfoContent.footer', Config.localize('chatInfoContent.footer'))
                         ,
                     }, {});
-                    Logger.debug("Chat message created");
+                    Logger.debug("(ChatInfo.init) Chat message created");
 
                     await Config.modifySetting('hideChatInfo', true);
                 }
