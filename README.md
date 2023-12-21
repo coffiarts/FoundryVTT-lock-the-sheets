@@ -18,6 +18,15 @@
   </tr>
 </table>
 
+- Are you on [Forge VTT](https://forge-vtt.com/)?
+- Do you like my work?
+- Do you REALLY like my work?
+- Could you even imagine to DONATE?
+
+Feel free to [head over to this mod on Forge](https://eu.forge-vtt.com/bazaar/package/lock-the-sheets), where you can even pay for it what you like.
+
+This is absolutely optional! Don't feel obliged in any way to do so. My mod is and will remain available for free.
+
 - [What it does ...](#what-it-does-)
 - [Why I created this ...](#why-i-created-this-)
 - [Changelog](#changelog)
