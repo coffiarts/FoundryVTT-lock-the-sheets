@@ -13,6 +13,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Copy Readme & Changelog to src dir before zipping
+        run: |
+          cp "./README.md" "./src/lock-the-sheets/"
+          cp "./CHANGELOG.md" "./src/lock-the-sheets/"
+
       - name: Zip Files
         working-directory: ./
         run: zip -r ./module.zip ./src/lock-the-sheets/*
