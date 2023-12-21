@@ -3,7 +3,7 @@
   "name": "lock-the-sheets",
   "title": "Lock The Sheets!",
   "description": "Oh Game Master, thou shalt be the gatekeeper! Lock and unlock all your players' character sheets at once with just one click. May you never ever again watch them accidentally delete that beloved item from their inventory (\"Uuuugh... NOOOOO!\")... or let those nasty cheaters among them mess around secretly with their hitpoints (\"AAAAArrrrgh!\").",
-  "version": "11.0.1",
+  "version": "11.0.2",
   "url": "https://github.com/coffiarts/FoundryVTT-lock-the-sheets",
   "manifest": "https://github.com/coffiarts/FoundryVTT-lock-the-sheets/releases/download/latest/module.json",
   "download": "https://github.com/coffiarts/FoundryVTT-lock-the-sheets/releases/download/latest/module.zip",
