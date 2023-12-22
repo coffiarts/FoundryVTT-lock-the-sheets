@@ -1,4 +1,6 @@
-![](https://img.shields.io/badge/Foundry-v11-informational) ![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/latest/total?label=Downloads+latest+release)
+![](https://img.shields.io/badge/Foundry-v11-informational) 
+![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/latest/total?label=Downloads+latest+release)
+![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/11.0.1/total?label=previous+release+[11.0.1])
 
 # Lock The Sheets! for Foundry VTT
 <table style="border:0;width:840px">
