@@ -1,6 +1,6 @@
-![](https://img.shields.io/badge/Foundry-v11-informational) 
+![](https://img.shields.io/badge/Foundry-v11-informational)
 ![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/latest/total?label=Downloads+latest+release)
-![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/11.0.1/total?label=previous+release+[11.0.1])
+![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/11.0.2/total?label=previous+release+[11.0.2])
 
 # Lock The Sheets! for Foundry VTT
 <table style="border:0;width:840px">
@@ -33,6 +33,7 @@ This is absolutely optional! Don't feel obliged in any way to do so. My mod is a
 - [Why I created this ...](#why-i-created-this-)
 - [Changelog](#changelog)
 - [Adjustable module settings](#adjustable-module-settings)
+- [Toggle by hotkey](#toggle-by-hotkey)
 - [Control it by macro](#control-it-by-macro)
 - [Compatibility and Dependencies](#compatibility-and-dependencies)
 - [Copyrights and Credits for used assets](#copyrights-and-credits-for-used-assets)
@@ -103,6 +104,15 @@ See [CHANGELOG.md](CHANGELOG.md)
 This screenshot shows the default values.
 
 <img src="src/lock-the-sheets/artwork/lock-the-sheets-settings.png" alt="Lock The Sheets! Settings"/>
+
+## Toggle by hotkey
+You (gamemasters only) can assign a custom hotkey in the game settings (by default it is empty to prevent unwanted key collisions). My personal preference is **SHIFT + L**:
+
+<img src="src/lock-the-sheets/artwork/lock-the-sheets-keybinding-step1.png" alt="Lock the Sheets! assign keybinding - step 1"/>
+
+<img src="src/lock-the-sheets/artwork/lock-the-sheets-keybinding-step2.png" alt="Lock the Sheets! assign keybinding - step 2"/>
+
+<img src="src/lock-the-sheets/artwork/lock-the-sheets-keybinding-step3.png" alt="Lock the Sheets! assign keybinding - step 3"/>
 
 ## Control it by macro
 A ready-to-use macro button for doing the toggle is already included as a compendium pack:

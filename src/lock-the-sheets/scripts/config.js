@@ -1,10 +1,11 @@
 import {Logger} from './logger.js';
+import {LockTheSheets} from "./main.js";
 
 // keep values in sync with module.json!
 const MOD_ID = "lock-the-sheets";
 const MOD_PATH = `/modules/${MOD_ID}`;
 const MOD_TITLE = "Lock The Sheets!";
-const MOD_DESCRIPTION = "[TODO]";
+const MOD_DESCRIPTION = "Oh Game Master, thou shalt be the gatekeeper! Lock and unlock all your players' character sheets at once with just one click. May you never ever again watch them accidentally delete that beloved item from their inventory (\"Uuuugh... NOOOOO!\")... or let those nasty cheaters among them mess around secretly with their hitpoints (\"AAAAArrrrgh!\").";
 const MOD_LINK = `https://github.com/coffiarts/FoundryVTT-${MOD_ID}`;
 
 export class Config {
@@ -56,6 +57,22 @@ export class Config {
             }
         };
         Config.registerSettings(data);
+
+        // Add the keybinding
+        game.keybindings.register("lock-the-sheets", "active", {
+            name: Config.localize('keybindingMenuLabel'),
+            editable: [
+                //{ key: "KeyL", modifiers: [KeyboardManager.MODIFIER_KEYS.SHIFT] }
+            ],
+            restricted: true,
+            onDown: () => {
+                if (!game.user.isGM) {
+                    return;
+                }
+                LockTheSheets.toggle();
+            }
+        });
+        Logger.info("Empty keybinding registered. Assign it to your liking in the game settings.");
 
         // Whenever loading up, we need to adjust the "pseudo-setting" modVersion once to the current value from
         // the manifest. Otherwise, module updates won't be reflected in its value (users would always see their first

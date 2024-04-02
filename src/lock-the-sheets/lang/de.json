@@ -65,6 +65,7 @@
     },
     "controlButton": {
       "label": "Lock The Sheets! EIN/AUS"
-    }
+    },
+    "keybindingMenuLabel": "Lock The Sheets! ein-/ausschalten"
   }
 }

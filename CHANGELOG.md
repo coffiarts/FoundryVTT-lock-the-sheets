@@ -1,5 +1,10 @@
-The **major** version number in my modules (like "11") always reflects the 
+The **major** version number in my modules (like "11") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
+
+## 11.0.3
+### 2024-04-02 - Keybinding support
+- Adds an optional keybinding for toggling sheet lock on/off (gamemasters only).
+- "Optional" means: There's no preassigned key combination. Assign it to your liking in the game settings (or ignore it if you don't want to use it). My personal preference is **SHIFT + L**.
 
 ## 11.0.2
 ### 2023-12-21 - Add missing changelog & readme to release package

@@ -73,6 +73,7 @@
     },
     "controlButton": {
       "label": "Lock The Sheets! ON/OFF"
-    }
+    },
+    "keybindingMenuLabel": "Toggle Lock The Sheets!"
   }
 }
