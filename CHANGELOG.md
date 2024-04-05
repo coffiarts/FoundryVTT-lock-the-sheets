@@ -1,6 +1,12 @@
 The **major** version number in my modules (like "11") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
 
+## 12.0.0
+### 2024-06-06 - v12 compatibility
+- Self-explaining.
+- Technically, due to breaking changes in v12, overlay icons on scene tokens are now rendered differently (as Active Effects). From a user's point of view this is irrelevant.
+- Still backward-compatible with v11
+
 ## 11.0.3
 ### 2024-04-02 - Keybinding support
 - Adds an optional keybinding for toggling sheet lock on/off (gamemasters only).

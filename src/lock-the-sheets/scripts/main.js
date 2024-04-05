@@ -32,7 +32,6 @@ let socket;
             Hooks.on("preCreateActiveEffect", function (item, data, options, userid) {
                 return onItemChangedInSheet(item, data, options, userid);
             });
-
             Hooks.on("preUpdateActor", function (actor, data, options, userid) {
                 return onSheetChanged(actor, data, options, userid);
             });
@@ -42,28 +41,33 @@ let socket;
             Hooks.on("preUpdateActiveEffect", function (item, data, options, userid) {
                 return onItemChangedInSheet(item, data, options, userid);
             });
-
             Hooks.on("preDeleteItem", function (item, options, userid) {
                 return onItemDeletedFromSheet(item, options, userid);
             });
             Hooks.on("preDeleteActiveEffect", function (item, options, userid) {
                 return onItemDeletedFromSheet(item, options, userid);
             });
-
             Hooks.on("renderSceneControls", (controls) => {
                 renderControlButton(controls);
-            });
-
-            // Hooks related to rendering the status icon overlays
-            Hooks.on("drawToken", () => {
-                renderTokenOverlays();
-            });
-            Hooks.on("refreshToken", () => {
-                renderTokenOverlays();
             });
             Hooks.on("renderActorDirectory", (app, html) => {
                 renderActorDirectoryOverlays(app, html);
             });
+
+            // backward-compatibility with v11
+            if (Config.getGameMajorVersion() < 12) {
+                // In v11, token overlays are rendered permanently (with each frame) on every single client, so they need to be hooked
+                // Hooks related to rendering the status icon overlays
+                Hooks.on("drawToken", () => {
+                    renderTokenOverlays();
+                });
+                Hooks.on("refreshToken", () => {
+                    renderTokenOverlays();
+                });
+            } else {
+                // As of v12, token overlays are Active Effects, i.e. they're stateful. They are added and removed only on change
+                renderTokenOverlays();
+            }
 
             ui.sidebar.render(true);
             stateChangeUIMessage();
@@ -118,18 +122,19 @@ async function initSocketlib() {
     socket.register("sheetEditGMAlertUIMessage", sheetEditGMAlertUIMessage);
     socket.register("itemChangedGMAlertUIMessage", itemChangedGMAlertUIMessage);
     socket.register("itemDeletedGMAlertUIMessage", itemDeletedGMAlertUIMessage);
-    socket.register("renderTokenOverlays", renderTokenOverlays);
     Logger.debug(`(initSocketlib) Module ${Config.data.modID} registered in socketlib.`);
 }
 
-function onSheetChanged(actorOrItem, data, options, userid) {
+function onSheetChanged(item, data, options, userid) {
     Logger.debug("(onSheetChanged) ",
-        "actorOrItem:", actorOrItem,
+        "item:", item,
         "data: ", data,
         "options: ", options,
         "userid: ", userid,
         "game.user.id: ", game.user.id);
-    if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
+
+    if (Config.setting('isActive') && !itemIsSheetLockActiveEffect(item) && (!game.user.isGM || Config.setting('lockForGM'))) {
+
         if (!LockTheSheets.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
                 permanent: false,
@@ -137,7 +142,7 @@ function onSheetChanged(actorOrItem, data, options, userid) {
                 console: false
             });
             if (Config.setting('alertGMOnReject')) {
-                socket.executeForAllGMs("sheetEditGMAlertUIMessage", game.users.get(userid)?.name, actorOrItem.name);
+                socket.executeForAllGMs("sheetEditGMAlertUIMessage", game.users.get(userid)?.name, item.name);
             }
         } else {
             LockTheSheets.isSilentMode = false;
@@ -154,17 +159,14 @@ function onItemChangedInSheet(item, data, options, userid) {
         "userid: ", userid,
         "game.user.id: ", game.user.id);
 
-    if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
+    if (Config.setting('isActive') && !itemIsSheetLockActiveEffect(item) && (!game.user.isGM || Config.setting('lockForGM'))) {
 
-        // Check for allowed actions
-        if (
-            // Allow equip/unequip
-            Config.setting('allowEquip') && (
-                data?.system?.worn != null // tde5
-                ||
-                data?.system?.equipped != null // dnd5e
-            )
-        ) return true;
+        // Allow equip/unequip
+        if (Config.setting('allowEquip') && (
+            data?.system?.worn != null // tde5
+            ||
+            data?.system?.equipped != null // dnd5e
+        )) return true;
 
         if (!LockTheSheets.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
@@ -188,7 +190,9 @@ function onItemDeletedFromSheet(item, options, userid) {
         "options: ", options,
         "userid: ", userid,
         "game.user.id: ", game.user.id);
-    if (Config.setting('isActive') && (!game.user.isGM || Config.setting('lockForGM'))) {
+
+    if (Config.setting('isActive') && !itemIsSheetLockActiveEffect(item) && (!game.user.isGM || Config.setting('lockForGM'))) {
+
         if (!LockTheSheets.isSilentMode) {
             ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
                 permanent: false,
@@ -203,6 +207,14 @@ function onItemDeletedFromSheet(item, options, userid) {
         }
         return false;
     }
+}
+
+function itemIsSheetLockActiveEffect(item) {
+    return item.name === getSheetLockActiveEffectName();
+}
+
+function getSheetLockActiveEffectName() {
+    return 'Sheet Lock';
 }
 
 async function onGameSettingChanged() {
@@ -259,12 +271,14 @@ function renderControlButton(controls) {
         let existing = tokenControls.tools.find((tool) => tool.name === button.name);
         if (!existing || existing.length === 0) {
             tokenControls.tools.push(button);
+            ui.sidebar.render(true);
         }
     }
 }
 
 /**
- * inspired by // https://github.com/LeafWulf/deathmark/blob/master/scripts/deathmark.js
+ * Originally (v11) inspired by // https://github.com/LeafWulf/deathmark/blob/master/scripts/deathmark.js, using Token.overlayEffect.
+ * But as of v12, this has been desupported and now needs to be done by ActiveEffects.
  */
 async function renderTokenOverlays() {
     for (const aToken of game.scenes.current.tokens) {
@@ -272,10 +286,36 @@ async function renderTokenOverlays() {
             // ensure that overlay is only rendered for the token's owner (the GM will implicitely see the change for all owned tokens)
             const actor = game.actors.find((actor)=>{return (actor.id === aToken.actorId)});
             const owner = findOwnerForActorName(actor.name);
-            //if (owner) Logger.debug("owner", owner, "actor", actor);
-            if(owner != null) { // GM session must NOT generate overlays, otherwise ANY token will receive an icon
-                const overlayImg = (owner.active || game.user.isGM) ? ((LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
-                if (owner === game.user || !owner.active && game.user.isGM) await aToken.update({overlayEffect: overlayImg});
+            // Logger.debug("owner", owner, "owner?.active", owner?.active, "game.user", game.user, "actor", actor, "owner === game.user", owner === game.user, "game.user.isGM", game.user.isGM);
+            if(owner != null) { // only owned tokens are meant to show an icon
+
+                const overlayImg = (owner.active && owner === game.user || game.user.isGM) ? ((LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
+
+                if (owner === game.user || !owner.active && game.user.isGM) {
+                    // Logger.debug("overlayImg", overlayImg);
+
+                    if (Config.getGameMajorVersion() < 12) {
+                        // Up to Foundry v11, adding a simple overlay image is sufficient
+                        await aToken.update({overlayEffect: overlayImg});
+                    } else {
+                        // As of v12, everything needs to be done through an ActiveEffect
+                        // see https://foundryvtt.com/api/interfaces/foundry.types.ActiveEffectData.html
+                        aToken.actor.effects.getName(getSheetLockActiveEffectName())?.delete();
+                        const activeEffectData = [{
+                            name: getSheetLockActiveEffectName(),
+                            img: overlayImg,
+                            flags: {
+                                core: {
+                                    overlay: true
+                                }
+                            },
+                            duration: {
+                                seconds: 10000000000000000000 // still a nasty workaround to simulate a permanent status
+                            }
+                        }];
+                        await aToken.actor.createEmbeddedDocuments("ActiveEffect", activeEffectData);
+                    }
+                }
             }
         }
     }

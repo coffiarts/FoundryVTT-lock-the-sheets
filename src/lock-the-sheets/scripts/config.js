@@ -142,5 +142,8 @@ export class Config {
         return game.i18n.format(`${Config.data.modID}.${key}`, data);
     }
 
+    static getGameMajorVersion() {
+        return game.version.split('.')[0];
+    }
 
 }
