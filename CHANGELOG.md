@@ -3,9 +3,9 @@ Foundry VTT **core** version it is compatible with (and recommended for).
 
 ## 12.0.0
 ### 2024-06-06 - v12 compatibility
-- Self-explaining.
-- Technically, due to breaking changes in v12, overlay icons on scene tokens are now rendered differently (as Active Effects). From a user's point of view this is irrelevant.
-- Still backward-compatible with v11
+- Self-explaining. No functional changes. Well, apart from ...
+- ... one technical detail (for those loving such details): Due to breaking changes in v12, overlay icons on scene tokens are now rendered differently (as Active Effects, which show up in character sheets, but may be ignored). From a user's point of view this is irrelevant. Even erratically changing or deleting such effects from a sheet won't break anything.
+- Still backward-compatible with v11.
 
 ## 11.0.3
 ### 2024-04-02 - Keybinding support
