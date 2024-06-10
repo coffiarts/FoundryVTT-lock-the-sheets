@@ -20,7 +20,8 @@ export class Config {
     static init() {
 
         // Register all globally relevant game settings here
-        const data = {
+
+        const settingsData1 = {
             modVersion: {
                 scope: 'client', config: true, type: String, default: game.modules.get(MOD_ID).version,
                 onChange: value => {
@@ -30,7 +31,16 @@ export class Config {
                         game.settings.set(Config.data.modID, `modVersion`, game.modules.get(MOD_ID).version);
                     }
                 }
-            },
+            }
+        }
+        Config.registerSettings(settingsData1);
+
+        // create separator and title at the beginning of this settings section
+        Hooks.on('renderSettingsConfig', (app, [html]) => {
+            html.querySelector(`[data-setting-id="${Config.data.modID}.isActive"]`).insertAdjacentHTML('beforeBegin', `<h3>Core</h3>`)
+        })
+
+        const settingsData2 = {
             isActive: {
                 scope: 'world', config: true, type: Boolean, default: false,
             },
@@ -38,7 +48,7 @@ export class Config {
                 scope: 'world', config: true, type: Boolean, default: true,
             },
             notifyOnChange: {
-                scope: 'world', config: true,  type: Boolean, default: true
+                scope: 'world', config: true, type: Boolean, default: true
             },
             lockForGM: {
                 scope: 'world', config: true, type: Boolean, default: false
@@ -47,16 +57,24 @@ export class Config {
                 scope: 'world', config: true, type: Boolean, default: true
             },
             overlayIconLocked: {
-                scope: 'world', config: true, type: String, filePicker: "image", default: `${Config.data.modPath}/artwork/lock-red-closed.png`
+                scope: 'world',
+                config: true,
+                type: String,
+                filePicker: "image",
+                default: `${Config.data.modPath}/artwork/lock-red-closed.png`
             },
             overlayIconOpen: {
-                scope: 'world', config: true, type: String, filePicker: "image", default: `${Config.data.modPath}/artwork/lock-green-open.png`
+                scope: 'world',
+                config: true,
+                type: String,
+                filePicker: "image",
+                default: `${Config.data.modPath}/artwork/lock-green-open.png`
             },
             allowEquip: {
                 scope: 'world', config: true, type: Boolean, default: true
             }
         };
-        Config.registerSettings(data);
+        Config.registerSettings(settingsData2   );
 
         // Add the keybinding
         game.keybindings.register("lock-the-sheets", "active", {
@@ -115,7 +133,7 @@ export class Config {
     static async gameSettingConfirmed(key, expectedValue) {
         // Logger.debug(`expected: ${Config.data.modID}.${key} = ${expectedValue}`);
         let safetyCount = 0;
-        while (safetyCount++ <10 && game.settings.get(Config.data.modID, key) !== expectedValue) {
+        while (safetyCount++ < 10 && game.settings.get(Config.data.modID, key) !== expectedValue) {
             await this.sleep(500);
         }
     }
