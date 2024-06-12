@@ -1,10 +1,13 @@
 ![](https://img.shields.io/badge/Foundry-v11-informational)
 ![](https://img.shields.io/badge/Foundry-v12-informational)
+[![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Flock-the-sheets)](https://forge-vtt.com/bazaar#package=lock-the-sheets)
+[![The Forge](https://img.shields.io/badge/The%20Forge-Pay%20What%20You%20Want-success?style=flat-square)](https://eu.forge-vtt.com/bazaar#package=lock-the-sheets)
+
+![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/module.zip?label=All+time+downloads)
 ![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/latest/module.zip?label=Downloads+latest+release+[12.?.?])
 ![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/11.0.3/module.zip?label=previous+release+[12.0.0])
-[![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Flock-the-sheets)](https://forge-vtt.com/bazaar#package=lock-the-sheets)
+
 [![GitHub issues](https://img.shields.io/github/issues/coffiarts/FoundryVTT-lock-the-sheets/bug)](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/issues)
-[![The Forge](https://img.shields.io/badge/The%20Forge-Pay%20What%20You%20Want-success?style=flat-square)](https://eu.forge-vtt.com/bazaar#package=lock-the-sheets)
 
 # Lock The Sheets! for Foundry VTT
 <table style="border:0;width:840px">
