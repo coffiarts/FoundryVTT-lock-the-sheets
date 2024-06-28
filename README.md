@@ -5,7 +5,6 @@
 
 ![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/module.zip?label=All+time+downloads)
 ![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/latest/module.zip?label=Downloads+latest+release+[12.?.?])
-![GitHub All Releases](https://img.shields.io/github/downloads/coffiarts/FoundryVTT-lock-the-sheets/11.0.3/module.zip?label=previous+release+[12.0.0])
 
 [![GitHub issues](https://img.shields.io/github/issues/coffiarts/FoundryVTT-lock-the-sheets/bug)](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/issues)
 
