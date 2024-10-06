@@ -307,6 +307,9 @@ async function renderTokenOverlays() {
                             flags: {
                                 core: {
                                     overlay: true
+                                },
+                                dsa5: { // a dummy flag required by game system dsa5/tde5 as of version 6.x for handling status effects correctly
+                                    value: null
                                 }
                             },
                             duration: {

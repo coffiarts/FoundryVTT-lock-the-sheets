@@ -1,9 +1,9 @@
 The **major** version number in my modules (like "12") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
 
-## 12.?.?
-### 2024-??-?? - ?
-- ?
+## 12.0.1
+### 2024-10-06 - Hotfix for dsa5/tde5 version 6.x
+- Game system dsa5/tde5 (Das Schwarze Auge/The Black Eye) seems to have changed its handling of active effects in latest version 6.x. That was causing a breaking bug in this mod, blocking certain rolls for actors in scene. This is the fix for it.
 
 ## 12.0.0
 ### 2024-06-06 - v12 compatibility
