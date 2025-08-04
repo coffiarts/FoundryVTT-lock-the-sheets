@@ -1,9 +1,10 @@
 The **major** version number in my modules (like "12") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
 
-## 12.?.?
-### 2024-??-?? - ?
-- ?
+## 12.0.2
+### 2025-08-05 - Just a note on v13 NON-compatibility
+- This "dummy" update is only a note that this module will NOT be v13-compatible for now. Due to heavy changes in v13, do NOT await it soon!
+- Feel free to follow the related ticket: [#6](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/issues/6)
 
 ## 12.0.1
 ### 2024-10-06 - Hotfix for dsa5/tde5 version 6.x

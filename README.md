@@ -9,6 +9,13 @@
 [![GitHub issues](https://img.shields.io/github/issues/coffiarts/FoundryVTT-lock-the-sheets/bug)](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/issues)
 
 # Lock The Sheets! for Foundry VTT
+<i><strong style="color:#da6502">Important note on v13 compatibility:</strong><br/>
+Unfortunately, at least for now, this mod will remain <u>_incompatible_</u> with v13!
+Tests have yielded that it runs into a major incompatibility. It relies on html api functions that seem to have changed significantly between 12 and 13.
+Feel free to follow the related ticket: [#6](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/issues/6)
+
+In the worst case, as this mod appears to go mostly unnoticed (in comparison to my other ones), I'll have to consider de-supporting it for v13+ versions.
+
 <table style="border:0;width:840px">
   <tr>
     <td colspan="2"><img src="src/lock-the-sheets/artwork/lock-the-sheets-banner.jpg" width="840" alt="Lock The Sheets! Logo"/></td>
