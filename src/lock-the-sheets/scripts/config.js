@@ -169,6 +169,15 @@ export class Config {
         return game.i18n.format(`${Config.data.modID}.${key}`, data);
     }
 
+    static escapeHtmlAttr(str) {
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+    }
+
     static getGameMajorVersion() {
         return game.version.split('.')[0];
     }

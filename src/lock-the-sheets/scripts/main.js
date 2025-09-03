@@ -53,6 +53,11 @@ let socket;
             Hooks.on("renderActorDirectory", (app, html) => {
                 renderActorDirectoryOverlays(app, html);
             });
+            Hooks.on("updateSetting", async function (setting) {
+                if (setting.key.startsWith(Config.data.modID)) {
+                    onGameSettingChanged();
+                }
+            });
 
             // backward-compatibility with v11
             if (Config.getGameMajorVersion() < 12) {
@@ -108,11 +113,6 @@ async function initDependencies() {
 
 async function initExposedClasses() {
     window.LockTheSheets = LockTheSheets;
-    Hooks.on("updateSetting", async function (setting) {
-        if (setting.key.startsWith(Config.data.modID)) {
-            onGameSettingChanged();
-        }
-    });
     Logger.debug("(initExposedClasses) Exposed classes are ready");
 }
 
@@ -243,7 +243,12 @@ async function onGameSettingChanged() {
             ui.controls.render();
         } else if (button != null) {
             // if button has been deactivated, remove it from the scene controls
-            ui.controls.controls.find(control => control.name === "token").tools.pop(button);
+            if (Config.getGameMajorVersion() >= 13) {
+                button.visible = false
+            }
+            else { // v12 or older
+                ui.controls.controls.find(control => control.name === "token").tools.pop(button);
+            }
             ui.controls.render();
         }
     }
@@ -254,23 +259,39 @@ async function onGameSettingChanged() {
 }
 
 function renderControlButton(controls) {
+
     if (game.user.isGM && Config.setting('showUIButton')) {
-        //Logger.debug(controls);
-        let tokenControls = controls.controls.find(control => control.name === "token");
-        if (!tokenControls) return;
-        const button = {
-            name: "toggleLockTheSheets",
-            title: Config.localize('controlButton.label'),
-            icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
-            toggle: true,
-            active: Config.setting('isActive'),
-            onClick: (active) => {
-                Config.modifySetting('isActive', active);
-            }
-        };
-        let existing = tokenControls.tools.find((tool) => tool.name === button.name);
+
+        // Logger.debug(controls);
+        let tokenControlTools = (Config.getGameMajorVersion() >= 13)
+            ? controls.tokens?.tools
+            : controls?.controls?.find(control => control.name === "token")?.tools;
+
+        // if (!tokenControlTools) return;
+
+        let existing = (Config.getGameMajorVersion() >= 13)
+            ? tokenControlTools.toggleLockTheSheets
+            : tokenControlTools.find(tool => tool.name = "toggleLockTheSheets");
+
         if (!existing || existing.length === 0) {
-            tokenControls.tools.push(button);
+            const button = {
+                name: "toggleLockTheSheets",
+                title: Config.localize('controlButton.label'),
+                icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
+                toggle: true,
+                active: Config.setting('isActive'),
+                onClick: (active) => {
+                    Config.modifySetting('isActive', active);
+                }
+            }
+
+            if (Config.getGameMajorVersion() >= 13) {
+                tokenControlTools.toggleLockTheSheets = button;
+                button.visible = true;
+            } else { // v12 or older
+                tokenControlTools.push(button);
+            }
+
             ui.sidebar.render(true);
         }
     }
@@ -325,17 +346,51 @@ async function renderTokenOverlays() {
 }
 
 async function renderActorDirectoryOverlays(app, html) {
-    html.find('.directory-item.document.actor').each((i, element) => {
-        //Logger.debug(element);
-        const actorName = element.children[0].title;
-        const owner = findOwnerForActorName(actorName);
-        //if (owner) Logger.debug("\nactorName", actorName, "\nowner", owner);
-        if (owner != null) { // skip any unowned characters
-            const imgPath = (LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
-            element.innerHTML = overlayIconAsHTML(actorName, imgPath) + element.innerHTML;
-            element.innerHTML = element.innerHTML.replace('data-src', 'src');
-        }
-    });
+    if (Config.getGameMajorVersion() >= 13) {
+        Logger.debug("\nFIRED!");
+        html.querySelectorAll('.directory-item.actor').forEach(element => {
+            // Grab the actor name text
+            const actorName = element.querySelector(".entry-name")?.textContent.trim();
+            const owner = findOwnerForActorName(actorName);
+            Logger.debug("\nactorName", actorName, "\nowner", owner);
+            if (!owner) return; // skip unowned
+
+            const imgPath = (LockTheSheets.isActive)
+                ? Config.setting("overlayIconLocked")
+                : Config.setting("overlayIconOpen");
+
+            if (!imgPath) return;
+
+            // Create <img> overlay icon
+            const icon = document.createElement("img");
+            icon.classList.add("overlay-icon"); // optional, so you can style it with CSS
+            icon.style.position = "absolute";
+            icon.src = imgPath;
+            icon.alt = actorName;
+            icon.title = actorName;
+
+            // Insert before the actor’s thumbnail
+            const thumb = element.querySelector("img.thumbnail");
+            if (thumb) {
+                element.insertBefore(icon, thumb);
+            } else {
+                element.prepend(icon);
+            }
+        });
+    }
+    else { // v12 and older
+        html.find('.directory-item.document.actor').each((i, element) => {
+            //Logger.debug(element);
+            const actorName = element.children[0].title;
+            const owner = findOwnerForActorName(actorName);
+            //if (owner) Logger.debug("\nactorName", actorName, "\nowner", owner);
+            if (owner != null) { // skip any unowned characters
+                const imgPath = (LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
+                element.innerHTML = overlayIconAsHTML(actorName, imgPath) + element.innerHTML;
+                element.innerHTML = element.innerHTML.replace('data-src', 'src');
+            }
+        });
+    }
 }
 
 function findOwnerForActorName(actorName) {
@@ -349,11 +404,19 @@ function findOwnerForActorName(actorName) {
 }
 
 function overlayIconAsHTML(title, imgPath){
-    return (imgPath !== "") ? `<img style="position:absolute" title="${title}" src="${imgPath}" alt="${title}"></i>` : imgPath;
+    if (!imgPath) return "";
+    const safeTitle = Config.escapeHtmlAttr(title);
+    return `<img style="position:absolute" title="${safeTitle}" src="${imgPath}" alt="${safeTitle}">`;
 }
 
 function getControlButton() {
-    return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleLockTheSheets");
+    if (Config.getGameMajorVersion() >= 13) {
+        const tokenControlTools = ui.controls.controls.tokens?.tools;
+        return tokenControlTools?.toggleLockTheSheets || null;
+    }
+    else { // v12 and older
+        return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleLockTheSheets");
+    }
 }
 
 function stateChangeUIMessage() {
