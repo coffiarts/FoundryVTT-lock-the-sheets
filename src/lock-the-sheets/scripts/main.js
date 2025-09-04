@@ -73,8 +73,8 @@ let socket;
                 // As of v12, token overlays are Active Effects, i.e. they're stateful. They are added and removed only on change
                 renderTokenOverlays();
             }
-
-            ui.sidebar.render(true);
+            renderControlButton(ui.controls);
+            // ui.sidebar.render(true); // Is already done in renderControlButton()
             stateChangeUIMessage();
         });
     }
@@ -236,7 +236,7 @@ async function onGameSettingChanged() {
         let button = getControlButton();
         if (Config.setting('showUIButton')) {
             if (button == null) {
-                renderControlButton(ui.controls.controls);
+                renderControlButton(ui.controls);
                 button = getControlButton();
             }
             button.active = LockTheSheets.isActive;
@@ -244,10 +244,17 @@ async function onGameSettingChanged() {
         } else if (button != null) {
             // if button has been deactivated, remove it from the scene controls
             if (Config.getGameMajorVersion() >= 13) {
-                button.visible = false
+                Logger.debug("onGameSettingChanged - ui.controls.controls.tokens.tools:", ui.controls.controls.tokens.tools);
+                delete ui.controls.controls.tokens.tools.toggleLockTheSheets;
             }
             else { // v12 or older
-                ui.controls.controls.find(control => control.name === "token").tools.pop(button);
+                // requery actual button to ensure that it's properly deleted (this prevents sticky buttons caused by mod upgrades)
+                button = ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name = "toggleLockTheSheets");
+                const tools = ui.controls.controls.find(control => control.name === "token").tools;
+                Logger.debug("onGameSettingChanged: tools (before)", tools);
+                Logger.debug("onGameSettingChanged: deleting button", button)
+                delete tools.find(tool => tool.name !== button.name);
+                Logger.debug("onGameSettingChanged: tools (after)", tools);
             }
             ui.controls.render();
         }
@@ -260,39 +267,44 @@ async function onGameSettingChanged() {
 
 function renderControlButton(controls) {
 
+    Logger.debug("renderControlButton", controls);
+    Logger.debug("renderControlButton: Config.setting('showUIButton')", Config.setting('showUIButton'));
+    Logger.debug("renderControlButton: game.user.isGM", game.user.isGM);
     if (game.user.isGM && Config.setting('showUIButton')) {
 
-        // Logger.debug(controls);
+        Logger.debug(controls);
         let tokenControlTools = (Config.getGameMajorVersion() >= 13)
-            ? controls.tokens?.tools
+            ? controls.controls.tokens?.tools
             : controls?.controls?.find(control => control.name === "token")?.tools;
-
+        Logger.debug("renderControlButton: tokenControlTools", tokenControlTools);
         // if (!tokenControlTools) return;
 
         let existing = (Config.getGameMajorVersion() >= 13)
             ? tokenControlTools.toggleLockTheSheets
             : tokenControlTools.find(tool => tool.name = "toggleLockTheSheets");
-
+        Logger.debug("renderControlButton: existing", existing);
         if (!existing || existing.length === 0) {
-            const button = {
-                name: "toggleLockTheSheets",
-                title: Config.localize('controlButton.label'),
-                icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
-                toggle: true,
-                active: Config.setting('isActive'),
-                onClick: (active) => {
-                    Config.modifySetting('isActive', active);
-                }
-            }
-
             if (Config.getGameMajorVersion() >= 13) {
-                tokenControlTools.toggleLockTheSheets = button;
-                button.visible = true;
+                tokenControlTools.toggleLockTheSheets = createControlButton(true);
+                ui.controls.render();
             } else { // v12 or older
-                tokenControlTools.push(button);
+                tokenControlTools.push(createControlButton(true));
+                ui.sidebar.render(true);
             }
+        }
+    }
+}
 
-            ui.sidebar.render(true);
+function createControlButton(visible = true) {
+    return {
+        name: "toggleLockTheSheets",
+        title: Config.localize('controlButton.label'),
+        icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
+        toggle: true,
+        active: Config.setting('isActive'),
+        visible: visible,
+        onClick: (active) => {
+            Config.modifySetting('isActive', active);
         }
     }
 }
