@@ -47,9 +47,11 @@ let socket;
             Hooks.on("preDeleteActiveEffect", function (item, options, userid) {
                 return onItemDeletedFromSheet(item, options, userid);
             });
-            Hooks.on("renderSceneControls", (controls) => {
-                renderCustomControlButton(controls);
-            });
+            if (Config.getGameMajorVersion() <= 12) { // As of v13, this is done without hooks
+                Hooks.on("getSceneControlButtons", (controls) => {
+                    addCustomControlButtonV12(controls);
+                });
+            }
             Hooks.on("renderActorDirectory", (app, html) => {
                 renderActorDirectoryOverlays(app, html);
             });
@@ -73,8 +75,7 @@ let socket;
                 // As of v12, token overlays are Active Effects, i.e. they're stateful. They are added and removed only on change
                 renderTokenOverlays();
             }
-            renderCustomControlButton(ui.controls);
-            // ui.sidebar.render(true); // Is already done in renderCustomControlButton()
+
             stateChangeUIMessage();
         });
     }
@@ -218,8 +219,11 @@ function getSheetLockActiveEffectName() {
 }
 
 async function onGameSettingChanged() {
+
+    // Handle the "Active" switch
     LockTheSheets.isActive = Config.setting('isActive');
 
+    // Handle the "Notification" options
     if (game.user.isGM && Config.setting('notifyOnChange')) {
         // UI messages should only be triggered by the GM via sockets.
         // This seems to be the only way to suppress them if needed.
@@ -230,79 +234,52 @@ async function onGameSettingChanged() {
         }
     }
 
-    if (game.user.isGM) {
+    // Handle the "Show UI Button" option
+    if (game.user.isGM) { // It's a GM-only feature, so it can be safely skipped for any non-GM user
 
-        // Refresh scene control button (if active) to reflect the potentially new state.
-        let button = getControlButton();
-        if (Config.setting('showUIButton')) {
-            if (button == null) {
-                renderCustomControlButton(ui.controls);
-                button = getControlButton();
+        if (Config.getGameMajorVersion() >= 13) { // in v13, we just add/remove the button via API as needed, without any hooking
+            if (Config.setting('showUIButton')) {
+                ui.controls.addControl("token", defineCustomControlButton());
+            } else {
+                ui.controls.removeControl("token", "toggleLockTheSheets");
             }
-            button.active = LockTheSheets.isActive;
-            ui.controls.render();
-        } else if (button != null) {
-            // if button has been deactivated, remove it from the scene controls
-            if (Config.getGameMajorVersion() >= 13) {
-                Logger.debug("onGameSettingChanged - ui.controls.controls.tokens.tools:", ui.controls.controls.tokens.tools);
-                delete ui.controls.controls.tokens.tools.toggleLockTheSheets;
-            }
-            else { // v12 or older
-                // requery actual button to ensure that it's properly deleted (this prevents sticky buttons caused by mod upgrades)
-                button = ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name = "toggleLockTheSheets");
-                const tools = ui.controls.controls.find(control => control.name === "token").tools;
-                Logger.debug("onGameSettingChanged: tools (before)", tools);
-                Logger.debug("onGameSettingChanged: deleting button", button)
-                delete tools.find(tool => tool.name !== button.name);
-                Logger.debug("onGameSettingChanged: tools (after)", tools);
-            }
-            ui.controls.render();
+        }
+        else { // v12 or older
+            // in v12 we simply need to force a refresh the controls layer. This will fire the related getSceneControlButtons hooks to add/remove the button as needed
+            ui.controls.initialize({ layer: "token" });
         }
     }
 
-    // Refresh status overlays
+    // Refresh Token status overlays
     renderTokenOverlays();
-    ui.sidebar.render(true);
+    ui.sidebar.render(true); // just for double safety, maybe not needed
 }
 
-function renderCustomControlButton(controls) {
+/**
+ * Only for v12. Adds a custom control button to the sidebar.
+ * @param controls the temporary array of control definitions that are to be rendered
+ */
+function addCustomControlButtonV12(controls) {
 
-    Logger.debug("renderCustomControlButton", controls);
-    Logger.debug("renderCustomControlButton: Config.setting('showUIButton')", Config.setting('showUIButton'));
-    Logger.debug("renderCustomControlButton: game.user.isGM", game.user.isGM);
-    if (game.user.isGM && Config.setting('showUIButton')) {
+    if (Config.getGameMajorVersion() > 12) return;
+    if (!game.user.isGM) return;
+    if (!Config.setting('showUIButton')) return;
 
-        Logger.debug(controls);
-        let tokenControlTools = (Config.getGameMajorVersion() >= 13)
-            ? controls.controls.tokens?.tools
-            : controls?.controls?.find(control => control.name === "token")?.tools;
-        Logger.debug("renderCustomControlButton: tokenControlTools", tokenControlTools);
-        // if (!tokenControlTools) return;
+    let tokenControlTools = controls.find(control => control.name === "token")?.tools;
 
-        let existing = (Config.getGameMajorVersion() >= 13)
-            ? tokenControlTools.toggleLockTheSheets
-            : tokenControlTools.find(tool => tool.name = "toggleLockTheSheets");
-        Logger.debug("renderCustomControlButton: existing", existing);
-        if (!existing || existing.length === 0) {
-            if (Config.getGameMajorVersion() >= 13) {
-                tokenControlTools.toggleLockTheSheets = createControlButton(true);
-                ui.controls.render();
-            } else { // v12 or older
-                tokenControlTools.push(createControlButton(true));
-                ui.sidebar.render(true);
-            }
+        // Only add if not already present
+        if (!tokenControlTools.some(t => t.name === "toggleMyButton")) {
+            tokenControlTools.push(defineCustomControlButton());
         }
-    }
 }
 
-function createControlButton(visible = true) {
+function defineCustomControlButton() {
     return {
         name: "toggleLockTheSheets",
         title: Config.localize('controlButton.label'),
         icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
         toggle: true,
         active: Config.setting('isActive'),
-        visible: visible,
         onClick: (active) => {
             Config.modifySetting('isActive', active);
         }
@@ -419,16 +396,6 @@ function overlayIconAsHTML(title, imgPath){
     if (!imgPath) return "";
     const safeTitle = Config.escapeHtmlAttr(title);
     return `<img style="position:absolute" title="${safeTitle}" src="${imgPath}" alt="${safeTitle}">`;
-}
-
-function getControlButton() {
-    if (Config.getGameMajorVersion() >= 13) {
-        const tokenControlTools = ui.controls.controls.tokens?.tools;
-        return tokenControlTools?.toggleLockTheSheets || null;
-    }
-    else { // v12 and older
-        return ui.controls.controls.find(control => control.name === "token").tools.find(tool => tool.name === "toggleLockTheSheets");
-    }
 }
 
 function stateChangeUIMessage() {
