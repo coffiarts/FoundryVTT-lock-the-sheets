@@ -48,7 +48,7 @@ let socket;
                 return onItemDeletedFromSheet(item, options, userid);
             });
             Hooks.on("renderSceneControls", (controls) => {
-                renderControlButton(controls);
+                renderCustomControlButton(controls);
             });
             Hooks.on("renderActorDirectory", (app, html) => {
                 renderActorDirectoryOverlays(app, html);
@@ -73,8 +73,8 @@ let socket;
                 // As of v12, token overlays are Active Effects, i.e. they're stateful. They are added and removed only on change
                 renderTokenOverlays();
             }
-            renderControlButton(ui.controls);
-            // ui.sidebar.render(true); // Is already done in renderControlButton()
+            renderCustomControlButton(ui.controls);
+            // ui.sidebar.render(true); // Is already done in renderCustomControlButton()
             stateChangeUIMessage();
         });
     }
@@ -236,7 +236,7 @@ async function onGameSettingChanged() {
         let button = getControlButton();
         if (Config.setting('showUIButton')) {
             if (button == null) {
-                renderControlButton(ui.controls);
+                renderCustomControlButton(ui.controls);
                 button = getControlButton();
             }
             button.active = LockTheSheets.isActive;
@@ -265,24 +265,24 @@ async function onGameSettingChanged() {
     ui.sidebar.render(true);
 }
 
-function renderControlButton(controls) {
+function renderCustomControlButton(controls) {
 
-    Logger.debug("renderControlButton", controls);
-    Logger.debug("renderControlButton: Config.setting('showUIButton')", Config.setting('showUIButton'));
-    Logger.debug("renderControlButton: game.user.isGM", game.user.isGM);
+    Logger.debug("renderCustomControlButton", controls);
+    Logger.debug("renderCustomControlButton: Config.setting('showUIButton')", Config.setting('showUIButton'));
+    Logger.debug("renderCustomControlButton: game.user.isGM", game.user.isGM);
     if (game.user.isGM && Config.setting('showUIButton')) {
 
         Logger.debug(controls);
         let tokenControlTools = (Config.getGameMajorVersion() >= 13)
             ? controls.controls.tokens?.tools
             : controls?.controls?.find(control => control.name === "token")?.tools;
-        Logger.debug("renderControlButton: tokenControlTools", tokenControlTools);
+        Logger.debug("renderCustomControlButton: tokenControlTools", tokenControlTools);
         // if (!tokenControlTools) return;
 
         let existing = (Config.getGameMajorVersion() >= 13)
             ? tokenControlTools.toggleLockTheSheets
             : tokenControlTools.find(tool => tool.name = "toggleLockTheSheets");
-        Logger.debug("renderControlButton: existing", existing);
+        Logger.debug("renderCustomControlButton: existing", existing);
         if (!existing || existing.length === 0) {
             if (Config.getGameMajorVersion() >= 13) {
                 tokenControlTools.toggleLockTheSheets = createControlButton(true);
@@ -318,7 +318,7 @@ async function renderTokenOverlays() {
         if (aToken.actorLink) {
             // ensure that overlay is only rendered for the token's owner (the GM will implicitely see the change for all owned tokens)
             const actor = game.actors.find((actor)=>{return (actor.id === aToken.actorId)});
-            const owner = findOwnerForActorName(actor.name);
+            const owner = findOwnerByActorName(actor.name);
             // Logger.debug("owner", owner, "owner?.active", owner?.active, "game.user", game.user, "actor", actor, "owner === game.user", owner === game.user, "game.user.isGM", game.user.isGM);
             if(owner != null) { // only owned tokens are meant to show an icon
 
@@ -363,7 +363,7 @@ async function renderActorDirectoryOverlays(app, html) {
         html.querySelectorAll('.directory-item.actor').forEach(element => {
             // Grab the actor name text
             const actorName = element.querySelector(".entry-name")?.textContent.trim();
-            const owner = findOwnerForActorName(actorName);
+            const owner = findOwnerByActorName(actorName);
             Logger.debug("\nactorName", actorName, "\nowner", owner);
             if (!owner) return; // skip unowned
 
@@ -394,7 +394,7 @@ async function renderActorDirectoryOverlays(app, html) {
         html.find('.directory-item.document.actor').each((i, element) => {
             //Logger.debug(element);
             const actorName = element.children[0].title;
-            const owner = findOwnerForActorName(actorName);
+            const owner = findOwnerByActorName(actorName);
             //if (owner) Logger.debug("\nactorName", actorName, "\nowner", owner);
             if (owner != null) { // skip any unowned characters
                 const imgPath = (LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
@@ -405,7 +405,7 @@ async function renderActorDirectoryOverlays(app, html) {
     }
 }
 
-function findOwnerForActorName(actorName) {
+function findOwnerByActorName(actorName) {
     const actor = game.actors.find((actor) => {
         return actor.name === actorName
     });
