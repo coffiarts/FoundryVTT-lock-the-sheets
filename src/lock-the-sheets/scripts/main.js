@@ -20,41 +20,56 @@ let socket;
 
         await allPrerequisitesReady();
 
+        // The fist Hook needs to be registered before anything else, because it's used to add the custom control button on rendering the sidebar'
+        if (Config.getGameMajorVersion() <= 12) { // As of v13, this is done without hooks (this is covered later)
+            Hooks.on("getSceneControlButtons", (controls) => {
+                addCustomControlButtonV12(controls);
+            });
+        }
+
         Hooks.once("ready", () =>  {
             ready2play = true;
             Logger.infoGreen(`Ready to play! Version: ${game.modules.get(Config.data.modID).version}`);
             Logger.infoGreen(Config.data.modDescription);
             LockTheSheets.isActive = Config.setting('isActive');
 
-            Hooks.on("preCreateItem", function (item, data, options, userid) {
-                return onItemChangedInSheet(item, data, options, userid);
-            });
-            Hooks.on("preCreateActiveEffect", function (item, data, options, userid) {
-                return onItemChangedInSheet(item, data, options, userid);
-            });
-            Hooks.on("preUpdateActor", function (actor, data, options, userid) {
-                return onSheetChanged(actor, data, options, userid);
-            });
-            Hooks.on("preUpdateItem", function (item, data, options, userid) {
-                return onItemChangedInSheet(item, data, options, userid);
-            });
-            Hooks.on("preUpdateActiveEffect", function (item, data, options, userid) {
-                return onItemChangedInSheet(item, data, options, userid);
-            });
-            Hooks.on("preDeleteItem", function (item, options, userid) {
-                return onItemDeletedFromSheet(item, options, userid);
-            });
-            Hooks.on("preDeleteActiveEffect", function (item, options, userid) {
-                return onItemDeletedFromSheet(item, options, userid);
-            });
-            if (Config.getGameMajorVersion() <= 12) { // As of v13, this is done without hooks
-                Hooks.on("getSceneControlButtons", (controls) => {
-                    addCustomControlButtonV12(controls);
-                });
+            // Hooks related to sheet locking: Actors
+            Hooks.on("preUpdateActor", (actor, data, options, userId) =>
+                handleLock("actor", "update", actor, data, options, userId)
+            );
+
+            // Hooks related to sheet locking: Items
+            Hooks.on("preCreateItem", (item, data, options, userId) =>
+                handleLock("item", "create", item, data, options, userId)
+            );
+            Hooks.on("preUpdateItem", (item, data, options, userId) =>
+                handleLock("item", "update", item, data, options, userId)
+            );
+            Hooks.on("preDeleteItem", (item, options, userId) =>
+                handleLock("item", "delete", item, null, options, userId)
+            );
+
+            // Hooks related to sheet locking: ActiveEffects
+            Hooks.on("preCreateActiveEffect", (effect, data, options, userId) =>
+                handleLock("effect", "create", effect, data, options, userId)
+            );
+            Hooks.on("preUpdateActiveEffect", (effect, data, options, userId) =>
+                handleLock("effect", "update", effect, data, options, userId)
+            );
+            Hooks.on("preDeleteActiveEffect", (effect, options, userId) =>
+                handleLock("effect", "delete", effect, null, options, userId)
+            );
+
+            // Hooks related to the UI changes (Control Button, Actor Overlays)
+            if (Config.getGameMajorVersion() <= 12) {
+                // fr v12, we simply need to force a refresh  ofthe controls layer. This will fire the related getSceneControlButtons hooks above and add/remove the button as needed
+                ui.controls.initialize({layer: "token"});
             }
             Hooks.on("renderActorDirectory", (app, html) => {
                 renderActorDirectoryOverlays(app, html);
             });
+
+            // Hooks for capturing mod setting changes
             Hooks.on("updateSetting", async function (setting) {
                 if (setting.key.startsWith(Config.data.modID)) {
                     onGameSettingChanged();
@@ -126,92 +141,50 @@ async function initSocketlib() {
     Logger.debug(`(initSocketlib) Module ${Config.data.modID} registered in socketlib.`);
 }
 
-function onSheetChanged(item, data, options, userid) {
-    Logger.debug("(onSheetChanged) ",
-        "item:", item,
-        "data: ", data,
-        "options: ", options,
-        "userid: ", userid,
-        "game.user.id: ", game.user.id);
+/**
+ * Central hook handler for LockTheSheets
+ * @param {string} type - "actor", "item", or "effect"
+ * @param {string} action - "create", "update", "delete"
+ * @param {Document|Actor|Item|ActiveEffect} doc
+ * @param {object} data - the update data (if applicable)
+ * @param {object} options - the options object
+ * @param {string} userId - ID of the user performing the action
+ * @returns {boolean|undefined} false to block
+ */
+function handleLock(type, action, doc, data, options, userId) {
 
-    if (Config.setting('isActive') && !itemIsSheetLockActiveEffect(item) && (!game.user.isGM || Config.setting('lockForGM'))) {
+    // Only when module is set to "active"
+    if (!Config.setting("isActive")) return true;
 
-        if (!LockTheSheets.isSilentMode) {
-            ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
-                permanent: false,
-                localize: false,
-                console: false
-            });
-            if (Config.setting('alertGMOnReject')) {
-                socket.executeForAllGMs("sheetEditGMAlertUIMessage", game.users.get(userid)?.name, item.name);
-            }
-        } else {
-            LockTheSheets.isSilentMode = false;
-        }
-        return false;
+    // Skip GM
+    const user = game.users.get(userId);
+    if (!user || user.isGM) return true;
+
+    // Allow specific exceptions, e.g., equipping items
+    if (type === "item" && Config.setting("allowEquip")) {
+        const wornOrEquipped = data?.system?.worn ?? data?.system?.equipped;
+        if (wornOrEquipped != null) return true;
     }
-}
 
-function onItemChangedInSheet(item, data, options, userid) {
-    Logger.debug("(onItemChangedInSheet) ",
-        "item:", item,
-        "data: ", data,
-        "options: ", options,
-        "userid: ", userid,
-        "game.user.id: ", game.user.id);
-
-    if (Config.setting('isActive') && !itemIsSheetLockActiveEffect(item) && (!game.user.isGM || Config.setting('lockForGM'))) {
-
-        // Allow equip/unequip
-        if (Config.setting('allowEquip') && (
-            data?.system?.worn != null // tde5
-            ||
-            data?.system?.equipped != null // dnd5e
-        )) return true;
-
-        if (!LockTheSheets.isSilentMode) {
-            ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
-                permanent: false,
-                localize: false,
-                console: false
-            });
-            if (Config.setting('alertGMOnReject')) {
-                socket.executeForAllGMs("itemChangedGMAlertUIMessage", game.users.get(userid)?.name, item.name);
-            }
-        } else {
-            LockTheSheets.isSilentMode = false;
+    // Show message to player (unless in silent mode or suppressed once)
+    if (Config.setting('notifyOnChange') && !LockTheSheets.suppressNotificationsOnce) {
+        ui.notifications.error(
+            `[${Config.data.modTitle}] ${Config.localize("sheetEditRejected.playerMsg")}`
+        );
+        if (Config.setting("alertGMOnReject")) {
+            socket.executeForAllGMs(
+                "itemChangedGMAlertUIMessage",
+                user.name,
+                doc.name
+            );
         }
-        return false;
+    } else {
+        // Reset the one-time suppress flag after use
+        LockTheSheets.suppressNotificationsOnce = false;
     }
-}
 
-function onItemDeletedFromSheet(item, options, userid) {
-    Logger.debug("(onItemDeletedFromSheet) ",
-        "item:", item,
-        "options: ", options,
-        "userid: ", userid,
-        "game.user.id: ", game.user.id);
-
-    if (Config.setting('isActive') && !itemIsSheetLockActiveEffect(item) && (!game.user.isGM || Config.setting('lockForGM'))) {
-
-        if (!LockTheSheets.isSilentMode) {
-            ui.notifications.error("[" + Config.data.modTitle + "] " + Config.localize('sheetEditRejected.playerMsg'), {
-                permanent: false,
-                localize: false,
-                console: false
-            });
-            if (Config.setting('alertGMOnReject')) {
-                socket.executeForAllGMs("itemDeletedGMAlertUIMessage", game.users.get(userid)?.name, item.name);
-            }
-        } else {
-            LockTheSheets.isSilentMode = false;
-        }
-        return false;
-    }
-}
-
-function itemIsSheetLockActiveEffect(item) {
-    return item.name === getSheetLockActiveEffectName();
+    // Block the action
+    return false;
 }
 
 function getSheetLockActiveEffectName() {
@@ -227,10 +200,10 @@ async function onGameSettingChanged() {
     if (game.user.isGM && Config.setting('notifyOnChange')) {
         // UI messages should only be triggered by the GM via sockets.
         // This seems to be the only way to suppress them if needed.
-        if (!LockTheSheets.isSilentMode) {
+        if (!LockTheSheets.suppressNotificationsOnce) {
             socket.executeForEveryone("stateChangeUIMessage");
         } else {
-            LockTheSheets.isSilentMode = false;
+            LockTheSheets.suppressNotificationsOnce = false;
         }
     }
 
@@ -466,7 +439,7 @@ function itemDeletedGMAlertUIMessage(userName, itemName) {
 export class LockTheSheets {
     static isActive = false;
     static #previousState;
-    static isSilentMode;
+    static suppressNotificationsOnce;
 
     static healthCheck() {
         alert(`Module '${Config.data.modTitle}' says: '${ready2play ? `I am alive!` : `I am NOT ready - something went wrong:(`}'` );
@@ -503,11 +476,11 @@ export class LockTheSheets {
     /**
      *
      * @param newStateIsON
-     * @param silentMode if true, any UI messages related to this switch action will be suppressed (overriding game settings)
+     * @param suppressNotificationsOnce if true, any UI messages related to this switch action will be suppressed (overriding game settings)
      * @returns {Promise<void>}
      */
-    static async #switch(newStateIsON, silentMode = false) {
-        LockTheSheets.isSilentMode = silentMode;
+    static async #switch(newStateIsON, suppressNotificationsOnce = false) {
+        LockTheSheets.suppressNotificationsOnce = suppressNotificationsOnce;
         this.#previousState = this.isActive;
         // propagate change to the game settings, and wait for it to complete
         // It turned out to be much more stable here by waiting for game.settings to be updated.
