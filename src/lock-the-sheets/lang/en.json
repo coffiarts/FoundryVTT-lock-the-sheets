@@ -10,16 +10,16 @@
         "hint": "Client-side setting enabling extended debug logging."
       },
       "isActive": {
-        "name": "Active",
-        "hint": "Activate this module (i.e.: LOCK all character sheets)."
+        "name": "Activate lock",
+        "hint": "Turn sheet lock state ON (can be toggled in game via keybinding, macros or UI button)."
       },
       "allowEquip": {
-        "name": "Allow: Equip & Unequip",
+        "name": "Allow equip & unequip",
         "hint": "Should equipping/unequipping of inventory items be allowed while sheet lock is active?"
       },
       "showUIButton": {
-        "name": "Show UI Button",
-        "hint": "Display a button in the scene controls menu on the left hand for toggling Actor Sheet Lock on and off."
+        "name": "Show UI button",
+        "hint": "Display a button in the scene controls menu on the left hand for toggling lock state on and off."
       },
       "hideChatInfo": {
         "name": "Hide module info in chat window",
@@ -27,7 +27,7 @@
       },
       "notifyOnChange": {
         "name": "UI messages on toggle",
-        "hint": "Show temporary UI messages whenever toggling on and off (also works when switching via macro code)."
+        "hint": "Show temporary UI messages whenever toggling on and off."
       },
       "notifyPermanentlyWhileLOCKED": {
         "name": "Sticky screen message on activate",
@@ -46,20 +46,27 @@
         "hint": "Same rules for all! Apply locking to me as the GM as well (protecting myself from accidental edits)."
       },
       "showOverlayLocked": {
-        "name": "Show Status Icon when locked",
+        "name": "Show icons on locked actors",
         "hint": "Display an icon on tokens and actors when locked (Default: OFF)"
       },
-      "overlayIconLocked": {
-        "name": "Status Icon when locked",
-        "hint": "Pick which icon to display on tokens and actors when locked. Default: modules/lock-the-sheets/artwork/lock-red-closed.png"
-      },
       "showOverlayOpen": {
-        "name": "Show Status Icon when unlocked",
+        "name": "Show icons on unlocked actors",
         "hint": "Display an icon on tokens and actors when unlocked (Default: ON)"
       },
-      "overlayIconOpen": {
-        "name": "Status Icon when unlocked",
-        "hint": "Pick which icon to display on tokens and actors when unlocked. Default: modules/lock-the-sheets/artwork/lock-green-open.png"
+      "overlayScale": {
+        "name": "Icon size",
+        "hint": "Scale of the icons on locked/unlocked actors in scene view."
+      },
+      "overlayScaleOptions": {
+        "small": "small",
+        "normal": "normal",
+        "large": "large"
+      },
+      "keybindingNames": {
+        "toggle": "Lock The Sheets! (on/off)",
+        "scaleSmall": "Icon Size: small",
+        "scaleNormal": "Icon Size: normal",
+        "scaleLarge": "Icon Size: large"
       }
     },
     "chatInfoContent": {
@@ -81,7 +88,6 @@
     },
     "controlButton": {
       "label": "Lock The Sheets! ON/OFF"
-    },
-    "keybindingMenuLabel": "Toggle Lock The Sheets!"
+    }
   }
 }

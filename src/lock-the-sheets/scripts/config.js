@@ -17,6 +17,13 @@ export class Config {
         modlink: MOD_LINK
     };
 
+    static OVERLAY_ICONS = {
+        locked: `${Config.data.modPath}/artwork/lock-red-closed.png`,
+        open: `${Config.data.modPath}/artwork/lock-green-open.png`
+    }
+
+    static OVERLAY_SCALE_MAPPING = { small: 0.5, normal: 0.7, large: 1.1 };
+
     static init() {
 
         // Register all globally relevant game settings here
@@ -27,7 +34,7 @@ export class Config {
                 onChange: value => {
                     if (value !== game.modules.get(MOD_ID).version) {
                         // This "pseudo-setting" is meant for display only.
-                        // So we always want to snap back to its default on change
+                        // So we always want it to snap back to its default on change
                         game.settings.set(Config.data.modID, `modVersion`, game.modules.get(MOD_ID).version);
                     }
                 }
@@ -77,25 +84,23 @@ export class Config {
                 type: Boolean,
                 default: false
             },
-            overlayIconLocked: {
-                scope: 'world',
-                config: true,
-                type: String,
-                filePicker: "image",
-                default: `${Config.data.modPath}/artwork/lock-red-closed.png`
-            },
             showOverlayOpen: {
                 scope: 'world',
                 config: true,
                 type: Boolean,
                 default: true
             },
-            overlayIconOpen: {
+            overlayScale: {
                 scope: 'world',
                 config: true,
                 type: String,
-                filePicker: "image",
-                default: `${Config.data.modPath}/artwork/lock-green-open.png`
+                choices: {
+                    "small": Config.localize("setting.overlayScaleOptions.small"),
+                    "normal": Config.localize("setting.overlayScaleOptions.normal"),
+                    "large": Config.localize("setting.overlayScaleOptions.large")
+                },
+                default: "normal",
+                render: "radio"
             },
             showUIButton: {
                 scope: 'world', config: true, type: Boolean, default: true,
@@ -105,7 +110,7 @@ export class Config {
 
         // Add the keybinding
         game.keybindings.register("lock-the-sheets", "active", {
-            name: Config.localize('keybindingMenuLabel'),
+            name: Config.localize('setting.keybindingNames.toggle'),
             editable: [
                 //{ key: "KeyL", modifiers: [KeyboardManager.MODIFIER_KEYS.SHIFT] }
             ],
@@ -117,14 +122,49 @@ export class Config {
                 LockTheSheets.toggle();
             }
         });
-        Logger.info("Empty keybinding registered. Assign it to your liking in the game settings.");
+
+        game.keybindings.register("lock-the-sheets", "scale: small", {
+            name: Config.localize('setting.keybindingNames.scaleSmall'),
+            editable: [],
+            restricted: true,
+            onDown: () => {
+                if (!game.user.isGM) {
+                    return;
+                }
+                Config.modifySetting('overlayScale', 'small');
+            }
+        });
+        game.keybindings.register("lock-the-sheets", "scale: normal", {
+            name: Config.localize('setting.keybindingNames.scaleNormal'),
+            editable: [],
+            restricted: true,
+            onDown: () => {
+                if (!game.user.isGM) {
+                    return;
+                }
+                Config.modifySetting('overlayScale', 'normal');
+            }
+        });
+        game.keybindings.register("lock-the-sheets", "scale: large", {
+            name: Config.localize('setting.keybindingNames.scaleLarge'),
+            editable: [],
+            restricted: true,
+            onDown: () => {
+                if (!game.user.isGM) {
+                    return;
+                }
+                Config.modifySetting('overlayScale', 'large');
+            }
+        });
+
+        Logger.info("Empty keybindings registered. Assign them to your liking in the game settings.");
 
         // Whenever loading up, we need to adjust the "pseudo-setting" modVersion once to the current value from
         // the manifest. Otherwise, module updates won't be reflected in its value (users would always see their first
         // installed version ever in the settings menu).
         game.settings.set(Config.data.modID, 'modVersion', game.modules.get(MOD_ID).version);
-        Logger.debug("(Config.init) All game settings registered)");
 
+        Logger.debug("(Config.init) All game settings registered)");
     }
 
     static registerSettings(settingsData) {

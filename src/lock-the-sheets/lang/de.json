@@ -10,8 +10,8 @@
         "hint": "Aktiviert das Debug Logging."
       },
       "isActive": {
-        "name": "Aktiviert",
-        "hint": "Modul aktivieren (d.h. Charakterbögen sperren)."
+        "name": "Sperrung aktivieren",
+        "hint": "Schaltet die Sperrung aller Charakterbögen AN (kann im Spiel per Tastenkombination, Macro oder UI Button umgeschaltet werden)."
       },
       "allowEquip": {
         "name": "Aktion zulassen: Ausrüsten",
@@ -27,31 +27,38 @@
       },
       "notifyOnChange": {
         "name": "UI-Meldungen beim Umschalten",
-        "hint": "Zeige kurze Bannermeldungen an, wenn das Panning & Zooming aus- oder eingeschaltet wird (funktioniert auch beim Umschalten via Macro)."
+        "hint": "Zeige kurze Bannermeldungen an, wenn das Panning & Zooming aus- oder eingeschaltet wird."
       },
       "alertGMOnReject": {
         "name": "Spielleiter bei blockierten Änderungen alarmieren",
-        "hint": "Bildschirmwarnung für den SL anzeigen, wenn ein Spieler ein gesperrten Charakterbogen ändern will."
+        "hint": "Bildschirmwarnung für den SL anzeigen, wenn ein Spieler einen gesperrten Charakterbogen ändern will."
       },
       "lockForGM": {
         "name": "Sperrung auch für Spielleiter anwenden",
         "hint": "Gleiche Regeln für alle! Sperrung gilt auch für den SL (als Schutz vor unbeabsichtigten Änderungen)."
       },
       "showOverlayLocked": {
-        "name": "Status Icon bei Sperrung anzeigen",
+        "name": "Icons auf gesperrten Akteuren anzeigen",
         "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie gesperrt sind (Standard: AUS)"
       },
-      "overlayIconLocked": {
-        "name": "Status Icon bei Sperrung",
-        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie gesperrt sind? (Standard: modules/lock-the-sheets/artwork/lock-red-closed.png)"
-      },
       "showOverlayOpen": {
-        "name": "Status Icon bei Entsperrung anzeigen",
+        "name": "Icons auf freigegebenen Akteuren anzeigen",
         "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie entsperrt sind (Standard: AN)"
       },
-      "overlayIconOpen": {
-        "name": "Status Icon bei Entsperrung",
-        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie freigeschaltet sind? (Standard: modules/lock-the-sheets/artwork/lock-green-open.png)"
+      "overlayScale": {
+        "name": "Größe der Icons",
+        "hint": "Größe der Icons auf gesperrten/freigegebenen Akteuren in der Szenenansicht."
+      },
+      "overlayScaleOptions": {
+        "small": "klein",
+        "normal": "normal",
+        "large": "groß"
+      },
+      "keybindingNames": {
+        "toggle": "Lock The Sheets! ein-/ausschalten",
+        "scaleSmall": "Icon-Größe: klein",
+        "scaleNormal": "Icon-Größe: normal",
+        "scaleLarge": "Icon-Größe: groß"
       }
     },
     "chatInfoContent": {
@@ -73,7 +80,6 @@
     },
     "controlButton": {
       "label": "Lock The Sheets! EIN/AUS"
-    },
-    "keybindingMenuLabel": "Lock The Sheets! ein-/ausschalten"
+    }
   }
 }
