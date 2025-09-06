@@ -11,9 +11,11 @@ const SUBMODULES = {
 let ready2play;
 let socket;
 
+// Top-level, persistent across calls
+const tokenOverlays = new WeakMap();
+
 /**
  * Global initializer block:
- * First of all, we need to initialize a lot of stuff in correct order:
  */
 (async () => {
         console.log("Lock The Sheets! | Initializing Module");
@@ -76,20 +78,7 @@ let socket;
                 }
             });
 
-            // backward-compatibility with v11
-            if (Config.getGameMajorVersion() < 12) {
-                // In v11, token overlays are rendered permanently (with each frame) on every single client, so they need to be hooked
-                // Hooks related to rendering the status icon overlays
-                Hooks.on("drawToken", () => {
-                    renderTokenOverlays();
-                });
-                Hooks.on("refreshToken", () => {
-                    renderTokenOverlays();
-                });
-            } else {
-                // As of v12, token overlays are Active Effects, i.e. they're stateful. They are added and removed only on change
-                renderTokenOverlays();
-            }
+            renderTokenOverlays();
 
             stateChangeUIMessage();
         });
@@ -168,7 +157,7 @@ function handleLock(type, action, doc, data, options, userId) {
 
     // Show message to player (unless in silent mode or suppressed once)
     if (Config.setting('notifyOnChange') && !LockTheSheets.suppressNotificationsOnce) {
-        ui.notifications.error(
+        ui.notifications.warn(
             `[${Config.data.modTitle}] ${Config.localize("sheetEditRejected.playerMsg")}`
         );
         if (Config.setting("alertGMOnReject")) {
@@ -189,19 +178,24 @@ function handleLock(type, action, doc, data, options, userId) {
 
 async function onGameSettingChanged() {
 
-    // Handle the "Active" switch
-    LockTheSheets.isActive = Config.setting('isActive');
+    // Handle change of "Active" switch
+    if (LockTheSheets.isActive !== Config.setting('isActive')) {
 
-    // Handle the "Notification" options
-    if (game.user.isGM && Config.setting('notifyOnChange')) {
-        // UI messages should only be triggered by the GM via sockets.
-        // This seems to be the only way to suppress them if needed.
-        if (!LockTheSheets.suppressNotificationsOnce) {
-            socket.executeForEveryone("stateChangeUIMessage");
-        } else {
-            LockTheSheets.suppressNotificationsOnce = false;
+        LockTheSheets.isActive = Config.setting('isActive');
+
+        // Handle the "Notification" options
+        if (game.user.isGM && Config.setting('notifyOnChange')) {
+            // UI messages should only be triggered by the GM via sockets.
+            // This seems to be the only way to suppress them if needed.
+            if (!LockTheSheets.suppressNotificationsOnce) {
+                socket.executeForEveryone("stateChangeUIMessage");
+            } else {
+                LockTheSheets.suppressNotificationsOnce = false;
+            }
         }
     }
+
+
 
     // Handle the "Show UI Button" option
     if (game.user.isGM) { // It's a GM-only feature, so it can be safely skipped for any non-GM user
@@ -257,58 +251,63 @@ function defineCustomControlButton() {
 }
 
 /**
- * Render token overlays for lock state (v12+ with PIXI).
+ * Render overlays on scene tokens.
  */
-async function renderTokenOverlays() {
-    for (const tokenDoc of game.scenes.current.tokens) {
-        if (!tokenDoc.actorLink) continue; // only tokens that have an actor
-
-        const actor = game.actors.get(tokenDoc.actorId);
+function renderTokenOverlays() {
+    for (const token of canvas.tokens.placeables) {
+        const actor = token.actor;
         if (!actor) continue;
 
         const owner = findOwnerByActorName(actor.name);
-        if (!owner) continue; // only owned actor tokens show overlays
+        if (!owner) continue;
 
         const isOwner = owner === game.user;
         const canSeeOverlay = (isOwner && owner.active) || game.user.isGM;
 
-        if (!canSeeOverlay) continue;
+        if (!canSeeOverlay) {
+            // Remove overlay if present
+            const existing = tokenOverlays.get(token);
+            existing?.destroy();
+            tokenOverlays.delete(token);
+            continue;
+        }
 
-        // Decide which overlay to show (if any)
-        let overlayImg = "";
+        // Pick the icon based on lock state and config
+        let overlayImg = null;
         if (LockTheSheets.isActive && Config.setting("showOverlayLocked")) {
-            overlayImg = Config.setting("overlayIconLocked");
+            overlayImg = Config.OVERLAY_ICONS.locked;
         } else if (!LockTheSheets.isActive && Config.setting("showOverlayOpen")) {
-            overlayImg = Config.setting("overlayIconOpen");
+            overlayImg = Config.OVERLAY_ICONS.open;
+        }
+        if (!overlayImg) {
+            const existing = tokenOverlays.get(token);
+            existing?.destroy();
+            tokenOverlays.delete(token);
+            continue;
         }
 
-        // Get the actual rendered Token object
-        const tokenObj = tokenDoc.object;
-        if (!tokenObj) continue;
+        // Remove any old overlay
+        const existing = tokenOverlays.get(token);
+        existing?.destroy();
 
-        // First remove any existing overlay
-        const existing = tokenObj.icon.children.find(c => c.lockOverlay);
-        if (existing) {
-            existing.destroy();
-        }
+        // Create new overlay sprite
+        const sprite = window.PIXI.Sprite.from(overlayImg);
 
-        // Add new overlay if image is defined
-        if (overlayImg) {
-            const tex = await loadTexture(overlayImg);
-            const sprite = new PIXI.Sprite(tex);
+        // Scaling
+        const scaleFactor = Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")];
+        const baseSize = Math.min(token.w, token.h);
+        const spriteSize = baseSize * scaleFactor;
+        sprite.width = spriteSize;
+        sprite.height = spriteSize;
 
-            // Mark it for later cleanup
-            sprite.lockOverlay = true;
+        // Anchor and position: top-right corner
+        sprite.anchor.set(0, 1);
+        sprite.x = token.w - spriteSize;
+        sprite.y = spriteSize / 2 - 5;
 
-            // Position top right, size relative to token
-            sprite.width = tokenObj.w / 3;
-            sprite.height = tokenObj.h / 3;
-            sprite.x = tokenObj.w - sprite.width;
-            sprite.y = 0;
-
-            // Ensure above token art
-            tokenObj.icon.addChild(sprite);
-        }
+        // Attach overlay
+        token.addChild(sprite);
+        tokenOverlays.set(token, sprite);
     }
 }
 
@@ -329,8 +328,8 @@ async function renderActorDirectoryOverlays(app, html) {
             if (!owner) return; // skip unowned
 
             const imgPath = (LockTheSheets.isActive)
-                ? Config.setting("overlayIconLocked")
-                : Config.setting("overlayIconOpen");
+                ? Config.OVERLAY_ICONS.locked
+                : Config.OVERLAY_ICONS.open;
 
             if (!imgPath) return;
 
@@ -358,7 +357,7 @@ async function renderActorDirectoryOverlays(app, html) {
             const owner = findOwnerByActorName(actorName);
             //if (owner) Logger.debug("\nactorName", actorName, "\nowner", owner);
             if (owner != null) { // skip any unowned characters
-                const imgPath = (LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen');
+                const imgPath = (LockTheSheets.isActive) ? Config.OVERLAY_ICONS.locked : Config.OVERLAY_ICONS.open;
                 element.innerHTML = overlayIconAsHTML(actorName, imgPath) + element.innerHTML;
                 element.innerHTML = element.innerHTML.replace('data-src', 'src');
             }
@@ -410,7 +409,7 @@ function sheetEditGMAlertUIMessage(userName, sheetName) {
         Config.localize('sheetEditRejected.gmMsgSheet')
             .replace('{userName}', userName)
             .replace('{sheetName}', sheetName);
-    ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
+    ui.notifications.warn(`[${Config.data.modTitle}] ${message}`, {
         permanent: false,
         localize: false,
         console: false
@@ -423,7 +422,7 @@ function itemChangedGMAlertUIMessage(userName, itemName) {
         Config.localize('sheetEditRejected.gmMsgItem')
             .replace('{userName}', userName)
             .replace('{itemName}', itemName);
-    ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
+    ui.notifications.warn(`[${Config.data.modTitle}] ${message}`, {
         permanent: false,
         localize: false,
         console: false
@@ -436,7 +435,7 @@ function itemDeletedGMAlertUIMessage(userName, itemName) {
         Config.localize('sheetEditRejected.gmMsgItemDeleted')
             .replace('{userName}', userName)
             .replace('{itemName}', itemName);
-    ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
+    ui.notifications.warn(`[${Config.data.modTitle}] ${message}`, {
         permanent: false,
         localize: false,
         console: false
