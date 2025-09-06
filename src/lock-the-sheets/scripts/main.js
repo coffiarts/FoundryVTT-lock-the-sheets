@@ -78,9 +78,13 @@ const tokenOverlays = new WeakMap();
                 }
             });
 
+            if (Config.getGameMajorVersion() >= 13) {
+                renderUIButton();
+            }
+
             renderTokenOverlays();
 
-            stateChangeUIMessage();
+            // stateChangeUIMessage();
         });
     }
 )
@@ -176,6 +180,14 @@ function handleLock(type, action, doc, data, options, userId) {
     return false;
 }
 
+function renderUIButton() {
+    if (Config.setting('showUIButton')) {
+        ui.controls.addControl("token", defineCustomControlButton());
+    } else {
+        ui.controls.removeControl("token", "toggleLockTheSheets");
+    }
+}
+
 async function onGameSettingChanged() {
 
     // Handle change of "Active" switch
@@ -201,11 +213,7 @@ async function onGameSettingChanged() {
     if (game.user.isGM) { // It's a GM-only feature, so it can be safely skipped for any non-GM user
 
         if (Config.getGameMajorVersion() >= 13) { // in v13, we just add/remove the button via API as needed, without any hooking
-            if (Config.setting('showUIButton')) {
-                ui.controls.addControl("token", defineCustomControlButton());
-            } else {
-                ui.controls.removeControl("token", "toggleLockTheSheets");
-            }
+            renderUIButton();
         }
         else { // v12 or older
             // in v12 we simply need to force a refresh the controls layer. This will fire the related getSceneControlButtons hooks to add/remove the button as needed
