@@ -42,16 +42,24 @@
         "hint": "Show a sceen warning for the GM whenever a player tries to edit a locked sheet."
       },
       "lockForGM": {
-        "name": "Lock changes by GM",
-        "hint": "Same rules for all! Apply locking to me as the GM as well (protecting myself from doing unintended changes)."
+        "name": "Also lock changes for the GM",
+        "hint": "Same rules for all! Apply locking to me as the GM as well (protecting myself from accidental edits)."
+      },
+      "showOverlayLocked": {
+        "name": "Show Status Icon when locked",
+        "hint": "Display an icon on tokens and actors when locked (Default: OFF)"
       },
       "overlayIconLocked": {
-        "name": "Status Icon when locked (optional)",
-        "hint": "Pick which icon to display on tokens and actors when locked. Leave empty to disable icon completely. Default: modules/lock-the-sheets/artwork/lock-red-closed.png"
+        "name": "Status Icon when locked",
+        "hint": "Pick which icon to display on tokens and actors when locked. Default: modules/lock-the-sheets/artwork/lock-red-closed.png"
+      },
+      "showOverlayOpen": {
+        "name": "Show Status Icon when unlocked",
+        "hint": "Display an icon on tokens and actors when unlocked (Default: ON)"
       },
       "overlayIconOpen": {
-        "name": "Status Icon when unlocked (optional)",
-        "hint": "Pick which icon to display on tokens and actors when UNlocked. Leave empty to disable icon completely. Default: Default: modules/lock-the-sheets/artwork/lock-green-open.png"
+        "name": "Status Icon when unlocked",
+        "hint": "Pick which icon to display on tokens and actors when unlocked. Default: modules/lock-the-sheets/artwork/lock-green-open.png"
       }
     },
     "chatInfoContent": {

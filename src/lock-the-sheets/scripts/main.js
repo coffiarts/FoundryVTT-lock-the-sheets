@@ -187,10 +187,6 @@ function handleLock(type, action, doc, data, options, userId) {
     return false;
 }
 
-function getSheetLockActiveEffectName() {
-    return 'Sheet Lock';
-}
-
 async function onGameSettingChanged() {
 
     // Handle the "Active" switch
@@ -220,12 +216,13 @@ async function onGameSettingChanged() {
         else { // v12 or older
             // in v12 we simply need to force a refresh the controls layer. This will fire the related getSceneControlButtons hooks to add/remove the button as needed
             ui.controls.initialize({ layer: "token" });
+            ui.controls.render(true); // just for double safety, possibly not needed
         }
     }
 
     // Refresh Token status overlays
     renderTokenOverlays();
-    ui.sidebar.render(true); // just for double safety, maybe not needed
+    ui.sidebar.render(true); // just for double safety, possibly not needed
 }
 
 /**
@@ -260,54 +257,68 @@ function defineCustomControlButton() {
 }
 
 /**
- * Originally (v11) inspired by // https://github.com/LeafWulf/deathmark/blob/master/scripts/deathmark.js, using Token.overlayEffect.
- * But as of v12, this has been desupported and now needs to be done by ActiveEffects.
+ * Render token overlays for lock state (v12+ with PIXI).
  */
 async function renderTokenOverlays() {
-    for (const aToken of game.scenes.current.tokens) {
-        if (aToken.actorLink) {
-            // ensure that overlay is only rendered for the token's owner (the GM will implicitely see the change for all owned tokens)
-            const actor = game.actors.find((actor)=>{return (actor.id === aToken.actorId)});
-            const owner = findOwnerByActorName(actor.name);
-            // Logger.debug("owner", owner, "owner?.active", owner?.active, "game.user", game.user, "actor", actor, "owner === game.user", owner === game.user, "game.user.isGM", game.user.isGM);
-            if(owner != null) { // only owned tokens are meant to show an icon
+    for (const tokenDoc of game.scenes.current.tokens) {
+        if (!tokenDoc.actorLink) continue; // only tokens that have an actor
 
-                const overlayImg = (owner.active && owner === game.user || game.user.isGM) ? ((LockTheSheets.isActive) ? Config.setting('overlayIconLocked') : Config.setting('overlayIconOpen')) : "";
+        const actor = game.actors.get(tokenDoc.actorId);
+        if (!actor) continue;
 
-                if (owner === game.user || !owner.active && game.user.isGM) {
-                    // Logger.debug("overlayImg", overlayImg);
+        const owner = findOwnerByActorName(actor.name);
+        if (!owner) continue; // only owned actor tokens show overlays
 
-                    if (Config.getGameMajorVersion() < 12) {
-                        // Up to Foundry v11, adding a simple overlay image is sufficient
-                        await aToken.update({overlayEffect: overlayImg});
-                    } else {
-                        // As of v12, everything needs to be done through an ActiveEffect
-                        // see https://foundryvtt.com/api/interfaces/foundry.types.ActiveEffectData.html
-                        aToken.actor.effects.getName(getSheetLockActiveEffectName())?.delete();
-                        const activeEffectData = [{
-                            name: getSheetLockActiveEffectName(),
-                            img: overlayImg,
-                            flags: {
-                                core: {
-                                    overlay: true
-                                },
-                                dsa5: { // a dummy flag required by game system dsa5/tde5 as of version 6.x for handling status effects correctly
-                                    value: null
-                                }
-                            },
-                            duration: {
-                                seconds: 10000000000000000000 // still a nasty workaround to simulate a permanent status
-                            }
-                        }];
-                        await aToken.actor.createEmbeddedDocuments("ActiveEffect", activeEffectData);
-                    }
-                }
-            }
+        const isOwner = owner === game.user;
+        const canSeeOverlay = (isOwner && owner.active) || game.user.isGM;
+
+        if (!canSeeOverlay) continue;
+
+        // Decide which overlay to show (if any)
+        let overlayImg = "";
+        if (LockTheSheets.isActive && Config.setting("showOverlayLocked")) {
+            overlayImg = Config.setting("overlayIconLocked");
+        } else if (!LockTheSheets.isActive && Config.setting("showOverlayOpen")) {
+            overlayImg = Config.setting("overlayIconOpen");
+        }
+
+        // Get the actual rendered Token object
+        const tokenObj = tokenDoc.object;
+        if (!tokenObj) continue;
+
+        // First remove any existing overlay
+        const existing = tokenObj.icon.children.find(c => c.lockOverlay);
+        if (existing) {
+            existing.destroy();
+        }
+
+        // Add new overlay if image is defined
+        if (overlayImg) {
+            const tex = await loadTexture(overlayImg);
+            const sprite = new PIXI.Sprite(tex);
+
+            // Mark it for later cleanup
+            sprite.lockOverlay = true;
+
+            // Position top right, size relative to token
+            sprite.width = tokenObj.w / 3;
+            sprite.height = tokenObj.h / 3;
+            sprite.x = tokenObj.w - sprite.width;
+            sprite.y = 0;
+
+            // Ensure above token art
+            tokenObj.icon.addChild(sprite);
         }
     }
 }
 
 async function renderActorDirectoryOverlays(app, html) {
+
+    // Skip if overlays for current lock state are not enabled
+    if (LockTheSheets.isActive && !Config.setting('showOverlayLocked')
+        || !LockTheSheets.isActive && !Config.setting('showOverlayOpen'))
+        return;
+
     if (Config.getGameMajorVersion() >= 13) {
         Logger.debug("\nFIRED!");
         html.querySelectorAll('.directory-item.actor').forEach(element => {
@@ -378,7 +389,7 @@ function stateChangeUIMessage() {
     if (Config.setting('notifyOnChange')) {
 
         if (LockTheSheets.isActive) {
-            ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
+            ui.notifications.warn(`[${Config.data.modTitle}] ${message}`, {
                 permanent: false,
                 localize: false,
                 console: false
