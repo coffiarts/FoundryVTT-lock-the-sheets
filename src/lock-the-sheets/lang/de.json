@@ -37,13 +37,21 @@
         "name": "Sperrung auch für Spielleiter anwenden",
         "hint": "Gleiche Regeln für alle! Sperrung gilt auch für den SL (als Schutz vor unbeabsichtigten Änderungen)."
       },
+      "showOverlayLocked": {
+        "name": "Status Icon bei Sperrung anzeigen",
+        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie gesperrt sind (Standard: AUS)"
+      },
       "overlayIconLocked": {
-        "name": "Status Icon bei Sperrung (optional)",
-        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie gesperrt sind (leer lassen, falls kein Icon angezeigt werden soll)? (Standard: modules/lock-the-sheets/artwork/lock-red-closed.png)"
+        "name": "Status Icon bei Sperrung",
+        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie gesperrt sind? (Standard: modules/lock-the-sheets/artwork/lock-red-closed.png)"
+      },
+      "showOverlayOpen": {
+        "name": "Status Icon bei Entsperrung anzeigen",
+        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie entsperrt sind (Standard: AN)"
       },
       "overlayIconOpen": {
-        "name": "Status Icon bei Entsperrung (optional)",
-        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie freigeschaltet sind (leer lassen, falls kein Icon angezeigt werden soll)? (Standard: modules/lock-the-sheets/artwork/lock-green-open.png)"
+        "name": "Status Icon bei Entsperrung",
+        "hint": "Welches Icon soll auf Tokens und Akteuren angezeigt werden, wenn sie freigeschaltet sind? (Standard: modules/lock-the-sheets/artwork/lock-green-open.png)"
       }
     },
     "chatInfoContent": {

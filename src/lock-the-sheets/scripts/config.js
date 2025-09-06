@@ -38,14 +38,20 @@ export class Config {
         // create separator and title at the beginning of this settings section
         if (Config.getGameMajorVersion() >= 13) {
             Hooks.on('renderSettingsConfig', (app, html) => {
-                const inputEl = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.isActive`);
-                const formGroup = inputEl.closest(".form-group");
+                // Core
+                let formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.isActive`).closest(".form-group");
                 formGroup.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">Core</h4></div>`);
+                // UI
+                formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.alertGMOnReject`).closest(".form-group");
+                formGroup.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">UI</h4></div>`);
             });
         }
         else {
             Hooks.on('renderSettingsConfig', (app, [html]) => {
+                // Core
                 html.querySelector(`[data-setting-id="${Config.data.modID}.isActive"]`).insertAdjacentHTML('beforeBegin', `<h3>Core</h3>`)
+                // UI
+                html.querySelector(`[data-setting-id="${Config.data.modID}.alertGMOnReject"]`).insertAdjacentHTML('beforeBegin', `<h3>UI</h3>`)
             });
         }
 
@@ -53,10 +59,7 @@ export class Config {
             isActive: {
                 scope: 'world', config: true, type: Boolean, default: false,
             },
-            showUIButton: {
-                scope: 'world', config: true, type: Boolean, default: true,
-            },
-            notifyOnChange: {
+            allowEquip: {
                 scope: 'world', config: true, type: Boolean, default: true
             },
             lockForGM: {
@@ -65,12 +68,27 @@ export class Config {
             alertGMOnReject: {
                 scope: 'world', config: true, type: Boolean, default: true
             },
+            notifyOnChange: {
+                scope: 'world', config: true, type: Boolean, default: true
+            },
+            showOverlayLocked: {
+                scope: 'world',
+                config: true,
+                type: Boolean,
+                default: false
+            },
             overlayIconLocked: {
                 scope: 'world',
                 config: true,
                 type: String,
                 filePicker: "image",
                 default: `${Config.data.modPath}/artwork/lock-red-closed.png`
+            },
+            showOverlayOpen: {
+                scope: 'world',
+                config: true,
+                type: Boolean,
+                default: true
             },
             overlayIconOpen: {
                 scope: 'world',
@@ -79,11 +97,11 @@ export class Config {
                 filePicker: "image",
                 default: `${Config.data.modPath}/artwork/lock-green-open.png`
             },
-            allowEquip: {
-                scope: 'world', config: true, type: Boolean, default: true
-            }
+            showUIButton: {
+                scope: 'world', config: true, type: Boolean, default: true,
+            },
         };
-        Config.registerSettings(settingsData2   );
+        Config.registerSettings(settingsData2);
 
         // Add the keybinding
         game.keybindings.register("lock-the-sheets", "active", {
