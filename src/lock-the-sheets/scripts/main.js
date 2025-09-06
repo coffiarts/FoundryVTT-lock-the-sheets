@@ -147,7 +147,7 @@ function handleLock(type, action, doc, data, options, userId) {
 
     // Skip GM
     const user = game.users.get(userId);
-    if (!user || user.isGM) return true;
+    if (!user || user.isGM && !Config.setting("lockForGM")) return true;
 
     // Allow specific exceptions, e.g., equipping items
     if (type === "item" && Config.setting("allowEquip")) {
