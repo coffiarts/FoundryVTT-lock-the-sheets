@@ -82,7 +82,6 @@ const tokenOverlays = new WeakMap();
                 renderUIButton();
             }
             renderTokenOverlays();
-            createHUDOverlay();
             ui.sidebar.render(true);
             // stateChangeUIMessage();
         });
@@ -132,44 +131,6 @@ async function initSocketlib() {
     socket.register("itemChangedGMAlertUIMessage", itemChangedGMAlertUIMessage);
     socket.register("itemDeletedGMAlertUIMessage", itemDeletedGMAlertUIMessage);
     Logger.debug(`(initSocketlib) Module ${Config.data.modID} registered in socketlib.`);
-}
-
-function createHUDOverlay() {
-    // Avoid duplicates
-    if (document.getElementById(`${Config.data.modID}-hud`)) return;
-
-    const hud = document.createElement("div");
-    hud.id = `${Config.data.modID}-hud`;
-    hud.style.display = "inline-block";
-    hud.style.marginLeft = "10px"; // spacing from existing elements
-    hud.style.cursor = "pointer";
-    hud.style.zIndex = 100;
-    hud.style.cursor = "pointer";
-
-    const img = document.createElement("img");
-    img.id = `${Config.data.modID}-hud-icon`;
-    img.width = 100;
-    img.height = 100;
-    hud.appendChild(img);
-
-    hud.addEventListener("click", () => {
-        LockTheSheets.toggleLock(); // your existing toggle method
-        updateHUDOverlay();
-    });
-
-    // insert into Foundry's own UI container (top-left)
-    const uiTop = document.getElementById("ui-top");
-    uiTop.appendChild(hud);
-
-    updateHUDOverlay();
-}
-
-function updateHUDOverlay() {
-    const img = document.getElementById(`${Config.data.modID}-hud-icon`);
-    if (!img) return;
-    img.src = LockTheSheets.isActive
-        ? Config.OVERLAY_ICONS.locked
-        : Config.OVERLAY_ICONS.open;
 }
 
 /**
