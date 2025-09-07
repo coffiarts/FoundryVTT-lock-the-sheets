@@ -47,15 +47,15 @@
       },
       "showOverlayLocked": {
         "name": "Show icons on locked actors",
-        "hint": "Display an icon on tokens and actors when locked (Default: OFF)"
+        "hint": "Display an icon on tokens and actors when locked (Default: OFF).\nIt can  be toggled off also by using scale option 'invisible'."
       },
       "showOverlayOpen": {
         "name": "Show icons on unlocked actors",
-        "hint": "Display an icon on tokens and actors when unlocked (Default: ON)"
+        "hint": "Display an icon on tokens and actors when unlocked (Default: ON).\nIt can  be toggled off also by using scale option 'invisible'."
       },
       "overlayScale": {
         "name": "Icon size",
-        "hint": "Scale of the icons on locked/unlocked actors in scene view."
+        "hint": "Scale of the icons on locked/unlocked actors in scene view. Can also be toggled by custom keybindings in the global control settings."
       },
       "overlayScaleOptions": {
         "small": "small",
@@ -64,6 +64,7 @@
       },
       "keybindingNames": {
         "toggle": "Lock The Sheets! (on/off)",
+        "scaleZero": "Icon Size: invisible",
         "scaleSmall": "Icon Size: small",
         "scaleNormal": "Icon Size: normal",
         "scaleLarge": "Icon Size: large"
