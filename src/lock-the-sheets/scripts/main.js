@@ -64,7 +64,7 @@ const tokenOverlays = new WeakMap();
 
             // Hooks related to the UI changes (Control Button, Actor Overlays)
             if (Config.getGameMajorVersion() <= 12) {
-                // fr v12, we simply need to force a refresh  ofthe controls layer. This will fire the related getSceneControlButtons hooks above and add/remove the button as needed
+                // fr v12, we simply need to force a refresh of the controls layer. This will fire the related getSceneControlButtons hooks above and add/remove the button as needed
                 ui.controls.initialize({layer: "token"});
             }
             Hooks.on("renderActorDirectory", (app, html) => {
@@ -81,9 +81,9 @@ const tokenOverlays = new WeakMap();
             if (Config.getGameMajorVersion() >= 13) {
                 renderUIButton();
             }
-
             renderTokenOverlays();
-
+            createHUDOverlay();
+            ui.sidebar.render(true);
             // stateChangeUIMessage();
         });
     }
@@ -134,6 +134,44 @@ async function initSocketlib() {
     Logger.debug(`(initSocketlib) Module ${Config.data.modID} registered in socketlib.`);
 }
 
+function createHUDOverlay() {
+    // Avoid duplicates
+    if (document.getElementById(`${Config.data.modID}-hud`)) return;
+
+    const hud = document.createElement("div");
+    hud.id = `${Config.data.modID}-hud`;
+    hud.style.display = "inline-block";
+    hud.style.marginLeft = "10px"; // spacing from existing elements
+    hud.style.cursor = "pointer";
+    hud.style.zIndex = 100;
+    hud.style.cursor = "pointer";
+
+    const img = document.createElement("img");
+    img.id = `${Config.data.modID}-hud-icon`;
+    img.width = 100;
+    img.height = 100;
+    hud.appendChild(img);
+
+    hud.addEventListener("click", () => {
+        LockTheSheets.toggleLock(); // your existing toggle method
+        updateHUDOverlay();
+    });
+
+    // insert into Foundry's own UI container (top-left)
+    const uiTop = document.getElementById("ui-top");
+    uiTop.appendChild(hud);
+
+    updateHUDOverlay();
+}
+
+function updateHUDOverlay() {
+    const img = document.getElementById(`${Config.data.modID}-hud-icon`);
+    if (!img) return;
+    img.src = LockTheSheets.isActive
+        ? Config.OVERLAY_ICONS.locked
+        : Config.OVERLAY_ICONS.open;
+}
+
 /**
  * Central hook handler for LockTheSheets
  * @param {string} type - "actor", "item", or "effect"
@@ -172,7 +210,7 @@ function handleLock(type, action, doc, data, options, userId) {
             );
         }
     } else {
-        // Reset the one-time suppress flag after use
+        // Reset the one-time suppression flag after use
         LockTheSheets.suppressNotificationsOnce = false;
     }
 
@@ -302,21 +340,33 @@ function renderTokenOverlays() {
         const sprite = window.PIXI.Sprite.from(overlayImg);
 
         // Scaling
-        const scaleFactor = Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")];
-        const baseSize = Math.min(token.w, token.h);
-        const spriteSize = baseSize * scaleFactor;
-        sprite.width = spriteSize;
-        sprite.height = spriteSize;
+        const scaledSize = getScaledOverlaySize(token.w, token.h);
+        sprite.width = scaledSize;
+        sprite.height = scaledSize;
 
         // Anchor and position: top-right corner
         sprite.anchor.set(0, 1);
-        sprite.x = token.w - spriteSize;
-        sprite.y = spriteSize / 2 - 5;
+        sprite.x = token.w - scaledSize;
+        sprite.y = scaledSize;
 
         // Attach overlay
         token.addChild(sprite);
         tokenOverlays.set(token, sprite);
     }
+}
+
+function getScaledOverlaySize(parentWidth, parentHeight) {
+    const scaleFactor = Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")];
+    const baseSize = Math.min(parentWidth, parentHeight);
+    return Math.round(baseSize * scaleFactor);
+}
+
+function getScaledActorOverlayDimensions(parentElement) {
+    const scaledSize = getScaledOverlaySize(parentElement.width, parentElement.height);
+    const width = `${scaledSize}px`;
+    const height = `${scaledSize}px`;
+    const left = `${parentElement.width - scaledSize}px`;
+    return {width, height, left};
 }
 
 async function renderActorDirectoryOverlays(app, html) {
@@ -342,17 +392,26 @@ async function renderActorDirectoryOverlays(app, html) {
             if (!imgPath) return;
 
             // Create <img> overlay icon
+            const actorThumbnail = element.querySelector("img.thumbnail");
+            if (!actorThumbnail) return;
+
             const icon = document.createElement("img");
-            icon.classList.add("overlay-icon"); // optional, so you can style it with CSS
+            const {width, height, left} = getScaledActorOverlayDimensions(actorThumbnail);
+
+            // icon.classList.add("overlay-icon"); // optional, so you can style it with CSS
             icon.style.position = "absolute";
+            icon.style.width = width;
+            icon.style.height = height;
+            icon.style.top = "0";
+            icon.style.left = left;
+            icon.style.zIndex = "100";
             icon.src = imgPath;
             icon.alt = actorName;
             icon.title = actorName;
 
             // Insert before the actor’s thumbnail
-            const thumb = element.querySelector("img.thumbnail");
-            if (thumb) {
-                element.insertBefore(icon, thumb);
+            if (actorThumbnail) {
+                element.insertBefore(icon, actorThumbnail);
             } else {
                 element.prepend(icon);
             }
@@ -364,9 +423,10 @@ async function renderActorDirectoryOverlays(app, html) {
             const actorName = element.children[0].title;
             const owner = findOwnerByActorName(actorName);
             //if (owner) Logger.debug("\nactorName", actorName, "\nowner", owner);
+
             if (owner != null) { // skip any unowned characters
                 const imgPath = (LockTheSheets.isActive) ? Config.OVERLAY_ICONS.locked : Config.OVERLAY_ICONS.open;
-                element.innerHTML = overlayIconAsHTML(actorName, imgPath) + element.innerHTML;
+                element.innerHTML = overlayIconAsHTML(actorName, imgPath, element.children[0]) + element.innerHTML;
                 element.innerHTML = element.innerHTML.replace('data-src', 'src');
             }
         });
@@ -383,10 +443,14 @@ function findOwnerByActorName(actorName) {
     });
 }
 
-function overlayIconAsHTML(title, imgPath){
+function overlayIconAsHTML(title, imgPath, actorThumbnail){
     if (!imgPath) return "";
     const safeTitle = Config.escapeHtmlAttr(title);
-    return `<img style="position:absolute" title="${safeTitle}" src="${imgPath}" alt="${safeTitle}">`;
+    const {width, height, left} = getScaledActorOverlayDimensions(actorThumbnail);
+    const html =`<img style="position:absolute; width: ${width}; height: ${height}; left: ${left}" title="${safeTitle}" src="${imgPath}" alt="${safeTitle}">`;
+    Logger.debug("overlayIconAsHTML - element: ", actorThumbnail);
+    Logger.debug("overlayIconAsHTML - html: ", html);
+    return html;
 }
 
 function stateChangeUIMessage() {

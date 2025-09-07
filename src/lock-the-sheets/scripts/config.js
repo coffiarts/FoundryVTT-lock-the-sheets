@@ -22,7 +22,7 @@ export class Config {
         open: `${Config.data.modPath}/artwork/lock-green-open.png`
     }
 
-    static OVERLAY_SCALE_MAPPING = { small: 0.5, normal: 0.7, large: 1.1 };
+    static OVERLAY_SCALE_MAPPING = { zero: 0, small: 0.2, normal: 0.3, large: 0.4 };
 
     static init() {
 
@@ -95,6 +95,7 @@ export class Config {
                 config: true,
                 type: String,
                 choices: {
+                    "zero": Config.localize("setting.overlayScaleOptions.zero"),
                     "small": Config.localize("setting.overlayScaleOptions.small"),
                     "normal": Config.localize("setting.overlayScaleOptions.normal"),
                     "large": Config.localize("setting.overlayScaleOptions.large")
@@ -122,7 +123,17 @@ export class Config {
                 LockTheSheets.toggle();
             }
         });
-
+        game.keybindings.register("lock-the-sheets", "scale: zero", {
+            name: Config.localize('setting.keybindingNames.scaleZero'),
+            editable: [],
+            restricted: true,
+            onDown: () => {
+                if (!game.user.isGM) {
+                    return;
+                }
+                Config.modifySetting('overlayScale', 'zero');
+            }
+        });
         game.keybindings.register("lock-the-sheets", "scale: small", {
             name: Config.localize('setting.keybindingNames.scaleSmall'),
             editable: [],

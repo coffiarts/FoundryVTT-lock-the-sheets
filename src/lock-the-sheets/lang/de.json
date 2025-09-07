@@ -39,15 +39,15 @@
       },
       "showOverlayLocked": {
         "name": "Icons auf gesperrten Akteuren anzeigen",
-        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie gesperrt sind (Standard: AUS)"
+        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie gesperrt sind (Standard: AUS).\nDas Ausschalten kann auch durch die Größen-Option 'unsichtbar' simuliert werden."
       },
       "showOverlayOpen": {
         "name": "Icons auf freigegebenen Akteuren anzeigen",
-        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie entsperrt sind (Standard: AN)"
+        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie entsperrt sind (Standard: AN).\nDas Ausschalten kann auch durch die Größen-Option 'unsichtbar' simuliert werden."
       },
       "overlayScale": {
         "name": "Größe der Icons",
-        "hint": "Größe der Icons auf gesperrten/freigegebenen Akteuren in der Szenenansicht."
+        "hint": "Größe der Icons auf gesperrten/freigegebenen Akteuren in der Szenenansicht. Kann auch über eigene Tastenkombinationen in den globalen Kontrolleinstellungen umgeschaltet werden."
       },
       "overlayScaleOptions": {
         "small": "klein",
@@ -56,6 +56,7 @@
       },
       "keybindingNames": {
         "toggle": "Lock The Sheets! ein-/ausschalten",
+        "scaleZero": "Icon-Größe: unsichtbar",
         "scaleSmall": "Icon-Größe: klein",
         "scaleNormal": "Icon-Größe: normal",
         "scaleLarge": "Icon-Größe: groß"
