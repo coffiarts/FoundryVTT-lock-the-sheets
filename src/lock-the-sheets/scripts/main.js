@@ -1,6 +1,7 @@
 import {Logger} from './logger.js';
 import {Config} from './config.js'
 import {ChatInfo} from "./chatinfo.js";
+import {ControlButtonManager} from "./control-button-manager.js";
 
 const SUBMODULES = {
     MODULE: Config,
@@ -11,8 +12,8 @@ const SUBMODULES = {
 let ready2play;
 let socket;
 
-// Top-level, persistent across calls
 const tokenOverlays = new WeakMap();
+const buttonManager = new ControlButtonManager('token');
 
 /**
  * Global initializer block:
@@ -21,13 +22,6 @@ const tokenOverlays = new WeakMap();
         console.log("Lock The Sheets! | Initializing Module");
 
         await allPrerequisitesReady();
-
-        // The fist Hook needs to be registered before anything else, because it's used to add the custom control button on rendering the sidebar'
-        if (Config.getGameMajorVersion() <= 12) { // As of v13, this is done without hooks (this is covered later)
-            Hooks.on("getSceneControlButtons", (controls) => {
-                addCustomControlButtonV12(controls);
-            });
-        }
 
         Hooks.once("ready", () =>  {
             ready2play = true;
@@ -78,12 +72,11 @@ const tokenOverlays = new WeakMap();
                 }
             });
 
-            if (Config.getGameMajorVersion() >= 13) {
-                renderUIButton();
-            }
+            buttonManager.addTool(defineCustomControlButton());
+            updateUIButton();
+
             renderTokenOverlays();
-            ui.sidebar.render(true);
-            // stateChangeUIMessage();
+            // stateChangeUIMessage(); // Activate this only if you want to post an initial screen message on game load. But that's probably more annoying than helful.
         });
     }
 )
@@ -179,14 +172,6 @@ function handleLock(type, action, doc, data, options, userId) {
     return false;
 }
 
-function renderUIButton() {
-    if (Config.setting('showUIButton')) {
-        ui.controls.addControl("token", defineCustomControlButton());
-    } else {
-        ui.controls.removeControl("token", "toggleLockTheSheets");
-    }
-}
-
 async function onGameSettingChanged() {
 
     // Handle change of "Active" switch
@@ -206,55 +191,33 @@ async function onGameSettingChanged() {
         }
     }
 
-
-
-    // Handle the "Show UI Button" option
-    if (game.user.isGM) { // It's a GM-only feature, so it can be safely skipped for any non-GM user
-
-        if (Config.getGameMajorVersion() >= 13) { // in v13, we just add/remove the button via API as needed, without any hooking
-            renderUIButton();
-        }
-        else { // v12 or older
-            // in v12 we simply need to force a refresh the controls layer. This will fire the related getSceneControlButtons hooks to add/remove the button as needed
-            ui.controls.initialize({ layer: "token" });
-            ui.controls.render(true); // just for double safety, possibly not needed
-        }
-    }
-
     // Refresh Token status overlays
     renderTokenOverlays();
+    updateUIButton();
     ui.sidebar.render(true); // just for double safety, possibly not needed
-}
-
-/**
- * Only for v12. Adds a custom control button to the sidebar.
- * @param controls the temporary array of control definitions that are to be rendered
- */
-function addCustomControlButtonV12(controls) {
-
-    if (Config.getGameMajorVersion() > 12) return;
-    if (!game.user.isGM) return;
-    if (!Config.setting('showUIButton')) return;
-
-    let tokenControlTools = controls.find(control => control.name === "token")?.tools;
-
-        // Only add if not already present
-        if (!tokenControlTools.some(t => t.name === "toggleMyButton")) {
-            tokenControlTools.push(defineCustomControlButton());
-        }
 }
 
 function defineCustomControlButton() {
     return {
-        name: "toggleLockTheSheets",
+        name: `${Config.data.modID}-toggle-button`,
         title: Config.localize('controlButton.label'),
         icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
+        button: true,
         toggle: true,
         active: Config.setting('isActive'),
+        visible: () => (game.user.isGM && Config.setting('showUIButton')),
         onClick: (active) => {
             Config.modifySetting('isActive', active);
         }
     }
+}
+
+/**
+ * Render the UI button.
+ */
+function updateUIButton() {
+    buttonManager.setToolVisibility(`${Config.data.modID}-toggle-button`, Config.setting('showUIButton'));
+    buttonManager.setToolActiveState(`${Config.data.modID}-toggle-button`, Config.setting('isActive'));
 }
 
 /**
@@ -313,6 +276,8 @@ function renderTokenOverlays() {
         // Attach overlay
         token.addChild(sprite);
         tokenOverlays.set(token, sprite);
+
+        ui.sidebar.render(true);
     }
 }
 
@@ -408,10 +373,7 @@ function overlayIconAsHTML(title, imgPath, actorThumbnail){
     if (!imgPath) return "";
     const safeTitle = Config.escapeHtmlAttr(title);
     const {width, height, left} = getScaledActorOverlayDimensions(actorThumbnail);
-    const html =`<img style="position:absolute; width: ${width}; height: ${height}; left: ${left}" title="${safeTitle}" src="${imgPath}" alt="${safeTitle}">`;
-    Logger.debug("overlayIconAsHTML - element: ", actorThumbnail);
-    Logger.debug("overlayIconAsHTML - html: ", html);
-    return html;
+    return `<img style="position:absolute; width: ${width}; height: ${height}; left: ${left}" title="${safeTitle}" src="${imgPath}" alt="${safeTitle}">`;
 }
 
 function stateChangeUIMessage() {

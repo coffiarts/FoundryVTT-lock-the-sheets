@@ -167,6 +167,17 @@ export class Config {
                 Config.modifySetting('overlayScale', 'large');
             }
         });
+        game.keybindings.register("lock-the-sheets", "showUIButton", {
+            name: Config.localize('setting.showUIButton.name'),
+            editable: [],
+            restricted: true,
+            onDown: () => {
+                if (!game.user.isGM) {
+                    return;
+                }
+                Config.modifySetting('showUIButton', !Config.setting('showUIButton'));
+            }
+        });
 
         Logger.info("Empty keybindings registered. Assign them to your liking in the game settings.");
 
