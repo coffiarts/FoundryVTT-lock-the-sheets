@@ -1,19 +1,19 @@
 import {Logger} from './logger.js';
 import {Config} from './config.js'
 import {ChatInfo} from "./chatinfo.js";
-import {ControlButtonManager} from "./control-button-manager.js";
+import {ControlButtonManager} from "./controlbuttonmanager.js";
 
 const SUBMODULES = {
     MODULE: Config,
     logger: Logger,
-    chatinfo: ChatInfo
+    chatinfo: ChatInfo,
+    controlButtonManager: ControlButtonManager
 };
 
 let ready2play;
 let socket;
 
 const tokenOverlays = new WeakMap();
-const buttonManager = new ControlButtonManager('token');
 
 /**
  * Global initializer block:
@@ -21,95 +21,57 @@ const buttonManager = new ControlButtonManager('token');
 (async () => {
         console.log("Lock The Sheets! | Initializing Module");
 
-        await allPrerequisitesReady();
+        await setup();
 
         Hooks.once("ready", () =>  {
             ready2play = true;
             Logger.infoGreen(`Ready to play! Version: ${game.modules.get(Config.data.modID).version}`);
             Logger.infoGreen(Config.data.modDescription);
+
             LockTheSheets.isActive = Config.setting('isActive');
 
-            // Hooks related to sheet locking: Actors
-            Hooks.on("preUpdateActor", (actor, data, options, userId) =>
-                handleLock("actor", "update", actor, data, options, userId)
-            );
-
-            // Hooks related to sheet locking: Items
-            Hooks.on("preCreateItem", (item, data, options, userId) =>
-                handleLock("item", "create", item, data, options, userId)
-            );
-            Hooks.on("preUpdateItem", (item, data, options, userId) =>
-                handleLock("item", "update", item, data, options, userId)
-            );
-            Hooks.on("preDeleteItem", (item, options, userId) =>
-                handleLock("item", "delete", item, null, options, userId)
-            );
-
-            // Hooks related to sheet locking: ActiveEffects
-            Hooks.on("preCreateActiveEffect", (effect, data, options, userId) =>
-                handleLock("effect", "create", effect, data, options, userId)
-            );
-            Hooks.on("preUpdateActiveEffect", (effect, data, options, userId) =>
-                handleLock("effect", "update", effect, data, options, userId)
-            );
-            Hooks.on("preDeleteActiveEffect", (effect, options, userId) =>
-                handleLock("effect", "delete", effect, null, options, userId)
-            );
-
-            // Hooks related to the UI changes (Control Button, Actor Overlays)
-            if (Config.getGameMajorVersion() <= 12) {
-                // fr v12, we simply need to force a refresh of the controls layer. This will fire the related getSceneControlButtons hooks above and add/remove the button as needed
-                ui.controls.initialize({layer: "token"});
-            }
-            Hooks.on("renderActorDirectory", (app, html) => {
-                renderActorDirectoryOverlays(app, html);
-            });
-
-            // Hooks for capturing mod setting changes
-            Hooks.on("updateSetting", async function (setting) {
-                if (setting.key.startsWith(Config.data.modID)) {
-                    onGameSettingChanged();
-                }
-            });
-
-            buttonManager.addTool(defineCustomControlButton());
-            updateUIButton();
-
             renderTokenOverlays();
+
             // stateChangeUIMessage(); // Activate this only if you want to post an initial screen message on game load. But that's probably more annoying than helful.
         });
     }
 )
 ();
 
-async function allPrerequisitesReady() {
+async function setup() {
     return Promise.all([
-        areDependenciesReady(),
-        isSocketlibReady()
+        new Promise(resolve => {
+            Logger.debug("(setup) Waiting for setup to be ready...");
+            Hooks.once('setup', () => {
+                resolve(initSubmodules());
+                resolve(initExposedClasses());
+                resolve(initHooks());
+            });
+        }),
+        new Promise(resolve => {
+            Logger.debug("(setup) Waiting for socketlib to be ready...");
+            Hooks.once('socketlib.ready', () => {
+                resolve(initSocketlib());
+            });
+        })
     ]);
 }
 
-async function areDependenciesReady() {
-    return new Promise(resolve => {
-        Hooks.once('setup', () => {
-            resolve(initDependencies());
-            resolve(initExposedClasses());
-        });
+async function initSubmodules() {
+    Object.values(SUBMODULES).forEach(function (cl) {
+        cl.init(); // includes loading each module's settings
+        Logger.debug("(initSubmodules) Submodule loaded:", cl.name);
     });
 }
 
-async function isSocketlibReady() {
-    return new Promise(resolve => {
-        Hooks.once('socketlib.ready', () => {
-            resolve(initSocketlib());
-        });
-    });
-}
-async function initDependencies() {
-    Object.values(SUBMODULES).forEach(function (cl) {
-        cl.init(); // includes loading each module's settings
-        Logger.debug("(initDependencies) Submodule loaded:", cl.name);
-    });
+async function initSocketlib() {
+    Logger.debug(`(initSocketlib) Registering module ${Config.data.modID} in socketlib ...`);
+    socket = socketlib.registerModule(Config.data.modID);
+    socket.register("stateChangeUIMessage", stateChangeUIMessage);
+    socket.register("sheetEditGMAlertUIMessage", sheetEditGMAlertUIMessage);
+    socket.register("itemChangedGMAlertUIMessage", itemChangedGMAlertUIMessage);
+    socket.register("itemDeletedGMAlertUIMessage", itemDeletedGMAlertUIMessage);
+    Logger.debug(`(initSocketlib) Module ${Config.data.modID} registered in socketlib.`);
 }
 
 async function initExposedClasses() {
@@ -117,13 +79,45 @@ async function initExposedClasses() {
     Logger.debug("(initExposedClasses) Exposed classes are ready");
 }
 
-async function initSocketlib() {
-    socket = socketlib.registerModule(Config.data.modID);
-    socket.register("stateChangeUIMessage", stateChangeUIMessage);
-    socket.register("sheetEditGMAlertUIMessage", sheetEditGMAlertUIMessage);
-    socket.register("itemChangedGMAlertUIMessage", itemChangedGMAlertUIMessage);
-    socket.register("itemDeletedGMAlertUIMessage", itemDeletedGMAlertUIMessage);
-    Logger.debug(`(initSocketlib) Module ${Config.data.modID} registered in socketlib.`);
+async function initHooks() {
+    // Hooks related to sheet locking: Actors
+    Hooks.on("preUpdateActor", (actor, data, options, userId) =>
+        handleLock("actor", "update", actor, data, options, userId)
+    );
+
+    // Hooks related to sheet locking: Items
+    Hooks.on("preCreateItem", (item, data, options, userId) =>
+        handleLock("item", "create", item, data, options, userId)
+    );
+    Hooks.on("preUpdateItem", (item, data, options, userId) =>
+        handleLock("item", "update", item, data, options, userId)
+    );
+    Hooks.on("preDeleteItem", (item, options, userId) =>
+        handleLock("item", "delete", item, null, options, userId)
+    );
+
+    // Hooks related to sheet locking: ActiveEffects
+    Hooks.on("preCreateActiveEffect", (effect, data, options, userId) =>
+        handleLock("effect", "create", effect, data, options, userId)
+    );
+    Hooks.on("preUpdateActiveEffect", (effect, data, options, userId) =>
+        handleLock("effect", "update", effect, data, options, userId)
+    );
+    Hooks.on("preDeleteActiveEffect", (effect, options, userId) =>
+        handleLock("effect", "delete", effect, null, options, userId)
+    );
+
+    // Hook related to the UI changes (Control Button, Actor Overlays)
+    Hooks.on("renderActorDirectory", (app, html) => {
+        renderActorDirectoryOverlays(app, html);
+    });
+
+    // Hook for capturing mod setting changes
+    Hooks.on("updateSetting", async function (setting) {
+        if (setting.key.startsWith(Config.data.modID)) {
+            onGameSettingChanged();
+        }
+    });
 }
 
 /**
@@ -193,31 +187,7 @@ async function onGameSettingChanged() {
 
     // Refresh Token status overlays
     renderTokenOverlays();
-    updateUIButton();
     ui.sidebar.render(true); // just for double safety, possibly not needed
-}
-
-function defineCustomControlButton() {
-    return {
-        name: `${Config.data.modID}-toggle-button`,
-        title: Config.localize('controlButton.label'),
-        icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
-        button: true,
-        toggle: true,
-        active: Config.setting('isActive'),
-        visible: () => (game.user.isGM && Config.setting('showUIButton')),
-        onClick: (active) => {
-            Config.modifySetting('isActive', active);
-        }
-    }
-}
-
-/**
- * Render the UI button.
- */
-function updateUIButton() {
-    buttonManager.setToolVisibility(`${Config.data.modID}-toggle-button`, Config.setting('showUIButton'));
-    buttonManager.setToolActiveState(`${Config.data.modID}-toggle-button`, Config.setting('isActive'));
 }
 
 /**

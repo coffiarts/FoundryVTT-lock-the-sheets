@@ -24,6 +24,21 @@ export class Config {
 
     static OVERLAY_SCALE_MAPPING = { zero: 0, small: 0.2, normal: 0.3, large: 0.4 };
 
+    static getControlButtonDefinition() {
+        return {
+            name: 'lockTheSheets', // this MUST be a js code-compatible property name (i.e. no blanks, no spaces, no hyphens, no special chars!)
+            title: Config.localize('controlButton.label'),
+            icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
+            button: true,
+            toggle: true,
+            active: Config.setting('isActive'),
+            visible: () => (game.user.isGM && Config.setting('showUIButton')),
+            onClick: (active) => {
+                Config.modifySetting('isActive', active);
+            }
+        }
+    };
+
     static init() {
 
         // Register all globally relevant game settings here
@@ -123,6 +138,7 @@ export class Config {
                 LockTheSheets.toggle();
             }
         });
+
         game.keybindings.register("lock-the-sheets", "scale: zero", {
             name: Config.localize('setting.keybindingNames.scaleZero'),
             editable: [],
@@ -134,6 +150,7 @@ export class Config {
                 Config.modifySetting('overlayScale', 'zero');
             }
         });
+
         game.keybindings.register("lock-the-sheets", "scale: small", {
             name: Config.localize('setting.keybindingNames.scaleSmall'),
             editable: [],
@@ -145,6 +162,7 @@ export class Config {
                 Config.modifySetting('overlayScale', 'small');
             }
         });
+
         game.keybindings.register("lock-the-sheets", "scale: normal", {
             name: Config.localize('setting.keybindingNames.scaleNormal'),
             editable: [],
@@ -156,6 +174,7 @@ export class Config {
                 Config.modifySetting('overlayScale', 'normal');
             }
         });
+
         game.keybindings.register("lock-the-sheets", "scale: large", {
             name: Config.localize('setting.keybindingNames.scaleLarge'),
             editable: [],
@@ -167,6 +186,7 @@ export class Config {
                 Config.modifySetting('overlayScale', 'large');
             }
         });
+
         game.keybindings.register("lock-the-sheets", "showUIButton", {
             name: Config.localize('setting.showUIButton.name'),
             editable: [],

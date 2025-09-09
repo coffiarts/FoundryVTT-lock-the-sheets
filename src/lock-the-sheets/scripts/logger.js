@@ -26,6 +26,7 @@ export class Logger {
         };
         Config.registerSettings(settingsData);
     }
+
     static info(...args) {
         console.log(`${Config?.data?.modTitle ?? "" } [${Config?.data?.modID ?? "" }] | `, ...args);
     }
@@ -55,10 +56,5 @@ export class Logger {
         console.error(`${Config?.data?.modTitle ?? "" } [${Config?.data?.MOD_ID ?? "" }] | | ERROR | `, ...args);
         if (!suppressUIMsg)
             ui.notifications.error(`[${Config?.data?.modTitle ?? "" }] [${Config?.data?.modID ?? "" }] | ${args[0]}`);
-    }
-
-    static catchThrow(thrown, toastMsg = undefined) {
-        console.warn(thrown);
-        if(toastMsg) Logger.error(toastMsg);
     }
 }
