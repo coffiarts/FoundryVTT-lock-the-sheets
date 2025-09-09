@@ -1,5 +1,6 @@
 import {Logger} from './logger.js';
 import {LockTheSheets} from "./main.js";
+import {ControlButtonManager} from "./controlbuttonmanager.js";
 
 // keep values in sync with module.json!
 const MOD_ID = "lock-the-sheets";
@@ -24,17 +25,22 @@ export class Config {
 
     static OVERLAY_SCALE_MAPPING = { zero: 0, small: 0.2, normal: 0.3, large: 0.4 };
 
-    static getControlButtonDefinition() {
+    static getUIButtonDefinition() {
         return {
-            name: 'lockTheSheets', // this MUST be a js code-compatible property name (i.e. no blanks, no spaces, no hyphens, no special chars!)
-            title: Config.localize('controlButton.label'),
-            icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
-            button: true,
-            toggle: true,
-            active: Config.setting('isActive'),
-            visible: () => (game.user.isGM && Config.setting('showUIButton')),
-            onClick: (active) => {
-                Config.modifySetting('isActive', active);
+            group: ControlButtonManager.CONTROL_GROUPS.TOKENS,
+            tool: {
+                name: 'lockTheSheets', // this MUST be a js code-compatible property name (i.e. no blanks, no spaces, no hyphens, no special chars!)
+                title: Config.localize('controlButton.label'),
+                icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
+                button: true,
+                toggle: true,
+                active: () => (Config.setting('isActive')),
+                visible: () => (game.user.isGM && Config.setting('showUIButton')),
+                onChange: () => {
+                    const active = !Config.setting('isActive');
+                    Logger.debug("UI button onClick", active);
+                    Config.modifySetting('isActive', active);
+                }
             }
         }
     };
