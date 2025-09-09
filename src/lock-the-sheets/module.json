@@ -43,7 +43,7 @@
   "esmodules": [
     "/scripts/main.js",
     "/scripts/config.js",
-    "/scripts/control-button-manager.js",
+    "/scripts/controlbuttonmanager.js",
     "/scripts/logger.js",
     "/scripts/chatinfo.js"
   ],
