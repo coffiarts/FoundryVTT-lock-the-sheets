@@ -53,6 +53,18 @@ async function setup() {
             Hooks.once('socketlib.ready', () => {
                 resolve(initSocketlib());
             });
+        }),
+        new Promise(resolve => {
+            Hooks.once('ready', () => {
+                if (Config.getGameMajorVersion() >= 13) {
+                    initUIButtonV13();
+                }
+            });
+            Hooks.on('getSceneControlButtons', controls => {
+                if (Config.getGameMajorVersion() <= 12) {
+                    ControlButtonManager.registerButtonV12(Config.getUIButtonDefinition(), controls, Config.setting('showUIButton'));
+                }
+            });
         })
     ]);
 }
@@ -62,6 +74,10 @@ async function initSubmodules() {
         cl.init(); // includes loading each module's settings
         Logger.debug("(initSubmodules) Submodule loaded:", cl.name);
     });
+}
+
+function initUIButtonV13() {
+    ControlButtonManager.registerButtonV13Plus(Config.getUIButtonDefinition());
 }
 
 async function initSocketlib() {
@@ -188,6 +204,17 @@ async function onGameSettingChanged() {
     // Refresh Token status overlays
     renderTokenOverlays();
     ui.sidebar.render(true); // just for double safety, possibly not needed
+
+    // Refresh UI Button display state
+    if (Config.getGameMajorVersion() >= 13) {
+        if (Config.setting('showUIButton')) {
+            initUIButtonV13();
+        } else {
+            ControlButtonManager.removeButtonV13Plus(Config.getUIButtonDefinition().name);
+        }
+    } else { // v12 or older
+        ui.controls.render(true);
+    }
 }
 
 /**
@@ -273,12 +300,11 @@ async function renderActorDirectoryOverlays(app, html) {
         return;
 
     if (Config.getGameMajorVersion() >= 13) {
-        Logger.debug("\nFIRED!");
         html.querySelectorAll('.directory-item.actor').forEach(element => {
             // Grab the actor name text
             const actorName = element.querySelector(".entry-name")?.textContent.trim();
             const owner = findOwnerByActorName(actorName);
-            Logger.debug("\nactorName", actorName, "\nowner", owner);
+            // Logger.debug("\nactorName", actorName, "\nowner", owner);
             if (!owner) return; // skip unowned
 
             const imgPath = (LockTheSheets.isActive)
