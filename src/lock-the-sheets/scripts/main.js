@@ -12,6 +12,7 @@ const SUBMODULES = {
 
 let ready2play;
 let socket;
+let controlButtonManager = new ControlButtonManager();
 
 const tokenOverlays = new WeakMap();
 
@@ -19,9 +20,10 @@ const tokenOverlays = new WeakMap();
  * Global initializer block:
  */
 (async () => {
-        console.log("Lock The Sheets! | Initializing Module");
+        console.log("Lock The Sheets! [lock-the-sheets] | Initializing Module");
 
         await setup();
+        Logger.debug("... setup done");
 
         Hooks.once("ready", () =>  {
             ready2play = true;
@@ -29,6 +31,16 @@ const tokenOverlays = new WeakMap();
             Logger.infoGreen(Config.data.modDescription);
 
             LockTheSheets.isActive = Config.setting('isActive');
+
+            if (Config.getGameMajorVersion() >= 13) {
+                Logger.debug("Calling renderUIButtonV13() from Hooks.ready");
+                renderUIButtonV13();
+            }
+            else { // v12 or older
+                Hooks.on('getSceneControlButtons', controls => {
+                    controlButtonManager.registerButtonV12(Config.getUIButtonDefinition(), controls, Config.setting('showUIButton'));
+                });
+            }
 
             renderTokenOverlays();
 
@@ -39,31 +51,20 @@ const tokenOverlays = new WeakMap();
 ();
 
 async function setup() {
+    console.log("Lock The Sheets! [lock-the-sheets] (setup) Starting setup...");
     return Promise.all([
         new Promise(resolve => {
-            Logger.debug("(setup) Waiting for setup to be ready...");
-            Hooks.once('setup', () => {
-                resolve(initSubmodules());
-                resolve(initExposedClasses());
-                resolve(initHooks());
-            });
-        }),
-        new Promise(resolve => {
-            Logger.debug("(setup) Waiting for socketlib to be ready...");
+            console.log("[lock-the-sheets] (setup) Waiting for socketlib hook to be ready...");
             Hooks.once('socketlib.ready', () => {
                 resolve(initSocketlib());
             });
         }),
         new Promise(resolve => {
-            Hooks.once('ready', () => {
-                if (Config.getGameMajorVersion() >= 13) {
-                    initUIButtonV13();
-                }
-            });
-            Hooks.on('getSceneControlButtons', controls => {
-                if (Config.getGameMajorVersion() <= 12) {
-                    ControlButtonManager.registerButtonV12(Config.getUIButtonDefinition(), controls, Config.setting('showUIButton'));
-                }
+            console.log("[lock-the-sheets] (setup) Waiting for setup hook to be ready...");
+            Hooks.once('setup', () => {
+                resolve(initSubmodules());
+                resolve(initExposedClasses());
+                resolve(initHooks());
             });
         })
     ]);
@@ -76,8 +77,20 @@ async function initSubmodules() {
     });
 }
 
-function initUIButtonV13() {
-    ControlButtonManager.registerButtonV13Plus(Config.getUIButtonDefinition());
+function renderUIButtonV13() {
+    const buttonExists = controlButtonManager.hasButton(Config.getUIButtonDefinition().tool.name);
+    const showButton = Config.setting('showUIButton');
+
+    Logger.debug(`(renderUIButtonV13) buttonExists: ${buttonExists}`);
+    Logger.debug(`(renderUIButtonV13) showButton: ${showButton}`);
+
+    const buttonDef = Config.getUIButtonDefinition();
+    if (!buttonExists && Config.setting('showUIButton')) {
+        controlButtonManager.registerButtonV13Plus(buttonDef);
+    }
+    else if (buttonExists && !Config.setting('showUIButton')) {
+        controlButtonManager.removeButtonV13Plus(buttonDef.tool.name);
+    }
 }
 
 async function initSocketlib() {
@@ -207,11 +220,8 @@ async function onGameSettingChanged() {
 
     // Refresh UI Button display state
     if (Config.getGameMajorVersion() >= 13) {
-        if (Config.setting('showUIButton')) {
-            initUIButtonV13();
-        } else {
-            ControlButtonManager.removeButtonV13Plus(Config.getUIButtonDefinition().name);
-        }
+        Logger.debug("Calling renderUIButtonV13() from onGameSettingChanged");
+        await renderUIButtonV13();
     } else { // v12 or older
         ui.controls.render(true);
     }
