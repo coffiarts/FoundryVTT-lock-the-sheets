@@ -26,24 +26,48 @@ export class Config {
     static OVERLAY_SCALE_MAPPING = { zero: 0, small: 0.2, normal: 0.3, large: 0.4 };
 
     static getUIButtonDefinition() {
-        return {
-            group: ControlButtonManager.CONTROL_GROUPS.TOKENS,
-            tool: {
-                name: 'lockTheSheets', // this MUST be a js code-compatible property name (i.e. no blanks, no spaces, no hyphens, no special chars!)
-                title: Config.localize('controlButton.label'),
-                icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
-                button: true,
-                toggle: true,
-                active: () => (Config.setting('isActive')),
-                visible: () => (game.user.isGM && Config.setting('showUIButton')),
-                onChange: () => {
-                    const active = !Config.setting('isActive');
-                    Logger.debug("UI button onClick", active);
-                    Config.modifySetting('isActive', active);
+        if (Config.getGameMajorVersion() >= 13) {
+            // v13 or newer: use onChange handler instead of onClick handler
+            return {
+                group: ControlButtonManager.CONTROL_GROUPS.TOKENS,
+                tool: {
+                    name: 'lockTheSheets', // this MUST be a js code-compatible property name (i.e. no blanks, no spaces, no hyphens, no special chars!)
+                    title: Config.localize('controlButton.label'),
+                    icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
+                    button: true,
+                    toggle: true,
+                    active: () => (game.user.isGM && Config.setting('isActive')),
+                    visible: () => (game.user.isGM && Config.setting('showUIButton')),
+                    onChange: () => {
+                        Config.toggleActiveState();
+                    }
+                }
+            }
+        } else {
+            // v12: use onClick handler instead of onChange handler
+            return {
+                group: ControlButtonManager.CONTROL_GROUPS.TOKENS,
+                tool: {
+                    name: 'lockTheSheets', // this MUST be a js code-compatible property name (i.e. no blanks, no spaces, no hyphens, no special chars!)
+                    title: Config.localize('controlButton.label'),
+                    icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
+                    button: true,
+                    toggle: true,
+                    active: () => (game.user.isGM && Config.setting('isActive')),
+                    visible: () => (game.user.isGM && Config.setting('showUIButton')),
+                    onClick: () => {
+                        Config.toggleActiveState();
+                    }
                 }
             }
         }
-    };
+    }
+
+    static toggleActiveState() {
+        const active = !Config.setting('isActive');
+        Logger.debug("UI button onClick", active);
+        Config.modifySetting('isActive', active);
+    }
 
     static init() {
 
