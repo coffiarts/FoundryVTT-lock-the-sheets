@@ -23,7 +23,16 @@ const tokenOverlays = new WeakMap();
         console.log("Lock The Sheets! [lock-the-sheets] | Initializing Module");
 
         await setup();
-        Logger.debug("... setup done");
+
+        Logger.debug("(setup) Waiting for getSceneControlButtons hook to be ready...");
+        if (Config.getGameMajorVersion() <= 12) {
+            Hooks.on('getSceneControlButtons', controls => {
+                controlButtonManager.registerButtonOnceV12(Config.getUIButtonDefinition(), controls);
+            });
+        }
+        Logger.debug("(setup) ... getSceneControlButtons hook complete.");
+
+        Logger.debug("... SETUP COMPLETE.");
 
         Hooks.once("ready", () =>  {
             ready2play = true;
@@ -36,14 +45,9 @@ const tokenOverlays = new WeakMap();
                 Logger.debug("Calling renderUIButtonV13() from Hooks.ready");
                 renderUIButtonV13();
             }
-            else { // v12 or older
-                Hooks.on('getSceneControlButtons', controls => {
-                    controlButtonManager.registerButtonV12(Config.getUIButtonDefinition(), controls, Config.setting('showUIButton'));
-                });
-            }
 
             renderTokenOverlays();
-
+            ui.controls.render();
             // stateChangeUIMessage(); // Activate this only if you want to post an initial screen message on game load. But that's probably more annoying than helful.
         });
     }
@@ -51,21 +55,23 @@ const tokenOverlays = new WeakMap();
 ();
 
 async function setup() {
-    console.log("Lock The Sheets! [lock-the-sheets] (setup) Starting setup...");
+    console.log("Lock The Sheets! [lock-the-sheets] | DEBUG | (setup) STARTING SETUP...");
     return Promise.all([
         new Promise(resolve => {
-            console.log("[lock-the-sheets] (setup) Waiting for socketlib hook to be ready...");
+            console.log("Lock The Sheets! [lock-the-sheets] | DEBUG | (setup) Waiting for socketlib hook to be ready...");
             Hooks.once('socketlib.ready', () => {
                 resolve(initSocketlib());
             });
+            console.log("Lock The Sheets! [lock-the-sheets] | DEBUG | (setup) ... socketlib hook complete.");
         }),
         new Promise(resolve => {
-            console.log("[lock-the-sheets] (setup) Waiting for setup hook to be ready...");
+            console.log("Lock The Sheets! [lock-the-sheets] | DEBUG | (setup) Waiting for setup hook to be ready...");
             Hooks.once('setup', () => {
                 resolve(initSubmodules());
                 resolve(initExposedClasses());
                 resolve(initHooks());
             });
+            Logger.debug("(setup) ... setup hook complete.");
         })
     ]);
 }
@@ -220,10 +226,11 @@ async function onGameSettingChanged() {
 
     // Refresh UI Button display state
     if (Config.getGameMajorVersion() >= 13) {
-        Logger.debug("Calling renderUIButtonV13() from onGameSettingChanged");
         await renderUIButtonV13();
+    } else { // v12
+        controlButtonManager.refreshUIButtonV12(Config.getUIButtonDefinition());
     }
-    ui.controls.render(true);
+    ui.controls.render();
 }
 
 /**
