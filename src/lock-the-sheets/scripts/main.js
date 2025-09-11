@@ -222,9 +222,8 @@ async function onGameSettingChanged() {
     if (Config.getGameMajorVersion() >= 13) {
         Logger.debug("Calling renderUIButtonV13() from onGameSettingChanged");
         await renderUIButtonV13();
-    } else { // v12 or older
-        ui.controls.render(true);
     }
+    ui.controls.render(true);
 }
 
 /**
