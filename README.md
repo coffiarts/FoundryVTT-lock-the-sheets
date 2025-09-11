@@ -1,3 +1,11 @@
+### Announcement and good news!
+Migration to v13 will be possible after all - and it's imminent (almost done)!
+Luckily, I've managed not only to migrate the core functionality, but also to give this whole mod a **big revamp** - hopefully turning it into something robust and useful after all.
+In the v12 version, it has always been a "hack" (e.g. because it was wildly abusing Active Effects on tokens to visualize the lock state, which was gruesome, invasive and conflict-prone). In the new version, everything visual will be done very cleanly (i.e. only visually, without invading actor sheets). I've also reworked the detection of events to block.
+So I am quite confident that the migration (which was a big ordeal) will transform this mod into what it was always _meant_ to be - maybe giving at some more attention in the future.
+It's only a matter of days now to complete the final polishings.
+For more details. feel free to follow [Issue #6](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/issues/6) and the [dev branch](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/tree/dev).
+
 ![](https://img.shields.io/badge/Foundry-v11-informational)
 ![](https://img.shields.io/badge/Foundry-v12-informational)
 [![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Flock-the-sheets)](https://forge-vtt.com/bazaar#package=lock-the-sheets)
