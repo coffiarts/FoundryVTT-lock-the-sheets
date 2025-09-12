@@ -14,7 +14,11 @@ let ready2play;
 let socket;
 let controlButtonManager = new ControlButtonManager();
 
-const tokenOverlays = new WeakMap();
+// A cache for the generated token overlays (PIXI sprites), so that nothing is re-created on every render.
+const tokenOverlaysCache = new WeakMap();
+
+// A cache for the generated notification messages, so that we can suppress redundant alerts
+const notificationCache = new Map();
 
 /**
  * Global initializer block:
@@ -182,6 +186,26 @@ function handleLock(type, action, doc, data, options, userId) {
 
     // Show message to player (unless in silent mode or suppressed once)
     if (Config.setting('notifyOnChange') && !LockTheSheets.suppressNotificationsOnce) {
+
+        // Suppress multiple notifications for the same user within the same second:
+        // For that, we calculate the event's time in seconds, then use it as id for the notification cache.
+        const timestampInSeconds = Math.round(options.modifiedTime/1000);
+        const notificationCacheKey = `${userId}-${timestampInSeconds}`;
+        if (notificationCache.has(notificationCacheKey)) {
+            Logger.debug("LockTheSheets.handleLock - notification skipped, because it was too clause to the previous one", notificationCacheKey);
+            return;
+        }
+        // Register the new message in the cache
+        notificationCache.set(notificationCacheKey, options.modifiedTime);
+
+        // Purge any entries older than 3 sec from the cache
+        for (let key of notificationCache.keys()) {
+            if (notificationCache.get(key) < Date.now() - 3000)
+                notificationCache.delete(key);
+        }
+
+        Logger.debug("LockTheSheets.handleLock - notificationCache", notificationCache);
+
         ui.notifications.warn(
             `[${Config.data.modTitle}] ${Config.localize("sheetEditRejected.playerMsg")}`
         );
@@ -249,9 +273,9 @@ function renderTokenOverlays() {
 
         if (!canSeeOverlay) {
             // Remove overlay if present
-            const existing = tokenOverlays.get(token);
+            const existing = tokenOverlaysCache.get(token);
             existing?.destroy();
-            tokenOverlays.delete(token);
+            tokenOverlaysCache.delete(token);
             continue;
         }
 
@@ -263,14 +287,14 @@ function renderTokenOverlays() {
             overlayImg = Config.OVERLAY_ICONS.open;
         }
         if (!overlayImg) {
-            const existing = tokenOverlays.get(token);
+            const existing = tokenOverlaysCache.get(token);
             existing?.destroy();
-            tokenOverlays.delete(token);
+            tokenOverlaysCache.delete(token);
             continue;
         }
 
         // Remove any old overlay
-        const existing = tokenOverlays.get(token);
+        const existing = tokenOverlaysCache.get(token);
         existing?.destroy();
 
         // Create new overlay sprite
@@ -288,7 +312,7 @@ function renderTokenOverlays() {
 
         // Attach overlay
         token.addChild(sprite);
-        tokenOverlays.set(token, sprite);
+        tokenOverlaysCache.set(token, sprite);
 
         ui.sidebar.render(true);
     }

@@ -66,7 +66,7 @@
       "title": "Lock The Sheets!<br/>(by coffiarts)",
       "text1": "Sei der Türsteher!<br/>Alle Charakterbögen mit einem Klick sperren und entsperren!",
       "text2": "Mit diesem kleinen, aber nützlichen Hilfsmodul kann der Game Master auf Knopfdruck jegliche Änderungen am Inhalt von Charakterbögen durch die Spieler sperren und entsperren.",
-      "text3": "Ein- und ausschaltbar wahlweise per Spielinstellungen, mit einem (optionalen) UI Button, oder via Macro Code und Macro Button.<br/>Bitte Konfigurationsoptionen in den Spieleinstellungen beachten.<br/><br/>Mehr Details auf GitHub",
+      "text3": "Ein- und ausschaltbar wahlweise per Spieleinstellungen, mit einem (optionalen) UI Button, oder via Macro Code und Macro Button.<br/>Bitte Konfigurationsoptionen in den Spieleinstellungen beachten.<br/><br/>Mehr Details auf GitHub",
       "footer": "Diese Nachricht wird nur einmal angezeigt. Zum Wiederanzeigen bitte die entsprechende Option in den Moduleinstellungen verwenden."
     },
     "onOffUIMessage": {
@@ -74,10 +74,10 @@
       "whenOFF": "Charakterbögen sind jetzt freigeschaltet."
     },
     "sheetEditRejected": {
-      "playerMsg": "Charakterbögen sind GESPERRT! Änderung wird nicht übernommen.",
-      "gmMsgSheet": "[{userName}] versucht, den Akteur [{sheetName}] zu verändern.",
-      "gmMsgItem": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] hinzuzufügen oder zu ändern.",
-      "gmMsgItemDeleted": "[{userName}] versucht, auf einem Charakterbogen den Item [{itemName}] zu löschen."
+      "playerMsg": "Charakterbögen sind momentan zentral durch den Spielleiter gesperrt. Änderungen werden nicht übernommen.",
+      "gmMsgSheet": "[{userName}] versucht, einen Akteur zu verändern: [{sheetName}]",
+      "gmMsgItem": "[{userName}] versucht, auf einem Charakterbogen etwas zu ändern:  [{itemName}]",
+      "gmMsgItemDeleted": "[{userName}] versucht, auf einem Charakterbogen etwas zu löschen: Item [{itemName}]"
     },
     "controlButton": {
       "label": "Lock The Sheets! EIN/AUS"

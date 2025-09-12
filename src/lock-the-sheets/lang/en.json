@@ -82,10 +82,10 @@
       "whenOFF": "Character Sheets are now unlocked."
     },
     "sheetEditRejected": {
-      "playerMsg": "Character sheets are LOCKED! Your change won't be saved.",
-      "gmMsgSheet": "[{userName}] is attempting to modify actor [{sheetName}].",
-      "gmMsgItem": "[{userName}] is attempting to create or change item [{itemName}] in character sheet.",
-      "gmMsgItemDeleted": "[{userName}] is attempting to delete item [{itemName}] from character sheet."
+      "playerMsg": "Character sheets are currently locked remotely by the game master. Changes won't be saved.",
+      "gmMsgSheet": "[{userName}] is attempting to modify actor: [{sheetName}].",
+      "gmMsgItem": "[{userName}] is attempting to change something in actor sheet: [{itemName}]",
+      "gmMsgItemDeleted": "[{userName}] is attempting to delete something from actor sheet: [{itemName}]"
     },
     "controlButton": {
       "label": "Lock The Sheets! ON/OFF"
