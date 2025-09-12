@@ -10,7 +10,6 @@ const SUBMODULES = {
     controlButtonManager: ControlButtonManager
 };
 
-let ready2play;
 let socket;
 let controlButtonManager = new ControlButtonManager();
 
@@ -19,6 +18,8 @@ const tokenOverlaysCache = new WeakMap();
 
 // A cache for the generated notification messages, so that we can suppress redundant alerts
 const notificationCache = new Map();
+
+let ready2play;
 
 /**
  * Global initializer block:
@@ -39,20 +40,20 @@ const notificationCache = new Map();
         Logger.debug("... SETUP COMPLETE.");
 
         Hooks.once("ready", () =>  {
-            ready2play = true;
-            Logger.infoGreen(`Ready to play! Version: ${game.modules.get(Config.data.modID).version}`);
-            Logger.infoGreen(Config.data.modDescription);
-
+            initHooks();
             LockTheSheets.isActive = Config.setting('isActive');
-
             if (Config.getGameMajorVersion() >= 13) {
                 Logger.debug("Calling renderUIButtonV13() from Hooks.ready");
                 renderUIButtonV13();
             }
-
             renderTokenOverlays();
             ui.controls.render();
+
+            Logger.infoGreen(`Ready to play! Version: ${game.modules.get(Config.data.modID).version}`);
+            Logger.infoGreen(Config.data.modDescription);
             // stateChangeUIMessage(); // Activate this only if you want to post an initial screen message on game load. But that's probably more annoying than helful.
+
+            ready2play = true;
         });
     }
 )
@@ -73,7 +74,6 @@ async function setup() {
             Hooks.once('setup', () => {
                 resolve(initSubmodules());
                 resolve(initExposedClasses());
-                resolve(initHooks());
             });
             Logger.debug("(setup) ... setup hook complete.");
         })
@@ -118,7 +118,7 @@ async function initExposedClasses() {
     Logger.debug("(initExposedClasses) Exposed classes are ready");
 }
 
-async function initHooks() {
+function initHooks() {
     // Hooks related to sheet locking: Actors
     Hooks.on("preUpdateActor", (actor, data, options, userId) =>
         handleLock("actor", "update", actor, data, options, userId)
@@ -146,6 +146,20 @@ async function initHooks() {
         handleLock("effect", "delete", effect, null, options, userId)
     );
 
+    // The following one detects any user interaction on Actor Sheets and marks it as such.
+    // This is needed to distinguish user-initiated changes from programmatic or system-initiated changes later
+    Hooks.on(Config.getActorSheetHookByVersionAndGameSystem(), (app, html, data) => {
+        const root = html instanceof HTMLElement ? html : html[0]; // pick whichever is correct
+        ["input", "change", "click"].forEach(type => {
+            root.addEventListener(type, (event) => {
+                if (Config.setting("isActive")) {
+                    Logger.debug(`(${Config.getActorSheetHookByVersionAndGameSystem()}) - user interaction detected`, event.type, event.target);
+                    LockTheSheets.userInteractionDetected = true;
+                }
+            }, {capture: true});
+        });
+    });
+
     // Hook related to the UI changes (Control Button, Actor Overlays)
     Hooks.on("renderActorDirectory", (app, html) => {
         renderActorDirectoryOverlays(app, html);
@@ -167,22 +181,36 @@ async function initHooks() {
  * @param {object} data - the update data (if applicable)
  * @param {object} options - the options object
  * @param {string} userId - ID of the user performing the action
- * @returns {boolean|undefined} false to block
+ * @returns {boolean|undefined} false to block, true to allow
  */
 function handleLock(type, action, doc, data, options, userId) {
 
     // Only when module is set to "active"
-    if (!Config.setting("isActive")) return true;
+    if (!Config.setting("isActive")) return true; // true = allow
 
     // Skip GM
     const user = game.users.get(userId);
-    if (!user || user.isGM && !Config.setting("lockForGM")) return true;
+    if (!user || user.isGM && !Config.setting("lockForGM")) {
+        Logger.debug("LockTheSheets.handleLock - user is a GM (and lockForGM is off), so allowing the action", options);
+        return true; // true = allow
+    }
 
     // Allow specific exceptions, e.g., equipping items
     if (type === "item" && Config.setting("allowEquip")) {
         const wornOrEquipped = data?.system?.worn ?? data?.system?.equipped;
-        if (wornOrEquipped != null) return true;
+        if (wornOrEquipped != null) return true; // true = allow
     }
+
+    // Block any update that is not a user-initiated change
+    if (!LockTheSheets.userInteractionDetected) {
+        Logger.debug("LockTheSheets.handleLock - user interaction not detected, so allowing the action", options);
+        return true; // true = allow
+    } else { // user interaction detected, reset flag after a tolerance period (0.5 sec)
+        LockTheSheets.userInteractionDetected = false; // we've acknowledged the user interaction for this call, so reset the flag
+    }
+
+    // If we've got to this point, we assume that the action qualifies for blocking
+    Logger.debug("LockTheSheets.handleLock received an action to block:", type, action, doc, data, options, userId);
 
     // Show message to player (unless in silent mode or suppressed once)
     if (Config.setting('notifyOnChange') && !LockTheSheets.suppressNotificationsOnce) {
@@ -193,7 +221,7 @@ function handleLock(type, action, doc, data, options, userId) {
         const notificationCacheKey = `${userId}-${timestampInSeconds}`;
         if (notificationCache.has(notificationCacheKey)) {
             Logger.debug("LockTheSheets.handleLock - notification skipped, because it was too clause to the previous one", notificationCacheKey);
-            return;
+            return false; // false = block
         }
         // Register the new message in the cache
         notificationCache.set(notificationCacheKey, options.modifiedTime);
@@ -221,7 +249,7 @@ function handleLock(type, action, doc, data, options, userId) {
         LockTheSheets.suppressNotificationsOnce = false;
     }
 
-    // Block the action
+    // Block the action (if not already done above)
     return false;
 }
 
@@ -481,6 +509,8 @@ export class LockTheSheets {
     static isActive = false;
     static #previousState;
     static suppressNotificationsOnce;
+    static userInteractionDetected = false;
+
 
     static healthCheck() {
         alert(`Module '${Config.data.modTitle}' says: '${ready2play ? `I am alive!` : `I am NOT ready - something went wrong:(`}'` );
