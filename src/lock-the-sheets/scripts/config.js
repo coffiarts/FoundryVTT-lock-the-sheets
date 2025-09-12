@@ -312,4 +312,16 @@ export class Config {
         return game.version.split('.')[0];
     }
 
+    static getActorSheetHookByVersionAndGameSystem() {
+        let actorSheetHookName;
+        switch (game.system.id) {
+            case "dnd5e":
+                actorSheetHookName = (Config.getGameMajorVersion() >= 13) ? "renderCharacterActorSheet" : "ActorSheet5eCharacter2";
+                break;
+            case "dsa5":
+                actorSheetHookName = "renderActorSheetdsa5Character";
+                break;
+        }
+        return actorSheetHookName;
+    }
 }
