@@ -164,6 +164,14 @@ function initHooks() {
     Hooks.on("renderActorDirectory", (app, html) => {
         renderActorDirectoryOverlays(app, html);
     });
+    Hooks.on("changeSidebarTab", app => {
+        const isActors = (typeof ActorDirectory !== "undefined" && app instanceof ActorDirectory)
+            || app.id === "actors"
+            || app.tabName === "actors";
+        if (isActors) {
+            renderActorDirectoryOverlays(app, app.element);
+        }
+    });
 
     // Hook for capturing mod setting changes
     Hooks.on("updateSetting", async function (setting) {
@@ -363,65 +371,64 @@ function getScaledActorOverlayDimensions(parentElement) {
 async function renderActorDirectoryOverlays(app, html) {
 
     // Skip if overlays for current lock state are not enabled
-    if (LockTheSheets.isActive && !Config.setting('showOverlayLocked')
-        || !LockTheSheets.isActive && !Config.setting('showOverlayOpen'))
+    if ((LockTheSheets.isActive && !Config.setting('showOverlayLocked')) ||
+        (!LockTheSheets.isActive && !Config.setting('showOverlayOpen'))) {
         return;
+    }
 
+    const imgPath = LockTheSheets.isActive
+        ? Config.OVERLAY_ICONS.locked
+        : Config.OVERLAY_ICONS.open;
+    if (!imgPath) return;
+
+    // Collect actor elements
+    let actorElements;
     if (Config.getGameMajorVersion() >= 13) {
-        html.querySelectorAll('.directory-item.actor').forEach(element => {
-            // Grab the actor name text
-            const actorName = element.querySelector(".entry-name")?.textContent.trim();
-            const owner = findOwnerByActorName(actorName);
-            // Logger.debug("\nactorName", actorName, "\nowner", owner);
-            if (!owner) return; // skip unowned
-
-            const imgPath = (LockTheSheets.isActive)
-                ? Config.OVERLAY_ICONS.locked
-                : Config.OVERLAY_ICONS.open;
-
-            if (!imgPath) return;
-
-            // Create <img> overlay icon
-            const actorThumbnail = element.querySelector("img.thumbnail");
-            if (!actorThumbnail) return;
-
-            const icon = document.createElement("img");
-            const {width, height, left} = getScaledActorOverlayDimensions(actorThumbnail);
-
-            // icon.classList.add("overlay-icon"); // optional, so you can style it with CSS
-            icon.style.position = "absolute";
-            icon.style.width = width;
-            icon.style.height = height;
-            icon.style.top = "0";
-            icon.style.left = left;
-            icon.style.zIndex = "100";
-            icon.src = imgPath;
-            icon.alt = actorName;
-            icon.title = actorName;
-
-            // Insert before the actor’s thumbnail
-            if (actorThumbnail) {
-                element.insertBefore(icon, actorThumbnail);
-            } else {
-                element.prepend(icon);
-            }
-        });
+        actorElements = html.querySelectorAll('.directory-item.actor');
+    } else {
+        actorElements = html.find('.directory-item.document.actor').toArray(); // v12 jQuery → array
     }
-    else { // v12 and older
-        html.find('.directory-item.document.actor').each((i, element) => {
-            //Logger.debug(element);
-            const actorName = element.children[0].title;
-            const owner = findOwnerByActorName(actorName);
-            //if (owner) Logger.debug("\nactorName", actorName, "\nowner", owner);
 
-            if (owner != null) { // skip any unowned characters
-                const imgPath = (LockTheSheets.isActive) ? Config.OVERLAY_ICONS.locked : Config.OVERLAY_ICONS.open;
-                element.innerHTML = overlayIconAsHTML(actorName, imgPath, element.children[0]) + element.innerHTML;
-                element.innerHTML = element.innerHTML.replace('data-src', 'src');
-            }
-        });
-    }
+    actorElements.forEach(element => {
+        handleActorElementOverlay(element, imgPath);
+    });
 }
+
+function handleActorElementOverlay(element, imgPath) {
+    if (element.jquery) element = element[0];
+
+    const thumbnail = element.querySelector("img.thumbnail");
+    if (!thumbnail) return;
+
+    // force the actor thumbnail to load NOW (i.e. to skip any lazy-loading), so that we can use its REAL dimensions for calculation of the overlay size
+    if (thumbnail.dataset.src && !thumbnail.src) thumbnail.src = thumbnail.dataset.src;
+
+    const actorName = element.querySelector(".entry-name")?.textContent.trim() || thumbnail.title;
+    if (!actorName) return;
+
+    const owner = findOwnerByActorName(actorName);
+    if (!owner) return;
+
+    // remove previous overlays
+    element.querySelectorAll("img.lock-the-sheets-overlay").forEach(img => img.remove());
+
+    const { width, height, left } = getScaledActorOverlayDimensions(thumbnail);
+    const overlay = document.createElement("img");
+    overlay.classList.add("lock-the-sheets-overlay");
+    overlay.style.position = "absolute";
+    overlay.style.width = width;
+    overlay.style.height = height;
+    overlay.style.left = left;
+    overlay.style.top = "0";
+    overlay.style.zIndex = "100";
+    overlay.src = imgPath;
+    overlay.alt = actorName;
+    overlay.title = actorName;
+
+    // if (getComputedStyle(element).position === "static") element.style.position = "relative";
+    element.insertBefore(overlay, thumbnail.nextSibling);
+}
+
 
 function findOwnerByActorName(actorName) {
     const actor = game.actors.find((actor) => {
@@ -431,13 +438,6 @@ function findOwnerByActorName(actorName) {
         return user.character?.id === actor?.id ||
             !user.isGM && actor?.testUserPermission(user, "OWNER")
     });
-}
-
-function overlayIconAsHTML(title, imgPath, actorThumbnail){
-    if (!imgPath) return "";
-    const safeTitle = Config.escapeHtmlAttr(title);
-    const {width, height, left} = getScaledActorOverlayDimensions(actorThumbnail);
-    return `<img style="position:absolute; width: ${width}; height: ${height}; left: ${left}" title="${safeTitle}" src="${imgPath}" alt="${safeTitle}">`;
 }
 
 function stateChangeUIMessage() {
