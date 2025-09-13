@@ -153,7 +153,7 @@ function initHooks() {
         const root = html instanceof HTMLElement ? html : html[0]; // pick whichever is correct
         ["input", "change", "click"].forEach(type => {
             root.addEventListener(type, (event) => {
-                if (Config.setting("isActive")) {
+                if (LockTheSheets.isActive) {
                     Logger.debug(`(${Config.getActorSheetHookByVersionAndGameSystem()}) - user interaction detected`, event.type, event.target);
                     LockTheSheets.userInteractionDetected = true;
                 }
@@ -551,7 +551,7 @@ function renderHUDIcon() {
     icon.style.transition = "filter 4s";
     hud.appendChild(icon);
 
-    // insert into Foundry's own UI container (top-left)
+    // insert into Foundry's own UI container
     const parentName = (Config.getGameMajorVersion() >= 13) ? "sidebar" : "ui-middle";
     const parent = document.getElementById(parentName);
     Logger.debug("(renderHUDIcon) - inserting HUD icon", parent, hud);

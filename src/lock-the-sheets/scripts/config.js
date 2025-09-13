@@ -92,18 +92,18 @@ export class Config {
             Hooks.on('renderSettingsConfig', (app, html) => {
                 // Core
                 let formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.isActive`).closest(".form-group");
-                formGroup.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">Core</h4></div>`);
+                formGroup?.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">Core</h4></div>`);
                 // UI
                 formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.alertGMOnReject`).closest(".form-group");
-                formGroup.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">UI</h4></div>`);
+                formGroup?.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">UI</h4></div>`);
             });
         }
         else {
             Hooks.on('renderSettingsConfig', (app, [html]) => {
                 // Core
-                html.querySelector(`[data-setting-id="${Config.data.modID}.isActive"]`).insertAdjacentHTML('beforeBegin', `<h3>Core</h3>`)
+                html.querySelector(`[data-setting-id="${Config.data.modID}.isActive"]`)?.insertAdjacentHTML('beforeBegin', `<h3>Core</h3>`)
                 // UI
-                html.querySelector(`[data-setting-id="${Config.data.modID}.alertGMOnReject"]`).insertAdjacentHTML('beforeBegin', `<h3>UI</h3>`)
+                html.querySelector(`[data-setting-id="${Config.data.modID}.alertGMOnReject"]`)?.insertAdjacentHTML('beforeBegin', `<h3>UI</h3>`)
             });
         }
 
@@ -322,12 +322,13 @@ export class Config {
         let actorSheetHookName;
         switch (game.system.id) {
             case "dnd5e":
-                actorSheetHookName = (Config.getGameMajorVersion() >= 13) ? "renderCharacterActorSheet" : "ActorSheet5eCharacter2";
+                actorSheetHookName = (Config.getGameMajorVersion() >= 13) ? "renderCharacterActorSheet" : "renderActorSheet5eCharacter2";
                 break;
             case "dsa5":
                 actorSheetHookName = "renderActorSheetdsa5Character";
                 break;
         }
+        Logger.debug("Actor Sheet hook name:", actorSheetHookName);
         return actorSheetHookName;
     }
 }
