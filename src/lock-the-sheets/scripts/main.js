@@ -48,6 +48,7 @@ let ready2play;
             }
             renderTokenOverlays();
             ui.controls.render();
+            renderHUDIcon();
 
             Logger.infoGreen(`Ready to play! Version: ${game.modules.get(Config.data.modID).version}`);
             Logger.infoGreen(Config.data.modDescription);
@@ -148,7 +149,7 @@ function initHooks() {
 
     // The following one detects any user interaction on Actor Sheets and marks it as such.
     // This is needed to distinguish user-initiated changes from programmatic or system-initiated changes later
-    Hooks.on(Config.getActorSheetHookByVersionAndGameSystem(), (app, html, data) => {
+    Hooks.on(Config.getActorSheetHookByVersionAndGameSystem(), (app, html) => {
         const root = html instanceof HTMLElement ? html : html[0]; // pick whichever is correct
         ["input", "change", "click"].forEach(type => {
             root.addEventListener(type, (event) => {
@@ -291,6 +292,8 @@ async function onGameSettingChanged() {
         controlButtonManager.refreshUIButtonV12(Config.getUIButtonDefinition());
     }
     ui.controls.render();
+
+    renderHUDIcon();
 }
 
 /**
@@ -501,6 +504,71 @@ function itemDeletedGMAlertUIMessage(userName, itemName) {
     });
     Logger.warn(message);
 }
+
+function clearHUDIcon() {
+    document.getElementById("lock-the-sheets-hud")?.remove();
+}
+
+function renderHUDIcon() {
+    Logger.debug("(renderHUDIcon))");
+
+    clearHUDIcon();
+
+    if (LockTheSheets.isActive && !Config.setting("showHUDIconLocked")
+    || !LockTheSheets.isActive && !Config.setting("showHUDIconOpen")) {
+        Logger.debug("(renderHUDIcon) - no HUD icon to render (overlays are disabled for the current lock state)");
+        return;
+    }
+
+    // parent.style.position = "relative";
+    const hud = document.createElement("div");
+    hud.id = "lock-the-sheets-hud";
+    hud.style.position = "absolute";
+    hud.style.top = "0px";
+    const leftPos =
+        (Config.getGameMajorVersion() >= 13)
+        ? (game.system.id === "dsa5")
+            ? -250 * Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")] // v13 dsa5
+            : 300 - 220 * Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")] // v13 dnd5
+        : 0; // v12
+    if (Config.getGameMajorVersion() >= 13) {
+        hud.style.left = leftPos + "px";
+    } else {
+        hud.style.right = leftPos + "px";
+    }
+    hud.style.display = "inline-block";
+    hud.style.marginTop = (Config.getGameMajorVersion() >= 13) ? "10px" : "20px";
+    hud.style.marginRight = (Config.getGameMajorVersion() >= 13) ? "0px" : "20px";
+
+    const icon = document.createElement("img");
+    const size = 250 * Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")];
+    icon.id = "lock-the-sheets-hud-icon";
+    icon.src = (LockTheSheets.isActive) ? Config.OVERLAY_ICONS.locked : Config.OVERLAY_ICONS.open;
+    icon.width = size;
+    icon.height = size;
+    icon.style.border = "none";
+    icon.style.filter = "opacity(1)";
+    icon.style.transition = "filter 4s";
+    hud.appendChild(icon);
+
+    // insert into Foundry's own UI container (top-left)
+    const parentName = (Config.getGameMajorVersion() >= 13) ? "sidebar" : "ui-middle";
+    const parent = document.getElementById(parentName);
+    Logger.debug("(renderHUDIcon) - inserting HUD icon", parent, hud);
+    parent.appendChild(hud);
+
+    if (Config.setting("hudIconTimeoutSeconds") > 0) {
+        setTimeout(() => {
+            fadeOutHUDIcon(icon);
+        }, Config.setting("hudIconTimeoutSeconds") * 1000);
+    }
+}
+
+function fadeOutHUDIcon(icon) {
+    Logger.debug("(fadeOutHUDIcon))");
+    icon.style.filter = "opacity(0)";
+}
+
 
 /**
  * Public class for accessing this module through macro code
