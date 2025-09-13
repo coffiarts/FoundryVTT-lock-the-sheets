@@ -124,21 +124,13 @@ export class Config {
                 scope: 'world', config: true, type: Boolean, default: true
             },
             showOverlayLocked: {
-                scope: 'world',
-                config: true,
-                type: Boolean,
-                default: false
+                scope: 'world', config: true, type: Boolean, default: false
             },
             showOverlayOpen: {
-                scope: 'world',
-                config: true,
-                type: Boolean,
-                default: true
+                scope: 'world', config: true, type: Boolean, default: true
             },
             overlayScale: {
-                scope: 'world',
-                config: true,
-                type: String,
+                scope: 'world', config: true, type: String,
                 choices: {
                     "zero": Config.localize("setting.overlayScaleOptions.zero"),
                     "small": Config.localize("setting.overlayScaleOptions.small"),
@@ -147,6 +139,20 @@ export class Config {
                 },
                 default: "normal",
                 render: "radio"
+            },
+            showHUDIconLocked: {
+                scope: 'world', config: true, type: Boolean, default: true,
+            },
+            showHUDIconOpen: {
+                scope: 'world', config: true, type: Boolean, default: true,
+            },
+            hudIconTimeoutSeconds: {
+                scope: 'world', config: true, type: Number, default: 5,
+                range: {                 // define a slider
+                    min: 0,
+                    max: 10,
+                    step: 1
+                }
             },
             showUIButton: {
                 scope: 'world', config: true, type: Boolean, default: true,

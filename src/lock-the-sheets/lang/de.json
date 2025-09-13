@@ -54,6 +54,18 @@
         "normal": "normal",
         "large": "groß"
       },
+      "showHUDIconLocked": {
+        "name": "HUD Status Icon bei Sperrung anzeigen",
+        "hint": "Erzeugt ein Symbol auf der Szenenansicht (rechts oben), das den Zustand GESPERRT anzeigt (Standard: AN).\n Kann automatisch nach einer bestimmten Zeitspanne ausgeblendet werden. Dazu bitte untenstehenden Slider anpassen."
+      },
+      "showHUDIconOpen": {
+        "name": "HUD Status Icon bei Entsperrung anzeigen",
+        "hint": "Erzeugt ein Symbol auf der Szenenansicht (rechts oben), das den Zustand ENTSPERRT anzeigt (Standard: AN).\n Kann automatisch nach einer bestimmten Zeitspanne ausgeblendet werden. Dazu bitte untenstehenden Slider anpassen."
+      },
+      "hudIconTimeoutSeconds": {
+        "name": "Timeout für den HUD Status Icon (Sekunden)",
+        "hint": "Zeitspanne in Sekunden, nach welcher der HUD Icon automatisch ausgeblendet wird. Auf 0 setzen, um den HUD Icon immer sichtbar zu halten."
+      },
       "keybindingNames": {
         "toggle": "Lock The Sheets! ein-/ausschalten",
         "scaleZero": "Icon-Größe: unsichtbar",
