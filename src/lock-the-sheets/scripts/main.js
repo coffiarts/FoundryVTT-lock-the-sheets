@@ -147,19 +147,29 @@ function initHooks() {
         handleLock("effect", "delete", effect, null, options, userId)
     );
 
-    // The following one detects any user interaction on Actor Sheets and marks it as such.
-    // This is needed to distinguish user-initiated changes from programmatic or system-initiated changes later
-    Hooks.on(Config.getActorSheetHookByVersionAndGameSystem(), (app, html) => {
-        const root = html instanceof HTMLElement ? html : html[0]; // pick whichever is correct
-        ["input", "change", "click"].forEach(type => {
-            root.addEventListener(type, (event) => {
-                if (LockTheSheets.isActive) {
-                    Logger.debug(`(${Config.getActorSheetHookByVersionAndGameSystem()}) - user interaction detected`, event.type, event.target);
-                    LockTheSheets.userInteractionDetected = true;
-                }
-            }, {capture: true});
-        });
-    });
+    switch(game.system.id) {
+        case "dsa5":
+            // In dsa5, we add a catch-all listener that detects any user interactions on the Actor Sheet's form elements and marks them as such.
+            // This is needed later for heuristic distinction of user-initiated changes from programmatic or system-initiated changes
+            Hooks.on(Config.getActorSheetHookByVersionAndGameSystem(), (app, html) => {
+                const root = html instanceof HTMLElement ? html : html[0]; // pick whichever is correct
+                ["input", "change", "click"].forEach(type => {
+                    root.addEventListener(type, (event) => {
+                        if (LockTheSheets.isActive) {
+                            Logger.debug(`(${Config.getActorSheetHookByVersionAndGameSystem()}) - user interaction detected`, event.type, event.target);
+                            LockTheSheets.userInteractionDetected = true;
+                        }
+                    }, {capture: true});
+                });
+            });
+            break;
+        case "dnd5e":
+            // In dnd5e, it's very simple: Just disable the slider toggle on the Actor Sheet, which blocks any editing inside the sheet.
+            Hooks.on(Config.getActorSheetHookByVersionAndGameSystem(), () => {
+                toggleActorSheetLocks();
+            });
+            break;
+    }
 
     // Hook related to the UI changes (Control Button, Actor Overlays)
     Hooks.on("renderActorDirectory", (app, html) => {
@@ -269,6 +279,8 @@ async function onGameSettingChanged() {
 
         LockTheSheets.isActive = Config.setting('isActive');
 
+        toggleActorSheetLocks();
+
         // Handle the "Notification" options
         if (game.user.isGM && Config.setting('notifyOnChange')) {
             // UI messages should only be triggered by the GM via sockets.
@@ -305,7 +317,7 @@ function renderTokenOverlays() {
         if (!actor) continue;
 
         const owner = findOwnerByActorName(actor.name);
-        if (!owner) continue;
+        if (!owner || owner.isGM) continue;
 
         const isOwner = owner === game.user;
         const canSeeOverlay = (isOwner && owner.active) || game.user.isGM;
@@ -569,6 +581,55 @@ function fadeOutHUDIcon(icon) {
     icon.style.filter = "opacity(0)";
 }
 
+function toggleActorSheetLocks() {
+
+    if (game.user.isGM && !Config.setting("lockForGM")) return; // no need to toggle for GM, unless explicitly enabled
+
+    switch (game.system.id) {
+        case "dnd5e":
+            const toggles = window.document.querySelectorAll("slide-toggle");
+            if (!toggles || !toggles.length === 0) {
+                Logger.debug("(toggleActorSheetLocks) no toggles found. Probably no Actor Sheets are currently open.", toggleElement);
+                return;
+            }
+
+            const blockClick = (event) => {
+                event.stopPropagation();
+                event.preventDefault();
+            };
+
+            for (const toggleElement of toggles) {
+                if (!(toggleElement instanceof HTMLElement)) {
+                    Logger.debug("(toggleActorSheetLocks) Toggle is not an HTMLElement. Skipping.", toggleElement);
+                    continue;
+                }
+
+                // Now enable/disable the visible slider as needed
+                if (LockTheSheets.isActive) {
+                    // With active lock, we first have to make sure that the toggle reflects the current lock state.
+                    // Otherwise we might unintendedly "lock" a slider in UNlocked position, leaving the sheet open to edits
+                    if (!game.user.isGM || Config.setting("lockForGM")) toggleElement.checked = false;
+
+                    toggleElement.classList.add("disabled");
+                    toggleElement.style.pointerEvents = "none";
+                    toggleElement.style.opacity = "0.5";
+                    toggleElement.addEventListener("click", blockClick);
+                    Logger.debug("(toggleActorSheetLocks) Lock toggled ON.");
+                } else {
+                    toggleElement.classList.remove("disabled");
+                    toggleElement.style.pointerEvents = "auto";
+                    toggleElement.style.opacity = "1";
+                    toggleElement.removeEventListener("click", blockClick);
+                    Logger.debug("(toggleActorSheetLocks) Lock toggled OFF.");
+                }
+            }
+            break;
+        case "dsa5":
+            break;
+    }
+}
+
+
 
 /**
  * Public class for accessing this module through macro code
@@ -577,7 +638,7 @@ export class LockTheSheets {
     static isActive = false;
     static #previousState;
     static suppressNotificationsOnce;
-    static userInteractionDetected = false;
+    static userInteractionDetected = false; // used for dsa5 only, dnd5e works differently
 
 
     static healthCheck() {
