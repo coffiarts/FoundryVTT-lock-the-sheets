@@ -147,29 +147,11 @@ function initHooks() {
         handleLock("effect", "delete", effect, null, options, userId)
     );
 
-    switch(game.system.id) {
-        case "dsa5":
-            // In dsa5, we add a catch-all listener that detects any user interactions on the Actor Sheet's form elements and marks them as such.
-            // This is needed later for heuristic distinction of user-initiated changes from programmatic or system-initiated changes
-            Hooks.on(Config.getActorSheetHookByVersionAndGameSystem(), (app, html) => {
-                const root = html instanceof HTMLElement ? html : html[0]; // pick whichever is correct
-                ["input", "change", "click"].forEach(type => {
-                    root.addEventListener(type, (event) => {
-                        if (LockTheSheets.isActive) {
-                            Logger.debug(`(${Config.getActorSheetHookByVersionAndGameSystem()}) - user interaction detected`, event.type, event.target);
-                            LockTheSheets.userInteractionDetected = true;
-                        }
-                    }, {capture: true});
-                });
-            });
-            break;
-        case "dnd5e":
-            // In dnd5e, it's very simple: Just disable the slider toggle on the Actor Sheet, which blocks any editing inside the sheet.
-            Hooks.on(Config.getActorSheetHookByVersionAndGameSystem(), () => {
-                toggleActorSheetLocks();
-            });
-            break;
-    }
+    // Process open Actor Sheets so that they intercept user interactions
+    Hooks.on(`render${Config.getActorSheetAppClassName()}`, () => {
+        toggleActorSheetLocks();
+    });
+    Logger.debug(`(initHooks) registered: Hooks.on("render${Config.getActorSheetAppClassName()}").`);
 
     // Hook related to the UI changes (Control Button, Actor Overlays)
     Hooks.on("renderActorDirectory", (app, html) => {
@@ -210,7 +192,7 @@ function handleLock(type, action, doc, data, options, userId) {
     // Skip GM
     const user = game.users.get(userId);
     if (!user || user.isGM && !Config.setting("lockForGM")) {
-        Logger.debug("LockTheSheets.handleLock - user is a GM (and lockForGM is off), so allowing the action", options);
+        Logger.debug("(handleLock) - user is a GM (and lockForGM is off), so allowing the action", options);
         return true; // true = allow
     }
 
@@ -222,14 +204,17 @@ function handleLock(type, action, doc, data, options, userId) {
 
     // Block any update that is not a user-initiated change
     if (!LockTheSheets.userInteractionDetected) {
-        Logger.debug("LockTheSheets.handleLock - user interaction not detected, so allowing the action", options);
+        Logger.debug("(handleLock) - user interaction not detected, so allowing the action", options);
         return true; // true = allow
-    } else { // user interaction detected, reset flag after a tolerance period (0.5 sec)
-        LockTheSheets.userInteractionDetected = false; // we've acknowledged the user interaction for this call, so reset the flag
+    } else { // user interaction detected, reset flag after a tolerance period (1 sec)
+        setTimeout(() => {
+            LockTheSheets.userInteractionDetected = false; // we've acknowledged the user interaction for this call, so reset the flag
+            Logger.debug("(registerUserInteractionListener) userInteractionDetected:", LockTheSheets.userInteractionDetected);
+        }, 1000);
     }
 
     // If we've got to this point, we assume that the action qualifies for blocking
-    Logger.debug("LockTheSheets.handleLock received an action to block:", type, action, doc, data, options, userId);
+    Logger.debug("(handleLock) received an action to block:", type, action, doc, data, options, userId);
 
     // Show message to player (unless in silent mode or suppressed once)
     if (Config.setting('notifyOnChange') && !LockTheSheets.suppressNotificationsOnce) {
@@ -239,7 +224,7 @@ function handleLock(type, action, doc, data, options, userId) {
         const timestampInSeconds = Math.round(options.modifiedTime/1000);
         const notificationCacheKey = `${userId}-${timestampInSeconds}`;
         if (notificationCache.has(notificationCacheKey)) {
-            Logger.debug("LockTheSheets.handleLock - notification skipped, because it was too clause to the previous one", notificationCacheKey);
+            Logger.debug("(handleLock) - notification skipped, because it was too clause to the previous one", notificationCacheKey);
             return false; // false = block
         }
         // Register the new message in the cache
@@ -251,9 +236,9 @@ function handleLock(type, action, doc, data, options, userId) {
                 notificationCache.delete(key);
         }
 
-        Logger.debug("LockTheSheets.handleLock - notificationCache", notificationCache);
+        Logger.debug("(handleLock) - notificationCache", notificationCache);
 
-        ui.notifications.warn(
+        ui.notifications.error(
             `[${Config.data.modTitle}] ${Config.localize("sheetEditRejected.playerMsg")}`
         );
         if (Config.setting("alertGMOnReject")) {
@@ -312,16 +297,18 @@ async function onGameSettingChanged() {
  * Render overlays on scene tokens.
  */
 function renderTokenOverlays() {
+
     for (const token of canvas.tokens.placeables) {
         const actor = token.actor;
-        if (!actor) continue;
+        // if (!actor) continue;
 
-        const owner = findOwnerByActorName(actor.name);
-        if (!owner || owner.isGM) continue;
+        const owner = findOwnerByActorName(actor?.name);
+        // if (!owner || owner.isGM) continue;
 
+        const isPlayerOwned = typeof owner !== "undefined";
         const isOwner = owner === game.user;
-        const canSeeOverlay = (isOwner && owner.active) || game.user.isGM;
-
+        const isGM = game.user.isGM;
+        const canSeeOverlay = (isPlayerOwned && isOwner) || (isGM && isPlayerOwned);
         if (!canSeeOverlay) {
             // Remove overlay if present
             const existing = tokenOverlaysCache.get(token);
@@ -337,16 +324,6 @@ function renderTokenOverlays() {
         } else if (!LockTheSheets.isActive && Config.setting("showOverlayOpen")) {
             overlayImg = Config.OVERLAY_ICONS.open;
         }
-        if (!overlayImg) {
-            const existing = tokenOverlaysCache.get(token);
-            existing?.destroy();
-            tokenOverlaysCache.delete(token);
-            continue;
-        }
-
-        // Remove any old overlay
-        const existing = tokenOverlaysCache.get(token);
-        existing?.destroy();
 
         // Create new overlay sprite
         const sprite = window.PIXI.Sprite.from(overlayImg);
@@ -462,7 +439,7 @@ function stateChangeUIMessage() {
     if (Config.setting('notifyOnChange')) {
 
         if (LockTheSheets.isActive) {
-            ui.notifications.warn(`[${Config.data.modTitle}] ${message}`, {
+            ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
                 permanent: false,
                 localize: false,
                 console: false
@@ -483,7 +460,7 @@ function sheetEditGMAlertUIMessage(userName, sheetName) {
         Config.localize('sheetEditRejected.gmMsgSheet')
             .replace('{userName}', userName)
             .replace('{sheetName}', sheetName);
-    ui.notifications.warn(`[${Config.data.modTitle}] ${message}`, {
+    ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
         permanent: false,
         localize: false,
         console: false
@@ -496,7 +473,7 @@ function itemChangedGMAlertUIMessage(userName, itemName) {
         Config.localize('sheetEditRejected.gmMsgItem')
             .replace('{userName}', userName)
             .replace('{itemName}', itemName);
-    ui.notifications.warn(`[${Config.data.modTitle}] ${message}`, {
+    ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
         permanent: false,
         localize: false,
         console: false
@@ -509,7 +486,7 @@ function itemDeletedGMAlertUIMessage(userName, itemName) {
         Config.localize('sheetEditRejected.gmMsgItemDeleted')
             .replace('{userName}', userName)
             .replace('{itemName}', itemName);
-    ui.notifications.warn(`[${Config.data.modTitle}] ${message}`, {
+    ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
         permanent: false,
         localize: false,
         console: false
@@ -581,12 +558,38 @@ function fadeOutHUDIcon(icon) {
     icon.style.filter = "opacity(0)";
 }
 
+function registerUserInteractionListeners() {
+    // We add a catch-all listeners that detect any user interactions on the Actor Sheet's form elements and marks them as such.
+    // This is needed later for heuristic distinction of user-initiated changes from programmatic or system-initiated changes
+    const openActorSheets = window.document.querySelectorAll(Config.getActorSheetCSSQuerySelector());
+    for (const sheet of openActorSheets) {
+        Logger.debug("(registerUserInteractionListeners) - registering listeners for sheet", sheet);
+        ["input", "change", "click"].forEach(type => {
+            Logger.debug(`(registerUserInteractionListeners) - registering listener for type ${type}`, sheet);
+            sheet.addEventListener(type, (event) => {
+                if (LockTheSheets.isActive) {
+                    Logger.debug(`(registerUserInteractionListeners) - user interaction detected`, event.type, event.target);
+                    LockTheSheets.userInteractionDetected = true;
+                    Logger.debug("(registerUserInteractionListener) userInteractionDetected:", LockTheSheets.userInteractionDetected);
+                }
+            }, {capture: true});
+        });
+    }
+}
+
 function toggleActorSheetLocks() {
 
     if (game.user.isGM && !Config.setting("lockForGM")) return; // no need to toggle for GM, unless explicitly enabled
+    Logger.debug("(toggleActorSheetLocks)");
 
     switch (game.system.id) {
+        case "dsa5":
+            registerUserInteractionListeners();
+            break;
         case "dnd5e":
+            registerUserInteractionListeners();
+
+            // In dnd5e, we also disable the slider toggle on the Actor Sheet, which blocks many edits inside the sheet by core-functionality.
             const toggles = window.document.querySelectorAll("slide-toggle");
             if (!toggles || !toggles.length === 0) {
                 Logger.debug("(toggleActorSheetLocks) no toggles found. Probably no Actor Sheets are currently open.", toggleElement);
@@ -609,7 +612,6 @@ function toggleActorSheetLocks() {
                     // With active lock, we first have to make sure that the toggle reflects the current lock state.
                     // Otherwise we might unintendedly "lock" a slider in UNlocked position, leaving the sheet open to edits
                     if (!game.user.isGM || Config.setting("lockForGM")) toggleElement.checked = false;
-
                     toggleElement.classList.add("disabled");
                     toggleElement.style.pointerEvents = "none";
                     toggleElement.style.opacity = "0.5";
@@ -623,8 +625,6 @@ function toggleActorSheetLocks() {
                     Logger.debug("(toggleActorSheetLocks) Lock toggled OFF.");
                 }
             }
-            break;
-        case "dsa5":
             break;
     }
 }
