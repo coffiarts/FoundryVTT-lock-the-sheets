@@ -149,9 +149,9 @@ function initHooks() {
 
     // Process open Actor Sheets so that they intercept user interactions
     Hooks.on(`render${Config.getActorSheetAppClassName()}`, () => {
-        toggleActorSheetLocks();
+        toggleNativeUILocks();
     });
-    Logger.debug(`(initHooks) registered: Hooks.on("render${Config.getActorSheetAppClassName()}").`);
+    Logger.debug(`(initHooks) Game system-specific hook registered: Hooks.on("render${Config.getActorSheetAppClassName()}").`);
 
     // Hook related to the UI changes (Control Button, Actor Overlays)
     Hooks.on("renderActorDirectory", (app, html) => {
@@ -264,7 +264,7 @@ async function onGameSettingChanged() {
 
         LockTheSheets.isActive = Config.setting('isActive');
 
-        toggleActorSheetLocks();
+        toggleNativeUILocks();
 
         // Handle the "Notification" options
         if (game.user.isGM && Config.setting('notifyOnChange')) {
@@ -558,78 +558,92 @@ function fadeOutHUDIcon(icon) {
     icon.style.filter = "opacity(0)";
 }
 
+function toggleNativeUILocks() {
+    if (game.user.isGM && !Config.setting("lockForGM")) return; // no need to toggle for GM, unless explicitly enabled
+    Logger.debug("(toggleNativeUILocks)");
+    registerUserInteractionListeners();
+    toggleActorSheetLockButton();
+}
+
 function registerUserInteractionListeners() {
     // We add a catch-all listeners that detect any user interactions on the Actor Sheet's form elements and marks them as such.
     // This is needed later for heuristic distinction of user-initiated changes from programmatic or system-initiated changes
     const openActorSheets = window.document.querySelectorAll(Config.getActorSheetCSSQuerySelector());
+    Logger.debug("(toggleNativeUILocks) - found open Actor Sheets:", openActorSheets);
     for (const sheet of openActorSheets) {
-        Logger.debug("(registerUserInteractionListeners) - registering listeners for sheet", sheet);
+        Logger.debug("(toggleNativeUILocks) - registering listeners for sheet", sheet);
         ["input", "change", "click"].forEach(type => {
-            Logger.debug(`(registerUserInteractionListeners) - registering listener for type ${type}`, sheet);
+            Logger.debug(`(toggleActorSheetLocks) - registering listener for type ${type}`, sheet);
             sheet.addEventListener(type, (event) => {
                 if (LockTheSheets.isActive) {
-                    Logger.debug(`(registerUserInteractionListeners) - user interaction detected`, event.type, event.target);
+                    Logger.debug(`(toggleActorSheetLocks) - user interaction detected`, event.type, event.target);
                     LockTheSheets.userInteractionDetected = true;
-                    Logger.debug("(registerUserInteractionListener) userInteractionDetected:", LockTheSheets.userInteractionDetected);
+                    Logger.debug("(toggleNativeUILocks) userInteractionDetected:", LockTheSheets.userInteractionDetected);
                 }
             }, {capture: true});
         });
     }
 }
 
-function toggleActorSheetLocks() {
-
-    if (game.user.isGM && !Config.setting("lockForGM")) return; // no need to toggle for GM, unless explicitly enabled
-    Logger.debug("(toggleActorSheetLocks)");
-
+function toggleActorSheetLockButton() {
+    Logger.debug("(toggleActorSheetLockButton)");
+    let elements;
     switch (game.system.id) {
-        case "dsa5":
-            registerUserInteractionListeners();
+        case "dnd5e": // dnd5e has a "lock slider"
+            elements = window.document.querySelectorAll("slide-toggle");
             break;
-        case "dnd5e":
-            registerUserInteractionListeners();
-
-            // In dnd5e, we also disable the slider toggle on the Actor Sheet, which blocks many edits inside the sheet by core-functionality.
-            const toggles = window.document.querySelectorAll("slide-toggle");
-            if (!toggles || !toggles.length === 0) {
-                Logger.debug("(toggleActorSheetLocks) no toggles found. Probably no Actor Sheets are currently open.", toggleElement);
-                return;
-            }
-
-            const blockClick = (event) => {
-                event.stopPropagation();
-                event.preventDefault();
-            };
-
-            for (const toggleElement of toggles) {
-                if (!(toggleElement instanceof HTMLElement)) {
-                    Logger.debug("(toggleActorSheetLocks) Toggle is not an HTMLElement. Skipping.", toggleElement);
-                    continue;
-                }
-
-                // Now enable/disable the visible slider as needed
-                if (LockTheSheets.isActive) {
-                    // With active lock, we first have to make sure that the toggle reflects the current lock state.
-                    // Otherwise we might unintendedly "lock" a slider in UNlocked position, leaving the sheet open to edits
-                    if (!game.user.isGM || Config.setting("lockForGM")) toggleElement.checked = false;
-                    toggleElement.classList.add("disabled");
-                    toggleElement.style.pointerEvents = "none";
-                    toggleElement.style.opacity = "0.5";
-                    toggleElement.addEventListener("click", blockClick);
-                    Logger.debug("(toggleActorSheetLocks) Lock toggled ON.");
-                } else {
-                    toggleElement.classList.remove("disabled");
-                    toggleElement.style.pointerEvents = "auto";
-                    toggleElement.style.opacity = "1";
-                    toggleElement.removeEventListener("click", blockClick);
-                    Logger.debug("(toggleActorSheetLocks) Lock toggled OFF.");
-                }
-            }
+        case "dsa5": // dsa5 has a "lock advancement button"
+            elements = window.document.querySelectorAll(`button.header-control[data-action="locksheet"]`);
             break;
     }
+
+    if (!elements || !elements.length === 0) {
+        Logger.debug("(toggleNativeUILocks) no toggles found. Probably no Actor Sheets are currently open.", elements);
+        return;
+    }
+
+    const blockClick = (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+    };
+
+    for (const toggleElement of elements) {
+        if (!(toggleElement instanceof HTMLElement)) {
+            Logger.debug("(toggleNativeUILocks) Toggle is not an HTMLElement. Skipping.", toggleElement);
+            continue;
+        }
+
+        // Now enable/disable the visible slider as needed
+        if (LockTheSheets.isActive) {
+            // With active lock, we first have to make sure that the toggle reflects the current lock state.
+            // Otherwise we might unintendedly "lock" the slider/button in UNlocked position, leaving the sheet open to edits
+            if (!game.user.isGM || Config.setting("lockForGM")) {
+                switch (game.system.id) {
+                    case "dnd5e":
+                        toggleElement.checked = false;
+                        break;
+                    case "dsa5":
+                        toggleElement.setAttribute("data-tooltip", "Locked by GM");
+                        break;
+                }
+            }
+            toggleElement.classList.add("disabled");
+            toggleElement.style.pointerEvents = "none";
+            toggleElement.style.opacity = "0.5";
+            toggleElement.addEventListener("click", blockClick);
+            Logger.debug("(toggleNativeUILocks) Lock toggled ON.");
+        } else {
+            toggleElement.classList.remove("disabled");
+            toggleElement.style.pointerEvents = "auto";
+            toggleElement.style.opacity = "1";
+            if (game.system.id === "dsa5") {
+                toggleElement.setAttribute("data-tooltip", "SHEET.Lock");
+            }
+            toggleElement.removeEventListener("click", blockClick);
+            Logger.debug("(toggleNativeUILocks) Lock toggled OFF.");
+        }
+    }
 }
-
-
 
 /**
  * Public class for accessing this module through macro code
