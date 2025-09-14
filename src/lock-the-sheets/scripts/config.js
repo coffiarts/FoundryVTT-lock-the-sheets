@@ -91,10 +91,10 @@ export class Config {
         if (Config.getGameMajorVersion() >= 13) {
             Hooks.on('renderSettingsConfig', (app, html) => {
                 // Core
-                let formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.isActive`).closest(".form-group");
+                let formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.isActive`)?.closest(".form-group");
                 formGroup?.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">Core</h4></div>`);
                 // UI
-                formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.alertGMOnReject`).closest(".form-group");
+                formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.alertGMOnReject`)?.closest(".form-group");
                 formGroup?.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">UI</h4></div>`);
             });
         }
@@ -339,7 +339,7 @@ export class Config {
                 querySelector = (Config.getGameMajorVersion() >= 13) ? ".application.sheet.dnd5e2.actor.standard-form.character" : ".app.window-app.dnd5e2.sheet.actor.character";
                 break;
             case "dsa5":
-                querySelector = "ActorSheetdsa5Character";
+                querySelector = (Config.getGameMajorVersion() >= 13) ? ".application.sheet.dsa5.actor.character-sheet" : "ActorSheetdsa5Character";
                 break;
         }
         Logger.debug("(getActorSheetCSSQuerySelector) querySelector:", querySelector);
