@@ -318,17 +318,31 @@ export class Config {
         return game.version.split('.')[0];
     }
 
-    static getActorSheetHookByVersionAndGameSystem() {
-        let actorSheetHookName;
+    static getActorSheetAppClassName() {
+        let className;
         switch (game.system.id) {
             case "dnd5e":
-                actorSheetHookName = (Config.getGameMajorVersion() >= 13) ? "renderCharacterActorSheet" : "renderActorSheet5eCharacter2";
+                className = (Config.getGameMajorVersion() >= 13) ? "CharacterActorSheet" : "ActorSheet5eCharacter2";
                 break;
             case "dsa5":
-                actorSheetHookName = "renderActorSheetdsa5Character";
+                className = "ActorSheetdsa5Character";
                 break;
         }
-        Logger.debug("Actor Sheet hook name:", actorSheetHookName);
-        return actorSheetHookName;
+        Logger.debug("(getActorSheetAppClassName) classname:", className);
+        return className;
+    }
+
+    static getActorSheetCSSQuerySelector() {
+        let querySelector;
+        switch (game.system.id) {
+            case "dnd5e":
+                querySelector = (Config.getGameMajorVersion() >= 13) ? ".application.sheet.dnd5e2.actor.standard-form.character" : ".app.window-app.dnd5e2.sheet.actor.character";
+                break;
+            case "dsa5":
+                querySelector = "ActorSheetdsa5Character";
+                break;
+        }
+        Logger.debug("(getActorSheetCSSQuerySelector) querySelector:", querySelector);
+        return querySelector;
     }
 }
