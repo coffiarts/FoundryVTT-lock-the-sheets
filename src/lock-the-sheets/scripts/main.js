@@ -584,7 +584,7 @@ function registerUserInteractionListeners() {
         // Logger.debug("(toggleNativeUILock-registerUserInteractionListeners) - registering listeners for sheet", sheet);
         ["input", "change", "click"].forEach(type => {
             // Logger.debug(`(toggleActorSheetLocks-registerUserInteractionListeners) - registering listener for type ${type}`, sheet);
-            sheet.addEventListener(type, (event) => {
+            sheet.addEventListener(type, () => {
                 if (LockTheSheets.isActive) {
                     // Logger.debug(`(toggleActorSheetLocks-registerUserInteractionListeners) - user interaction detected`, event.type, event.target);
                     LockTheSheets.userInteractionDetected = true;
@@ -717,6 +717,32 @@ export class LockTheSheets {
 
     static isOff() {
         return !this.isActive;
+    }
+
+    static async changeOverlayScale() {
+
+        const currentKey = Config.setting("overlayScale");
+
+        // Step 2: Get keys in order
+        const keys = Object.keys(Config.OVERLAY_SCALE_MAPPING);
+
+        // Step 3: Find next key index
+        const currentIndex = keys.indexOf(currentKey);
+        const nextIndex = (currentIndex + 1) % keys.length;
+
+        // Step 4: Get next key and value
+        const nextKey = keys[nextIndex];
+
+        // Step 5: Update the setting
+        await Config.modifySetting("overlayScale", nextKey);
+    }
+
+    static async toggleOverlays() {
+        const isOn = (Config.setting("showOverlayLocked") || Config.setting("showOverlayOpen") || Config.setting("showHUDIconLocked") || Config.setting("showHUDIconOpen"));
+        await Config.modifySetting("showOverlayLocked", !isOn);
+        await Config.modifySetting("showOverlayOpen", !isOn);
+        await Config.modifySetting("showHUDIconLocked", !isOn);
+        await Config.modifySetting("showHUDIconOpen", !isOn);
     }
 
     /**

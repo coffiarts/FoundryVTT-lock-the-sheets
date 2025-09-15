@@ -147,10 +147,10 @@ export class Config {
                 scope: 'world', config: true, type: Boolean, default: true,
             },
             hudIconTimeoutSeconds: {
-                scope: 'world', config: true, type: Number, default: 5,
-                range: {                 // define a slider
+                scope: 'world', config: true, type: Number, default: 10,
+                range: { // define a slider
                     min: 0,
-                    max: 10,
+                    max: 30,
                     step: 1
                 }
             },
