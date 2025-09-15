@@ -339,7 +339,7 @@ export class Config {
                 querySelector = (Config.getGameMajorVersion() >= 13) ? ".application.sheet.dnd5e2.actor.standard-form.character" : ".app.window-app.dnd5e2.sheet.actor.character";
                 break;
             case "dsa5":
-                querySelector = (Config.getGameMajorVersion() >= 13) ? ".application.sheet.dsa5.actor.character-sheet" : "ActorSheetdsa5Character";
+                querySelector = (Config.getGameMajorVersion() >= 13) ? ".application.sheet.dsa5.actor.character-sheet" : ".app.window-app.sheet.dsa5.actor.character-sheet";
                 break;
         }
         Logger.debug("(getActorSheetCSSQuerySelector) querySelector:", querySelector);
