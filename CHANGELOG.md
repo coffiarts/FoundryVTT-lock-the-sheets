@@ -1,10 +1,23 @@
 The **major** version number in my modules (like "12") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
 
+## 13.0.0
+### 2025-09-17 - v13 compatibility is finally here- including a complete overhaul!
+This module is now **fully migrated to Foundry VTT v13** (and also still backwards-compatible with v12).<br/>
+**Supported game systems are (as before):** dnd5e and tde5/dsa5.
+If you need it for other systems, feel free to request it by open an issue on github.<br>
+It's not the same as before - I have given it a **huge revamp**, so that it can now be considered much more reliable, stable, and clean.<br>
+
+- Many things have been rewritten from scratch, so it's significantly more efficient and stable.
+- Locking is much more reliable and predictable. It even uses the existing lock buttons/sliders in Actor Sheets from the game systems.
+- Overlay icons now rendered cleanly as Sprites, i.e. there's no ugly abuse anymore of Status Effects to simulate the lock overlays. <br/>=> IMPORTANT NOTE: When upgrading from the v12 version, make sure to remove any such Status Effects (named "Sheet Lock") from your Actors. Those nasty bastards won't be needed anymore and would only cause issues. Sorry for having added them with the v12 version - just didn't know how to do better back then :-(
+- UI functionalities (toggle button, keybindings) have been stabilized and significantly extended.
+- I generally recommend to cleanly uninstall the v12 version first, before installing the v13 version. But be aware that this does NOT purge the potentially persistent Status Effects mentioned above ("Sheet Lock"). If they're still there, you'll have to remove them manually (sorry once again for the trouble!)
+
 ## 12.0.2
 ### 2025-08-05 - Just a note on v13 NON-compatibility
-- This "dummy" update is only a note that this module will NOT be v13-compatible for now. Due to heavy changes in v13, do NOT await it soon!
-- Feel free to follow the related ticket: [#6](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/issues/6)
+- THIS IS OBSOLETE NOW. But I'll keep it here for the sake of completeness.
+- This mod is now compatible with Foundry VTT v13, since issue [#6](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/issues/6) has been resolved
 
 ## 12.0.1
 ### 2024-10-06 - Hotfix for dsa5/tde5 version 6.x

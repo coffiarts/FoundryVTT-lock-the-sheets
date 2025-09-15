@@ -1,10 +1,9 @@
-### Announcement and good news!
-Migration to v13 will be possible after all - and it's imminent (almost done)!
-Luckily, I've managed not only to migrate the core functionality, but also to give this whole mod a **big revamp** - hopefully turning it into something robust and useful after all.
-In the v12 version, it has always been a "hack" (e.g. because it was wildly abusing Active Effects on tokens to visualize the lock state, which was gruesome, invasive and conflict-prone). In the new version, everything visual will be done very cleanly (i.e. only visually, without invading actor sheets). I've also reworked the detection of events to block.
-So I am quite confident that the migration (which was a big ordeal) will transform this mod into what it was always _meant_ to be - maybe giving at some more attention in the future.
-It's only a matter of days now to complete the final polishings.
-For more details. feel free to follow [Issue #6](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/issues/6) and the [dev branch](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/tree/dev).
+### v13-compatiblity is finally here - including complete overhaul!
+This module is now **fully migrated to Foundry VTT v13** (and also still backwards-compatible with v12).<br/>
+**Supported game systems are (as before):** dnd5e and tde5/dsa5.
+If you need it for other systems, feel free to request it by open an issue on github.<br>
+It's not the same as before - I have given it a **huge revamp**, so that it can now be considered much more reliable, stable, and clean.<br>
+Please have a look at the [CHANGELOG.md](CHANGELOG.md) for details, especially the **notes on migrating from v12 to v13**.
 
 ![](https://img.shields.io/badge/Foundry-v12-informational)
 ![](https://img.shields.io/badge/Foundry-v13-informational)
@@ -39,15 +38,14 @@ For more details. feel free to follow [Issue #6](https://github.com/coffiarts/Fo
 - Do you REALLY like my work?
 - Could you even imagine to DONATE?
 
-Feel free to [head over to this mod on Forge](https://eu.forge-vtt.com/bazaar/package/lock-the-sheets), where you can even pay for it what you like.
-
+Feel free to [head over to this mod on Forge](https://eu.forge-vtt.com/bazaar/package/lock-the-sheets), where you can even pay for it what you like. 
 This is absolutely optional! Don't feel obliged in any way to do so. My mod is and will remain available for free.
 
 - [What it does ...](#what-it-does-)
 - [Why I created this ...](#why-i-created-this-)
 - [Changelog](#changelog)
 - [Adjustable module settings](#adjustable-module-settings)
-- [Toggle by hotkey](#toggle-by-hotkey)
+- [Toggle by hotkeys](#toggle-by-hotkeys)
 - [Control it by macro](#control-it-by-macro)
 - [Compatibility and Dependencies](#compatibility-and-dependencies)
 - [Copyrights and Credits for used assets](#copyrights-and-credits-for-used-assets)
@@ -60,16 +58,16 @@ This is absolutely optional! Don't feel obliged in any way to do so. My mod is a
 ## What it does ...
 With this nice little helper module the Game Master can block and unblock any edits to character sheets by the players.
 This helps, for instance, to protect them from accidental changes.
-And of course, if you're of the paranoid type, it prevents cheating.
+And of course, if you're of the paranoid type, it can help as a cheating control (though it's not originally meant for that, see my comments below).
 
 Toggling on/off works in various ways:
 1. By a checkbox in the module settings
 2. Through a nice UI Button in the scene control on the left (optional, turn it off in the settings, if you don't like it)
-3. By macro code (see below - a ready-to-use macro is already included).
+3. By custom keybindings (my recommendation: assign it to SHIFT + L)
+4. By a macro (see below - ready-to-use macros already included as a compendium pack).
 
-In **default settings**, lock status is indicated by overlay icons, both in the scene and in the sidebar's actors list:
-
-**These icons can be configured and also switched off in the module settings!**
+With **default settings**, lock status is indicated by overlay icons, both in the scene and in the sidebar's actors list:
+**These icons can be configured and also switched off to your liking.**
 
 **Lock ON:**
 
@@ -79,30 +77,24 @@ In **default settings**, lock status is indicated by overlay icons, both in the 
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-lock-off.png)
 
-And it is even indicated in the **Combat Tracker** (thus reminding you that it should always bee **green** there, naturally):
-
-![](src/lock-the-sheets/artwork/lock-the-sheets-readme-combat.png)
-
 Let's see what happens if players try to **manipulate their hitpoints:**
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-blocked-action-1.png)
 
-But apart from cheating prevention, let's see what happens if a player **accidentally** happens to **delete an inventory item:**
+And let's see what happens if a player **accidentally** happens to **delete an inventory item:**
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-blocked-action-2.png)
 
-Even more, the **GM receives alerts about it** (optional, can be turned off):
+Optionally, the **GM receives alerts about every blocked action**:
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-gm-alert.png)
 
 ## Why I created this ...
 No, I did **not** create this out of paranoia towards my players!
-IMO, role-playing is and has always been (since the Pen & Paper era) based on trust!
+IMO, role-playing is and has always been (since the Pen & Paper era) based on trust! It is not about cheating prevention (though it may serve for it as well!).
 
-So it is not about cheating prevention (though it may serve for it as well!).
-
-Instead, I am usually running hybrid, in-person game sessions with **children of age 10+**, who are permanently at risk of messing around with their character sheets.
-I just wanted to protect them against arbitrary havok clicks.
+Instead, I am usually running hybrid, in-person game sessions with **children of age 10++**, who are permanently at risk of messing around with their character sheets.
+I just wanted to protect them against arbitrary havoc clicks.
 
 Even more, it turned out that locking character sheets from time to time can bring even much more focus and relaxedness into the more narrative parts of role-playing (which I love more than combat action).
 So the regular calls to order, like ...
@@ -115,12 +107,20 @@ _"Everybody now, get your hands off your sheets, stop clicking, lean back, liste
 See [CHANGELOG.md](CHANGELOG.md)
 
 ## Adjustable module settings
-This screenshot shows the default values.
+There are tons of settings to adjust to your liking (just a few examples):
+- showing token overlay icons for locked state (red), unlocked state (green), both (red and green), or none (off)
+- scale overlay icons by 4 steps small, normal, large, zero (=invisibe)
+- showing a toggle button in the scene control bar (optional, can be turned off)
+- showing a prominent HUD icon indicating to everyone when the locks turn on or off (with optional fade-out time)
+- showing on-screen messages to players
+- showing on-screen messages to the GM when players are trying to edit their locked sheets
+- you can even decide (as the GM) to lock yourself out from editing sheets (as a kind of self-protection against unintended havoc)
 
-<img src="src/lock-the-sheets/artwork/lock-the-sheets-settings.png" alt="Lock The Sheets! Settings"/>
-
-## Toggle by hotkey
-You (gamemasters only) can assign a custom hotkey in the game settings (by default it is empty to prevent unwanted key collisions). My personal preference is **SHIFT + L**:
+## Toggle by hotkeys
+You (as the GM) can assign custom hotkeys in the game settings to
+- toggle the lock status
+- change the scale of overlay icons
+- switch the UI button on/off (because some people consider it invasive to add custom buttons to the scene control bar, therefore it's strictly kept optional)
 
 <img src="src/lock-the-sheets/artwork/lock-the-sheets-keybinding-step1.png" alt="Lock the Sheets! assign keybinding - step 1"/>
 
@@ -129,7 +129,10 @@ You (gamemasters only) can assign a custom hotkey in the game settings (by defau
 <img src="src/lock-the-sheets/artwork/lock-the-sheets-keybinding-step3.png" alt="Lock the Sheets! assign keybinding - step 3"/>
 
 ## Control it by macro
-A ready-to-use macro button for doing the toggle is already included as a compendium pack:
+Some ready-to-use macro buttons are already included as a compendium pack:
+- Toggle lock ON/OFF
+- Change (cycle) the size of the overlay icons
+- Toggle visibility of all overlay icons
 
 ![](/src/lock-the-sheets/artwork/lock-the-sheets-macro-compendium.png)
 
@@ -140,16 +143,20 @@ Use it as it is, or have a look inside how it works - it uses the exposed class 
     // ON and OFF-only
     LockTheSheets.switchOn();
     LockTheSheets.switchOff();
+    // Cycle through the different sizes of the overlay icons
+    LockTheSheets.changeOverlayScale();
+    // Toggle overlay visibility
+    LockTheSheets.toggleOverlays();
 
 ## Compatibility and Dependencies
 - Lock The Sheets! uses [socketlib](https://github.com/manuelVo/foundryvtt-socketlib) for sending sync messages between the GM's session and the clients.
-- Heavily factory tested it myself with **dnd5e** and **tde5**. I cannot guarantee compatibility with other systems. But I consider it system-agnostic for now.
-- ***Mild warning:*** While sheets are locked, some intended changes _may_ (in rare situations) be suppressed, such as macro or chat triggered actions. I put much effort into testing and I assume it's a rare case. Rest assured: There will be a screen message whenever that happens.
+- Heavily factory tested by myself with **dnd5e** and **tde5/dsa5**. I cannot guarantee compatibility with other systems. It is **not** system-agnostic, as it relies on system-specific HTML injection. As mentioned above, I am happy about requests for compatibility with more systems - just open a github issue!
+- ***Mild warning:*** While sheets are locked, some intended changes _may_ (in rare situations) be suppressed, such as macro or chat triggered actions. I put much effort into testing and I assume these are edge cases. Rest assured: There will be a screen message whenever that happens.
   In such cases, just unlock the sheets and repeat the blocked action. If this doesn't help, please report it as an issue on guithub.
 
 ## Copyrights and Credits for used assets
 ### Goblins
-The cute, beloved badass goblins used in my screenshots have thankfully been published by [David Wilson](https://tools.2minutetabletop.com/token-editor/author?a=David%20Wilson) and [Hammertheshark](https://tools.2minutetabletop.com/token-editor/author?a=Hammertheshark) for free use on [https://tools.2minutetabletop.com](https://tools.2minutetabletop.com/) under the [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/). I have grown so fond of them that they've become my special module demo'ing pets.
+The cute, beloved badass goblins used in my screenshots have thankfully been published by [David Wilson](https://tools.2minutetabletop.com/token-editor/author?a=David%20Wilson) and [Hammertheshark](https://tools.2minutetabletop.com/token-editor/author?a=Hammertheshark) for free use on [https://tools.2minutetabletop.com](https://tools.2minutetabletop.com/) under the [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/). I have grown so fond of them that they've become my special module demo'ing pets - like you can see here in my [demo video](https://youtu.be/ix66vZ8A0OI) for another module of mine, [Crunch My Party!](https://github.com/coffiarts/FoundryVTT-crunch-my-party)
 ### Banner
 The banner image with the dark fantasy portal was AI-created by myself.
 ### Lock icons

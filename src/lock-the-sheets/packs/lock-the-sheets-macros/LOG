@@ -1,7 +1,1 @@
-2023/12/17-22:29:45.056 9ef0 Recovering log #4
-2023/12/17-22:29:45.060 9ef0 Delete type=0 #4
-2023/12/17-22:29:45.060 9ef0 Delete type=3 #2
-2023/12/17-22:31:34.198 8700 Level-0 table #9: started
-2023/12/17-22:31:34.210 8700 Level-0 table #9: 700 bytes OK
-2023/12/17-22:31:34.211 8700 Delete type=0 #7
-2023/12/17-22:31:34.212 8700 Manual compaction at level-0 from '!macros!U75LMuiE0yfL0J7l' @ 72057594037927935 : 1 .. '!macros!U75LMuiE0yfL0J7l' @ 0 : 0; will stop at (end)
+2025/09/16-00:16:14.398 80f8 Delete type=3 #1
