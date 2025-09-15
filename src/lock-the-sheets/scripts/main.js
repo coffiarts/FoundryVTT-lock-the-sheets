@@ -235,7 +235,6 @@ function handleLock(type, action, doc, data, options, userId) {
             if (notificationCache.get(key) < Date.now() - 3000)
                 notificationCache.delete(key);
         }
-
         Logger.debug("(handleLock) - notificationCache", notificationCache);
 
         ui.notifications.error(
@@ -560,25 +559,27 @@ function fadeOutHUDIcon(icon) {
 
 async function toggleNativeUILocks() {
     if (game.user.isGM && !Config.setting("lockForGM")) return; // no need to toggle for GM, unless explicitly enabled
-    Logger.debug("(toggleNativeUILocks)");
-    registerUserInteractionListeners();
+    // Logger.debug("(toggleNativeUILocks)");
     await toggleNativeUILockButtons();
+    if (LockTheSheets.isActive) {
+        registerUserInteractionListeners();
+    }
 }
 
 function registerUserInteractionListeners() {
     // We add a catch-all listeners that detect any user interactions on the Actor Sheet's form elements and marks them as such.
     // This is needed later for heuristic distinction of user-initiated changes from programmatic or system-initiated changes
     const openActorSheets = window.document.querySelectorAll(Config.getActorSheetCSSQuerySelector());
-    Logger.debug("(toggleNativeUILocks) - found open Actor Sheets:", openActorSheets);
+    // Logger.debug("(toggleNativeUILocks-registerUserInteractionListeners) - found open Actor Sheets:", openActorSheets);
     for (const sheet of openActorSheets) {
-        Logger.debug("(toggleNativeUILocks) - registering listeners for sheet", sheet);
+        // Logger.debug("(toggleNativeUILocks-registerUserInteractionListeners) - registering listeners for sheet", sheet);
         ["input", "change", "click"].forEach(type => {
-            Logger.debug(`(toggleActorSheetLocks) - registering listener for type ${type}`, sheet);
+            // Logger.debug(`(toggleActorSheetLocks-registerUserInteractionListeners) - registering listener for type ${type}`, sheet);
             sheet.addEventListener(type, (event) => {
                 if (LockTheSheets.isActive) {
-                    Logger.debug(`(toggleActorSheetLocks) - user interaction detected`, event.type, event.target);
+                    // Logger.debug(`(toggleActorSheetLocks-registerUserInteractionListeners) - user interaction detected`, event.type, event.target);
                     LockTheSheets.userInteractionDetected = true;
-                    Logger.debug("(toggleNativeUILocks) userInteractionDetected:", LockTheSheets.userInteractionDetected);
+                    // Logger.debug("(toggleNativeUILocks-registerUserInteractionListeners) userInteractionDetected:", LockTheSheets.userInteractionDetected);
                 }
             }, {capture: true});
         });
@@ -586,7 +587,7 @@ function registerUserInteractionListeners() {
 }
 
 async function toggleNativeUILockButtons() {
-    Logger.debug("(toggleNativeUILockButtons)");
+    // Logger.debug("(toggleNativeUILockButtons-toggleNativeUILockButtons)");
     let elements;
     switch (game.system.id) {
         case "dnd5e": // dnd5e has a "lock slider"
@@ -598,7 +599,7 @@ async function toggleNativeUILockButtons() {
     }
 
     if (!elements || !elements.length === 0) {
-        Logger.debug("(toggleNativeUILocks) no toggles found. Probably no Actor Sheets are currently open.", elements);
+        // Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) no toggles found. Probably no Actor Sheets are currently open.", elements);
         return;
     }
 
@@ -609,7 +610,7 @@ async function toggleNativeUILockButtons() {
 
     for (const toggleElement of elements) {
         if (!(toggleElement instanceof HTMLElement)) {
-            Logger.debug("(toggleNativeUILocks) Toggle is not an HTMLElement. Skipping.", toggleElement);
+            // Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) Toggle is not an HTMLElement. Skipping.", toggleElement);
             continue;
         }
 
@@ -624,13 +625,16 @@ async function toggleNativeUILockButtons() {
                         toggleElement.addEventListener("click", blockClick);
                         break;
                     case "dsa5":
-                        Logger.debug("(toggleNativeUILocks) - toggleElement.classList: ", toggleElement.classList);
+                        // Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) - toggleElement.classList: ", toggleElement.classList);
                         toggleElement.setAttribute("data-tooltip", "Locked by GM");
                         if (toggleElement.classList.contains("fa-unlock")) { // simulate click if state is unlocked
                             toggleElement.setAttribute("was-unlocked", "true");
                             LockTheSheets.isActive = false; // temporarily disable global lock flag, to avoid inintentionally blocking our own action here
-                            await new Promise(resolve =>
-                                resolve(toggleElement.dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: false}))));
+                            LockTheSheets.userInteractionDetected = false; // force current action to be flagged as system-initiated, to push it through
+                            await new Promise(resolve => {
+                                // Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) - simulating click on toggleElement", toggleElement);
+                                resolve(toggleElement.dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: false})));
+                            });
                             LockTheSheets.isActive = true;
                         }
                         break;
@@ -639,7 +643,7 @@ async function toggleNativeUILockButtons() {
             toggleElement.classList.add("disabled");
             toggleElement.style.pointerEvents = "none";
             toggleElement.style.opacity = "0.5";
-            Logger.debug("(toggleNativeUILocks) Lock toggled ON.");
+            Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) Lock toggled ON.");
         } else {
             switch (game.system.id) {
                 case "dnd5e":
@@ -656,7 +660,7 @@ async function toggleNativeUILockButtons() {
             toggleElement.classList.remove("disabled");
             toggleElement.style.pointerEvents = "auto";
             toggleElement.style.opacity = "1";
-            Logger.debug("(toggleNativeUILocks) Lock toggled OFF.");
+            Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) Lock toggled OFF.");
         }
     }
 }
