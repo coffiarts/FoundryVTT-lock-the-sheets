@@ -36,7 +36,7 @@ export class Config {
                     icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
                     button: true,
                     toggle: true,
-                    active: () => (game.user.isGM && Config.setting('isActive')),
+                    active: () => (game.user.isGM && LockTheSheets.isActive),
                     visible: () => (game.user.isGM && Config.setting('showUIButton')),
                     onChange: () => {
                         Config.toggleActiveState();
@@ -53,7 +53,7 @@ export class Config {
                     icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
                     button: true,
                     toggle: true,
-                    active: () => (game.user.isGM && Config.setting('isActive')),
+                    active: () => (game.user.isGM && LockTheSheets.isActive),
                     visible: () => (game.user.isGM && Config.setting('showUIButton')),
                     onClick: () => {
                         Config.toggleActiveState();

@@ -1,5 +1,6 @@
 import {Config} from './config.js';
 import {Logger} from './logger.js';
+import {LockTheSheets} from "./main.js";
 
 export class ControlButtonManager {
 
@@ -37,7 +38,7 @@ export class ControlButtonManager {
         // Logger.debug(`(registerButtonV12) - tokenGroupDef.tools:`, tokenGroupDef.tools);
         if (!tokenGroupDef) return;
 
-        controlButtonDef.tool.active = game.user.isGM && Config.setting('isActive');
+        controlButtonDef.tool.active = game.user.isGM && LockTheSheets.isActive;
         controlButtonDef.tool.visible = game.user.isGM && Config.setting('showUIButton');
 
         // Add our own control definition to the group
@@ -68,7 +69,7 @@ export class ControlButtonManager {
         tokenGroup.tools = tokenGroup.tools.filter(t => t.name !== controlButtonDef.tool.name);
 
         // Inject updated button
-        controlButtonDef.tool.active = game.user.isGM && Config.setting('isActive');
+        controlButtonDef.tool.active = game.user.isGM && LockTheSheets.isActive;
         controlButtonDef.tool.visible = game.user.isGM && Config.setting('showUIButton');
         tokenGroup.tools.push(controlButtonDef.tool);
 
