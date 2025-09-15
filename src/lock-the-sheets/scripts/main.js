@@ -13,9 +13,6 @@ const SUBMODULES = {
 let socket;
 let controlButtonManager = new ControlButtonManager();
 
-// A cache for the generated token overlays (PIXI sprites), so that nothing is re-created on every render.
-const tokenOverlaysCache = new WeakMap();
-
 // A cache for the generated notification messages, so that we can suppress redundant alerts
 const notificationCache = new Map();
 
@@ -149,7 +146,7 @@ function initHooks() {
 
     // Process open Actor Sheets so that they intercept user interactions
     Hooks.on(`render${Config.getActorSheetAppClassName()}`, () => {
-        toggleNativeUILocks();
+        toggleNativeUILock();
     });
     Logger.debug(`(initHooks) Game system-specific hook registered: Hooks.on("render${Config.getActorSheetAppClassName()}").`);
 
@@ -165,6 +162,10 @@ function initHooks() {
             renderActorDirectoryOverlays(app, app.element);
         }
     });
+    Hooks.on("drawToken", async () => {
+        renderTokenOverlays()
+    });
+
 
     // Hook for capturing mod setting changes
     Hooks.on("updateSetting", async function (setting) {
@@ -263,7 +264,7 @@ async function onGameSettingChanged() {
 
         LockTheSheets.isActive = Config.setting('isActive');
 
-        await toggleNativeUILocks();
+        await toggleNativeUILock();
 
         // Handle the "Notification" options
         if (game.user.isGM && Config.setting('notifyOnChange')) {
@@ -304,15 +305,17 @@ function renderTokenOverlays() {
         const owner = findOwnerByActorName(actor?.name);
         // if (!owner || owner.isGM) continue;
 
+        // Remove old overlay if present
+        if (token.lockTheSheetsOverlay) {
+            token.lockTheSheetsOverlay.destroy();
+            delete token.lockTheSheetsOverlay;
+        }
+
         const isPlayerOwned = typeof owner !== "undefined";
         const isOwner = owner === game.user;
         const isGM = game.user.isGM;
         const canSeeOverlay = (isPlayerOwned && isOwner) || (isGM && isPlayerOwned);
         if (!canSeeOverlay) {
-            // Remove overlay if present
-            const existing = tokenOverlaysCache.get(token);
-            existing?.destroy();
-            tokenOverlaysCache.delete(token);
             continue;
         }
 
@@ -322,6 +325,8 @@ function renderTokenOverlays() {
             overlayImg = Config.OVERLAY_ICONS.locked;
         } else if (!LockTheSheets.isActive && Config.setting("showOverlayOpen")) {
             overlayImg = Config.OVERLAY_ICONS.open;
+        } else {
+            continue;
         }
 
         // Create new overlay sprite
@@ -338,8 +343,12 @@ function renderTokenOverlays() {
         sprite.y = scaledSize;
 
         // Attach overlay
+        sprite.zIndex = 1000; // or any high number
         token.addChild(sprite);
-        tokenOverlaysCache.set(token, sprite);
+        token.sortChildren(); // ensures zIndex is respected
+
+        // Register in cache
+        token.lockTheSheetsOverlay = sprite;
 
         ui.sidebar.render(true);
     }
@@ -557,10 +566,10 @@ function fadeOutHUDIcon(icon) {
     icon.style.filter = "opacity(0)";
 }
 
-async function toggleNativeUILocks() {
+async function toggleNativeUILock() {
     if (game.user.isGM && !Config.setting("lockForGM")) return; // no need to toggle for GM, unless explicitly enabled
-    // Logger.debug("(toggleNativeUILocks)");
-    await toggleNativeUILockButtons();
+    // Logger.debug("(toggleNativeUILock)");
+    await toggleNativeUILockButton();
     if (LockTheSheets.isActive) {
         registerUserInteractionListeners();
     }
@@ -570,36 +579,38 @@ function registerUserInteractionListeners() {
     // We add a catch-all listeners that detect any user interactions on the Actor Sheet's form elements and marks them as such.
     // This is needed later for heuristic distinction of user-initiated changes from programmatic or system-initiated changes
     const openActorSheets = window.document.querySelectorAll(Config.getActorSheetCSSQuerySelector());
-    // Logger.debug("(toggleNativeUILocks-registerUserInteractionListeners) - found open Actor Sheets:", openActorSheets);
+    // Logger.debug("(toggleNativeUILock-registerUserInteractionListeners) - found open Actor Sheets:", openActorSheets);
     for (const sheet of openActorSheets) {
-        // Logger.debug("(toggleNativeUILocks-registerUserInteractionListeners) - registering listeners for sheet", sheet);
+        // Logger.debug("(toggleNativeUILock-registerUserInteractionListeners) - registering listeners for sheet", sheet);
         ["input", "change", "click"].forEach(type => {
             // Logger.debug(`(toggleActorSheetLocks-registerUserInteractionListeners) - registering listener for type ${type}`, sheet);
             sheet.addEventListener(type, (event) => {
                 if (LockTheSheets.isActive) {
                     // Logger.debug(`(toggleActorSheetLocks-registerUserInteractionListeners) - user interaction detected`, event.type, event.target);
                     LockTheSheets.userInteractionDetected = true;
-                    // Logger.debug("(toggleNativeUILocks-registerUserInteractionListeners) userInteractionDetected:", LockTheSheets.userInteractionDetected);
+                    // Logger.debug("(toggleNativeUILock-registerUserInteractionListeners) userInteractionDetected:", LockTheSheets.userInteractionDetected);
                 }
             }, {capture: true});
         });
     }
 }
 
-async function toggleNativeUILockButtons() {
-    // Logger.debug("(toggleNativeUILockButtons-toggleNativeUILockButtons)");
+async function toggleNativeUILockButton() {
+    // Logger.debug("(toggleNativeUILockButton-toggleNativeUILockButton)");
     let elements;
     switch (game.system.id) {
         case "dnd5e": // dnd5e has a "lock slider"
             elements = window.document.querySelectorAll("slide-toggle");
             break;
         case "dsa5": // dsa5 has a "lock advancement button"
-            elements = window.document.querySelectorAll(`button.header-control[data-action="locksheet"]`);
+            elements = (Config.getGameMajorVersion() >= 13)
+                ? window.document.querySelectorAll(`button.header-control[data-action="locksheet"]`)
+                : window.document.querySelectorAll(`.header-button.control.locksheet`); // v12
             break;
     }
 
     if (!elements || !elements.length === 0) {
-        // Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) no toggles found. Probably no Actor Sheets are currently open.", elements);
+        // Logger.debug("(toggleNativeUILock-toggleNativeUILockButton) no toggles found. Probably no Actor Sheets are currently open.", elements);
         return;
     }
 
@@ -610,7 +621,7 @@ async function toggleNativeUILockButtons() {
 
     for (const toggleElement of elements) {
         if (!(toggleElement instanceof HTMLElement)) {
-            // Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) Toggle is not an HTMLElement. Skipping.", toggleElement);
+            // Logger.debug("(toggleNativeUILockButton) Toggle is not an HTMLElement. Skipping.", toggleElement);
             continue;
         }
 
@@ -625,14 +636,15 @@ async function toggleNativeUILockButtons() {
                         toggleElement.addEventListener("click", blockClick);
                         break;
                     case "dsa5":
-                        // Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) - toggleElement.classList: ", toggleElement.classList);
+                        // Logger.debug("(toggleNativeUILockButton) - toggleElement.classList: ", toggleElement.classList);
                         toggleElement.setAttribute("data-tooltip", "Locked by GM");
-                        if (toggleElement.classList.contains("fa-unlock")) { // simulate click if state is unlocked
+                        const lockElement = (Config.getGameMajorVersion() >= 13) ? toggleElement : toggleElement.children[0];
+                        if (lockElement?.classList.contains("fa-unlock")) { // simulate click if state is unlocked
                             toggleElement.setAttribute("was-unlocked", "true");
                             LockTheSheets.isActive = false; // temporarily disable global lock flag, to avoid inintentionally blocking our own action here
                             LockTheSheets.userInteractionDetected = false; // force current action to be flagged as system-initiated, to push it through
                             await new Promise(resolve => {
-                                // Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) - simulating click on toggleElement", toggleElement);
+                                // Logger.debug("(toggleNativeUILockButton) - simulating click on toggleElement", toggleElement);
                                 resolve(toggleElement.dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: false})));
                             });
                             LockTheSheets.isActive = true;
@@ -643,7 +655,7 @@ async function toggleNativeUILockButtons() {
             toggleElement.classList.add("disabled");
             toggleElement.style.pointerEvents = "none";
             toggleElement.style.opacity = "0.5";
-            Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) Lock toggled ON.");
+            Logger.debug("(toggleNativeUILockButton) Lock toggled ON.");
         } else {
             switch (game.system.id) {
                 case "dnd5e":
@@ -660,7 +672,7 @@ async function toggleNativeUILockButtons() {
             toggleElement.classList.remove("disabled");
             toggleElement.style.pointerEvents = "auto";
             toggleElement.style.opacity = "1";
-            Logger.debug("(toggleNativeUILocks-toggleNativeUILockButtons) Lock toggled OFF.");
+            Logger.debug("(toggleNativeUILockButton) Lock toggled OFF.");
         }
     }
 }
