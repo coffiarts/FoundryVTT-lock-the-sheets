@@ -187,7 +187,7 @@ function initHooks() {
 function handleLock(type, action, doc, data, options, userId) {
 
     // Only when module is set to "active"
-    if (!Config.setting("isActive")) return true; // true = allow
+    if (!LockTheSheets.isActive) return true; // true = allow
 
     // Skip GM
     const user = game.users.get(userId);
@@ -264,7 +264,7 @@ async function onGameSettingChanged() {
 
         LockTheSheets.isActive = Config.setting('isActive');
 
-        toggleNativeUILocks();
+        await toggleNativeUILocks();
 
         // Handle the "Notification" options
         if (game.user.isGM && Config.setting('notifyOnChange')) {
@@ -436,7 +436,7 @@ function stateChangeUIMessage() {
     let message =
         (LockTheSheets.isActive ? Config.localize('onOffUIMessage.whenON') : Config.localize('onOffUIMessage.whenOFF'));
 
-    if (Config.setting('notifyOnChange')) {
+    if (game.user.isGM && Config.setting('notifyOnChange')) {
 
         if (LockTheSheets.isActive) {
             ui.notifications.error(`[${Config.data.modTitle}] ${message}`, {
@@ -558,11 +558,11 @@ function fadeOutHUDIcon(icon) {
     icon.style.filter = "opacity(0)";
 }
 
-function toggleNativeUILocks() {
+async function toggleNativeUILocks() {
     if (game.user.isGM && !Config.setting("lockForGM")) return; // no need to toggle for GM, unless explicitly enabled
     Logger.debug("(toggleNativeUILocks)");
     registerUserInteractionListeners();
-    toggleActorSheetLockButton();
+    await toggleNativeUILockButtons();
 }
 
 function registerUserInteractionListeners() {
@@ -585,8 +585,8 @@ function registerUserInteractionListeners() {
     }
 }
 
-function toggleActorSheetLockButton() {
-    Logger.debug("(toggleActorSheetLockButton)");
+async function toggleNativeUILockButtons() {
+    Logger.debug("(toggleNativeUILockButtons)");
     let elements;
     switch (game.system.id) {
         case "dnd5e": // dnd5e has a "lock slider"
@@ -621,25 +621,41 @@ function toggleActorSheetLockButton() {
                 switch (game.system.id) {
                     case "dnd5e":
                         toggleElement.checked = false;
+                        toggleElement.addEventListener("click", blockClick);
                         break;
                     case "dsa5":
+                        Logger.debug("(toggleNativeUILocks) - toggleElement.classList: ", toggleElement.classList);
                         toggleElement.setAttribute("data-tooltip", "Locked by GM");
+                        if (toggleElement.classList.contains("fa-unlock")) { // simulate click if state is unlocked
+                            toggleElement.setAttribute("was-unlocked", "true");
+                            LockTheSheets.isActive = false; // temporarily disable global lock flag, to avoid inintentionally blocking our own action here
+                            await new Promise(resolve =>
+                                resolve(toggleElement.dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: false}))));
+                            LockTheSheets.isActive = true;
+                        }
                         break;
                 }
             }
             toggleElement.classList.add("disabled");
             toggleElement.style.pointerEvents = "none";
             toggleElement.style.opacity = "0.5";
-            toggleElement.addEventListener("click", blockClick);
             Logger.debug("(toggleNativeUILocks) Lock toggled ON.");
         } else {
+            switch (game.system.id) {
+                case "dnd5e":
+                    toggleElement.removeEventListener("click", blockClick);
+                    break;
+                case "dsa5":
+                    toggleElement.setAttribute("data-tooltip", "SHEET.Lock");
+                    if (toggleElement.getAttribute("was-unlocked") === "true") {
+                        toggleElement.dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: false}));
+                        toggleElement.removeAttribute("was-unlocked");
+                    }
+                    break;
+            }
             toggleElement.classList.remove("disabled");
             toggleElement.style.pointerEvents = "auto";
             toggleElement.style.opacity = "1";
-            if (game.system.id === "dsa5") {
-                toggleElement.setAttribute("data-tooltip", "SHEET.Lock");
-            }
-            toggleElement.removeEventListener("click", blockClick);
             Logger.debug("(toggleNativeUILocks) Lock toggled OFF.");
         }
     }
