@@ -1,4 +1,4 @@
-### v13-compatiblity is finally here - including complete overhaul!
+### v13-compatibility is finally here - including a complete overhaul!
 This module is now **fully migrated to Foundry VTT v13** (and also still backwards-compatible with v12).<br/>
 **Supported game systems are (as before):** dnd5e and tde5/dsa5.
 If you need it for other systems, feel free to request it by open an issue on github.<br>
