@@ -33,14 +33,6 @@ Please have a look at the [CHANGELOG.md](CHANGELOG.md) for details, especially t
   </tr>
 </table>
 
-- Are you on [Forge VTT](https://forge-vtt.com/)?
-- Do you like my work?
-- Do you REALLY like my work?
-- Could you even imagine to DONATE?
-
-Feel free to [head over to this mod on Forge](https://eu.forge-vtt.com/bazaar/package/lock-the-sheets), where you can even pay for it what you like. 
-This is absolutely optional! Don't feel obliged in any way to do so. My mod is and will remain available for free.
-
 - [What it does ...](#what-it-does-)
 - [Why I created this ...](#why-i-created-this-)
 - [Changelog](#changelog)
@@ -53,7 +45,16 @@ This is absolutely optional! Don't feel obliged in any way to do so. My mod is a
   * [Banner](#banner)
   * [Lock icons](#lock-icons)
 
+
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+- Are you on [Forge VTT](https://forge-vtt.com/)?
+- Do you like my work?
+- Do you REALLY like my work?
+- Could you even imagine to DONATE?
+
+Feel free to [head over to this mod on Forge](https://eu.forge-vtt.com/bazaar/package/lock-the-sheets), where you can even pay for it what you like.
+This is absolutely optional! Don't feel obliged in any way to do so. My mod is and will remain available for free.
 
 ## What it does ...
 With this nice little helper module the Game Master can block and unblock any edits to character sheets by the players.
