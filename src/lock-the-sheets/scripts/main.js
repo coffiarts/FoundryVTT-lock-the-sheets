@@ -86,6 +86,7 @@ async function initSubmodules() {
 }
 
 function renderUIButtonV13() {
+    if (!game.user.isGM) return;
     const buttonExists = controlButtonManager.hasButton(Config.getUIButtonDefinition().tool.name);
     const showButton = Config.setting('showUIButton');
 

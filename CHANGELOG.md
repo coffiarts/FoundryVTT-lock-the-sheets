@@ -1,6 +1,10 @@
 The **major** version number in my modules (like "12") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
 
+## 13.0.1
+### 2025-09-28 - Tiny fix for the UI Button
+- Fix for the UI Button also showing for non-GM users. Didn't do any harm, but it was unnecessary and potentially confusing.
+
 ## 13.0.0
 ### 2025-09-17 - v13 compatibility is finally here- including a complete overhaul!
 This module is now **fully migrated to Foundry VTT v13** (and also still backwards-compatible with v12).<br/>
