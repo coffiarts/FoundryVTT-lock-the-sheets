@@ -156,20 +156,27 @@ function initHooks() {
         renderActorDirectoryOverlays(app, html);
     });
     Hooks.on("changeSidebarTab", app => {
-        const isActors = (typeof ActorDirectory !== "undefined" && app instanceof ActorDirectory)
+        const isActors = (typeof foundry.applications.sidebar.tabs.ActorDirectory !== "undefined" && app instanceof ActorDirectory)
             || app.id === "actors"
             || app.tabName === "actors";
         if (isActors) {
             renderActorDirectoryOverlays(app, app.element);
         }
     });
-    /*
-    // The following has been disabled to avoid scene loading issues in v13.
-    // The tradeoff of this is that overlays for tokens added freshly to the scene won't be rendered before the next toggling of the lock state.
-    // But this can't be avoided, unfortunately. Otherwise, scenes in v13 take ages to load.
-    Hooks.on("drawToken", async () => {
-        renderTokenOverlays()
-    });*/
+    if (Config.getGameMajorVersion() >= 13) {
+        // In v13, rendering overlays can cause severe scene loading lag when done too often.
+        // Therefore, we only do this once on canvasReady.
+        // The tradeoff is that, other than in v12, tokens added to the scene after loaded won't have their overlays rendered immediately, but only after the next toggling of the lock state.
+        // Unfortunately, this is the only way to avoid the memory bloating on scene changes.
+        Hooks.on("canvasReady", async () => {
+            Logger.debug("canvasReady");
+            renderTokenOverlays();
+        });
+    } else { // v12
+        Hooks.on("drawToken", async () => {
+            renderTokenOverlays();
+        });
+    }
 
 
     // Hook for capturing mod setting changes

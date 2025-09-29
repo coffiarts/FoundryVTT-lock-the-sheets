@@ -47,11 +47,11 @@
       },
       "showOverlayLocked": {
         "name": "Show icons on locked actors",
-        "hint": "Display an icon on tokens and actors when locked (Default: OFF).\nIt can  be toggled off also by using scale option 'invisible'."
+        "hint": "Display an icon on tokens and actors when locked (Default: OFF). ATTENTION: This may impact performance when switching scenes for large scenes and/or worlds. Toggling overlays off can also be simulated by using scale option 'invisible'."
       },
       "showOverlayOpen": {
         "name": "Show icons on unlocked actors",
-        "hint": "Display an icon on tokens and actors when unlocked (Default: ON).\nIt can  be toggled off also by using scale option 'invisible'."
+        "hint": "Display an icon on tokens and actors when unlocked (Default: OFF). ATTENTION: This may impact performance when switching scenes for large scenes and/or worlds. Toggling overlays off can also be simulated by using scale option 'invisible'."
       },
       "overlayScale": {
         "name": "Icon size",

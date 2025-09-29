@@ -39,11 +39,11 @@
       },
       "showOverlayLocked": {
         "name": "Icons auf gesperrten Akteuren anzeigen",
-        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie gesperrt sind (Standard: AUS).\nDas Ausschalten kann auch durch die Größen-Option 'unsichtbar' simuliert werden."
+        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie gesperrt sind (Standard: AUS). ACHTUNG: Dies kann die Performance beim Szenenwechsel (in großem Szenen und/oder Welten) beeinträchtigen. Das Ausschalten kann auch durch die Größen-Option 'unsichtbar' simuliert werden."
       },
       "showOverlayOpen": {
         "name": "Icons auf freigegebenen Akteuren anzeigen",
-        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie entsperrt sind (Standard: AN).\nDas Ausschalten kann auch durch die Größen-Option 'unsichtbar' simuliert werden."
+        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie entsperrt sind (Standard: AUS). ACHTUNG: Dies kann die Performance beim Szenenwechsel (in großem Szenen und/oder Welten) beeinträchtigen. Das Ausschalten kann auch durch die Größen-Option 'unsichtbar' simuliert werden."
       },
       "overlayScale": {
         "name": "Größe der Icons",

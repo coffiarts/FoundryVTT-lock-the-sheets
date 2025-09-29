@@ -127,7 +127,7 @@ export class Config {
                 scope: 'world', config: true, type: Boolean, default: false
             },
             showOverlayOpen: {
-                scope: 'world', config: true, type: Boolean, default: true
+                scope: 'world', config: true, type: Boolean, default: false
             },
             overlayScale: {
                 scope: 'world', config: true, type: String,

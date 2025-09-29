@@ -1,6 +1,14 @@
 The **major** version number in my modules (like "12") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
 
+## 13.0.3
+### 2025-09-29 - Post-polishing of the preceding v13 hotfix
+Addendum to the previous hotfix (which I had to push out as quickly as possible first, now here are some improvements to it):
+- Now it is handled properly for Foundry versions 13 and 12, and also made clear in the settings menu by some warning notes.
+- It's apparently the in-scene overlays that were causing the issue in v13, and it seems to affect only very large scenes and/or worlds.
+- In-scene overlays are now disabled by default, but can be enabled in the settings menu. If you're facing scene loading lag while overlays are on, I recommend to keep them off and rely on the HUD icon (top-right corner) instead.
+- The tradeoff for v13 remains as described for the original hotfix below: When overlays are on, and tokens are added to an already loaded scene, their lock overlays won't show until either toggling the lock state at least once, or reloading the scene. But I believe it's an acceptable price for avoiding the nasty scene loading lags.
+
 ## 13.0.2
 ### 2025-09-29 - Hotfix for v13
 Critical fix for scenes in v13 taking ages to load or even crashing. A code line in my mod had to be removed.
