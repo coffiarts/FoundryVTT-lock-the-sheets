@@ -163,9 +163,13 @@ function initHooks() {
             renderActorDirectoryOverlays(app, app.element);
         }
     });
+    /*
+    // The following has been disabled to avoid scene loading issues in v13.
+    // The tradeoff of this is that overlays for tokens added freshly to the scene won't be rendered before the next toggling of the lock state.
+    // But this can't be avoided, unfortunately. Otherwise, scenes in v13 take ages to load.
     Hooks.on("drawToken", async () => {
         renderTokenOverlays()
-    });
+    });*/
 
 
     // Hook for capturing mod setting changes

@@ -1,9 +1,16 @@
 The **major** version number in my modules (like "12") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
 
+## 13.0.2
+### 2025-09-29 - Hotfix for v13
+Critical fix for scenes in v13 taking ages to load or even crashing. A code line in my mod had to be removed.
+It was there to make sure that tokens that are added to the scene after it has loaded show their lock overlay immediately.
+But that's apparently not possible anymore in this way in v13 without causing issues.
+The tradeoff now is that tokens added after scene loading will show overlays only after toggling the lock state at least once.
+
 ## 13.0.1
 ### 2025-09-28 - Tiny fix for the UI Button
-- Fix for the UI Button also showing for non-GM users. Didn't do any harm, but it was unnecessary and potentially confusing.
+Fix for the UI Button also showing for non-GM users. Didn't do any harm, but it was unnecessary and potentially confusing.
 
 ## 13.0.0
 ### 2025-09-17 - v13 compatibility is finally here- including a complete overhaul!
