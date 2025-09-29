@@ -556,8 +556,8 @@ function renderHUDIcon() {
     icon.width = size;
     icon.height = size;
     icon.style.border = "none";
-    icon.style.filter = "opacity(1)";
-    icon.style.transition = "filter 4s";
+    icon.style.filter = `opacity(${Config.setting("hudIconOpacity")})`;
+    icon.style.transition = "filter 10s";
     hud.appendChild(icon);
 
     // insert into Foundry's own UI container

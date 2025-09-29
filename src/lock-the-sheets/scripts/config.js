@@ -154,6 +154,14 @@ export class Config {
                     step: 1
                 }
             },
+            hudIconOpacity: {
+                scope: 'world', config: true, type: Number, default: 0.5,
+                range: { // define a slider
+                    min: 0.2,
+                    max: 1,
+                    step: 0.1
+                }
+            },
             showUIButton: {
                 scope: 'world', config: true, type: Boolean, default: true,
             },

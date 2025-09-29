@@ -72,7 +72,11 @@
       },
       "hudIconTimeoutSeconds": {
         "name": "Timeout for the HUD status icon (seconds)",
-        "hint": "Timeout in seconds for the HUD icon to automatically turn off after a certain time. Set to 0 to make the HUD icon always visible."
+        "hint": "Timeout in seconds for the HUD icon to automatically turn off after a certain time. Set to 0 to make the HUD icon always visible. Default: 10."
+      },
+      "hudIconOpacity": {
+        "name": "Opacity of the HUD status icon",
+        "hint": "1 (maximum) means fully visible, 0.2 (minimum) means visibla by 20%. Default: 0.7 (70%)"
       },
       "keybindingNames": {
         "toggle": "Lock The Sheets! (on/off)",

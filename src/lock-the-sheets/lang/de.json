@@ -64,7 +64,11 @@
       },
       "hudIconTimeoutSeconds": {
         "name": "Timeout für den HUD Status Icon (Sekunden)",
-        "hint": "Zeitspanne in Sekunden, nach welcher der HUD Icon automatisch ausgeblendet wird. Auf 0 setzen, um den HUD Icon immer sichtbar zu halten."
+        "hint": "Zeitspanne in Sekunden, nach welcher der HUD Icon automatisch ausgeblendet wird. Auf 0 setzen, um den HUD Icon immer sichtbar zu halten. Standard: 10."
+      },
+      "hudIconOpacity": {
+        "name": "Sichtbarkeit des HUD Status Icons",
+        "hint": "1 (Maximum) bedeutet vollständig sichtbar, 0.2 (Minimum) zu 20% sichtbar. Standard: 0.7 (70%)."
       },
       "keybindingNames": {
         "toggle": "Lock The Sheets! ein-/ausschalten",
