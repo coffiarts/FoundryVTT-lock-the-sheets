@@ -517,23 +517,27 @@ function itemDeletedGMAlertUIMessage(userName, itemName) {
 function renderHUDIcon() {
     // Logger.debug("(renderHUDIcon)");
 
-    clearHUDIcon();
-
     if (LockTheSheets.isActive && !Config.setting("showHUDIconLocked")
         || !LockTheSheets.isActive && !Config.setting("showHUDIconOpen")) {
         Logger.debug("(renderHUDIcon) - no HUD icon to render (overlays are disabled for the current lock state)");
         return;
     }
 
-    // parent.style.position = "relative";
-    const hud = document.createElement("div");
-    hud.id = Config.HUD_ICON_NAME;
-    hud.style.position = "absolute";
-    hud.style.top = getHUDIconTopPosition();
+    // Check if "coffiarts-hud" already exists. Only create if it doesn't.'
+    let hud = document.getElementById(Config.HUD_NAME);
+    if (!hud) {
+        hud = document.createElement("div");
+        hud.id = Config.HUD_NAME;
+        hud.style.position = "absolute";
+        hud.style.top = "0px";
+    }
+
+    // Create and append the hud icon
+    clearHUDIcon();
     const leftPos =
         (Config.getGameMajorVersion() >= 13)
         ? (game.system.id === "dsa5")
-            ? -250 * Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")] // v13 dsa5
+            ? -270 * Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")] // v13 dsa5
             : 300 - 220 * Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")] // v13 dnd5
         : 0; // v12
     if (Config.getGameMajorVersion() >= 13) {
@@ -547,7 +551,7 @@ function renderHUDIcon() {
 
     const icon = document.createElement("img");
     const size = 250 * Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")];
-    icon.id = `${Config.HUD_ICON_NAME}-icon`;
+    icon.id = Config.HUD_ICON_NAME;
     icon.src = (LockTheSheets.isActive) ? Config.OVERLAY_ICONS.locked : Config.OVERLAY_ICONS.open;
     icon.width = size;
     icon.height = size;
@@ -562,8 +566,6 @@ function renderHUDIcon() {
     Logger.debug("(renderHUDIcon) - inserting HUD icon", parent, hud);
     parent.appendChild(hud);
 
-    LockTheSheets.showsHUDIcon = true;
-
     if (Config.setting("hudIconTimeoutSeconds") > 0) {
         setTimeout(() => {
             fadeOutHUDIcon(icon);
@@ -573,17 +575,12 @@ function renderHUDIcon() {
 
 function clearHUDIcon() {
     document.getElementById(Config.HUD_ICON_NAME)?.remove();
-    LockTheSheets.showsHUDIcon = false;
-}
-
-function getHUDIconTopPosition() {
-    return "0px"; // TODO: Shift this down whenever lock-the-sheet is installed and currently shows its own HUD icon (if HotPan.showsHUDIcon ...)
 }
 
 function fadeOutHUDIcon(icon) {
     Logger.debug("(fadeOutHUDIcon))");
     icon.style.filter = "opacity(0)";
-    LockTheSheets.showsHUDIcon = false;
+    clearHUDIcon();
 }
 
 async function toggleNativeUILock() {

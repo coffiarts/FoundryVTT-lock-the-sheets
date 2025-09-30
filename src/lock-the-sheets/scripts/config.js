@@ -18,6 +18,7 @@ export class Config {
         modlink: MOD_LINK
     };
 
+    static HUD_NAME = "coffiarts-hud";
     static HUD_ICON_NAME = "lock-the-sheets-hud";
 
     static OVERLAY_ICONS = {
