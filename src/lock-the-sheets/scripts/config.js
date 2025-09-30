@@ -18,6 +18,8 @@ export class Config {
         modlink: MOD_LINK
     };
 
+    static HUD_ICON_NAME = "lock-the-sheets-hud";
+
     static OVERLAY_ICONS = {
         locked: `${Config.data.modPath}/artwork/lock-red-closed.png`,
         open: `${Config.data.modPath}/artwork/lock-green-open.png`
