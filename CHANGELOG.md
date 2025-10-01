@@ -4,7 +4,7 @@ Foundry VTT **core** version it is compatible with (and recommended for).
 ## 13.0.4
 ### 2025-10-01 - Cross-compatibility for [Hot Pan & Zoom!](https://github.com/coffiarts/FoundryVTT-hot-pan)'s new HUD Icon
 You may have noticed that this mod now has a nice HUD Status Icon since the last updates. 
-Howeder, as my other mod [Hot Pan & Zoom!](https://github.com/coffiarts/FoundryVTT-hot-pan) (feel free to check it out as well!) complained about this bitterly, I had to give it such an icon, too.
+However, as my other mod [Hot Pan & Zoom!](https://github.com/coffiarts/FoundryVTT-hot-pan) (feel free to check it out as well!) complained about this bitterly, I had to give it such an icon, too.
 
 <img src="src/lock-the-sheets/artwork/lock-red-closed.png" width="100" alt="New HUD Status icon"/>
 <img src="src/lock-the-sheets/artwork/hot-pan-hud-icon.png" width="100" alt="New HUD Status icon"/>
