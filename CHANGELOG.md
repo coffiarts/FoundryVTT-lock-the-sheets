@@ -1,6 +1,18 @@
 The **major** version number in my modules (like "12") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
 
+## 13.0.4
+### 2025-10-01 - Cross-compatibility for [Hot Pan & Zoom!](https://github.com/coffiarts/FoundryVTT-hot-pan)'s new HUD Icon
+You may have noticed that this mod now has a nice HUD Status Icon since the last updates. 
+Howeder, as my other mod [Hot Pan & Zoom!](https://github.com/coffiarts/FoundryVTT-hot-pan) (feel free to check it out as well!) complained about this bitterly, I had to give it such an icon, too.
+
+<img src="src/lock-the-sheets/artwork/lock-red-closed.png" width="100" alt="New HUD Status icon"/>
+<img src="src/lock-the-sheets/artwork/hot-pan-hud-icon.png" width="100" alt="New HUD Status icon"/>
+
+Well, now both icons need to get along in the UI with each other, so that they don't interfere or overlap.
+That's what this technical update ensures.
+**Important:** If you're already using both mods, make sure to update both of them, to avoid flaws in the UI!
+
 ## 13.0.3
 ### 2025-09-29 - Post-polishing of the preceding v13 hotfix
 Addendum to the previous hotfix (which I had to push out as quickly as possible first, now here are some improvements to it):

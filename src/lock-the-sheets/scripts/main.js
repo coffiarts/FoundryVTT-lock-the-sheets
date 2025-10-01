@@ -698,7 +698,6 @@ async function toggleNativeUILockButton() {
  * Public class for accessing this module through macro code
  */
 export class LockTheSheets {
-    static showsHUDIcon;
     static isActive = false;
     static #previousState;
     static suppressNotificationsOnce;
