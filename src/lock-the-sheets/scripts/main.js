@@ -38,6 +38,7 @@ let ready2play;
 
         Hooks.once("ready", () =>  {
             initHooks();
+            Config.modifySetting(`modVersion`, game.modules.get("lock-the-sheets").version);
             LockTheSheets.isActive = Config.setting('isActive');
             if (Config.getGameMajorVersion() >= 13) {
                 Logger.debug("Calling renderUIButtonV13() from Hooks.ready");
@@ -47,7 +48,7 @@ let ready2play;
             ui.controls.render();
             renderHUDIcon();
 
-            Logger.infoGreen(`Ready to play! Version: ${game.modules.get(Config.data.modID).version}`);
+            Logger.infoGreen(`Ready to play! Version: ${Config.setting("modVersion")}`);
             Logger.infoGreen(Config.data.modDescription);
             // stateChangeUIMessage(); // Activate this only if you want to post an initial screen message on game load. But that's probably more annoying than helful.
 
