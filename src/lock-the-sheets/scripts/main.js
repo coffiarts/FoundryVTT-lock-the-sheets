@@ -26,27 +26,17 @@ let ready2play;
 
         await setup();
 
-        Logger.debug("(setup) Waiting for getSceneControlButtons hook to be ready...");
-        if (Config.getGameMajorVersion() <= 12) {
-            Hooks.on('getSceneControlButtons', controls => {
-                controlButtonManager.registerButtonOnceV12(Config.getUIButtonDefinition(), controls);
-            });
-        }
-        Logger.debug("(setup) ... getSceneControlButtons hook complete.");
-
         Logger.debug("... SETUP COMPLETE.");
 
         Hooks.once("ready", () =>  {
             initHooks();
             Config.modifySetting(`modVersion`, game.modules.get("lock-the-sheets").version);
             LockTheSheets.isActive = Config.setting('isActive');
-            if (Config.getGameMajorVersion() >= 13) {
-                Logger.debug("Calling renderUIButtonV13() from Hooks.ready");
-                renderUIButtonV13();
-            }
+            Logger.debug("Calling renderUIButton() from Hooks.ready");
+            renderUIButton();
             renderTokenOverlays();
             ui.controls.render();
-            renderHUDIcon();
+            LockTheSheets.renderHUDIcon();
 
             Logger.infoGreen(`Ready to play! Version: ${Config.setting("modVersion")}`);
             Logger.infoGreen(Config.data.modDescription);
@@ -86,17 +76,17 @@ async function initSubmodules() {
     });
 }
 
-function renderUIButtonV13() {
+function renderUIButton() {
     if (!game.user.isGM) return;
     const buttonExists = controlButtonManager.hasButton(Config.getUIButtonDefinition().tool.name);
     const showButton = Config.setting('showUIButton');
 
-    Logger.debug(`(renderUIButtonV13) buttonExists: ${buttonExists}`);
-    Logger.debug(`(renderUIButtonV13) showButton: ${showButton}`);
+    Logger.debug(`(renderUIButton) buttonExists: ${buttonExists}`);
+    Logger.debug(`(renderUIButton) showButton: ${showButton}`);
 
     const buttonDef = Config.getUIButtonDefinition();
     if (!buttonExists && Config.setting('showUIButton')) {
-        controlButtonManager.registerButtonV13Plus(buttonDef);
+        controlButtonManager.registerButton(buttonDef);
     }
     else if (buttonExists && !Config.setting('showUIButton')) {
         controlButtonManager.removeButtonV13Plus(buttonDef.tool.name);
@@ -164,21 +154,15 @@ function initHooks() {
             renderActorDirectoryOverlays(app, app.element);
         }
     });
-    if (Config.getGameMajorVersion() >= 13) {
-        // In v13, rendering overlays can cause severe scene loading lag when done too often.
-        // Therefore, we only do this once on canvasReady.
-        // The tradeoff is that, other than in v12, tokens added to the scene after loaded won't have their overlays rendered immediately, but only after the next toggling of the lock state.
-        // Unfortunately, this is the only way to avoid the memory bloating on scene changes.
-        Hooks.on("canvasReady", async () => {
-            Logger.debug("canvasReady");
-            renderTokenOverlays();
-        });
-    } else { // v12
-        Hooks.on("drawToken", async () => {
-            renderTokenOverlays();
-        });
-    }
 
+    // Rendering overlays can cause severe scene loading lag when done too often.
+    // Therefore, we only do this once on canvasReady.
+    // The tradeoff is that tokens added to the scene after loaded won't have their overlays rendered immediately, but only after the next toggling of the lock state.
+    // Unfortunately, this is the only way to avoid the memory bloating on scene changes.
+    Hooks.on("canvasReady", async () => {
+        Logger.debug("canvasReady");
+        renderTokenOverlays();
+    });
 
     // Hook for capturing mod setting changes
     Hooks.on("updateSetting", async function (setting) {
@@ -297,13 +281,13 @@ async function onGameSettingChanged() {
 
     // Refresh UI Button display state
     if (Config.getGameMajorVersion() >= 13) {
-        await renderUIButtonV13();
+        await renderUIButton();
     } else { // v12
         controlButtonManager.refreshUIButtonV12(Config.getUIButtonDefinition());
     }
     ui.controls.render();
 
-    renderHUDIcon();
+    LockTheSheets.renderHUDIcon();
 }
 
 /**
@@ -396,11 +380,7 @@ async function renderActorDirectoryOverlays(app, html) {
 
     // Collect actor elements
     let actorElements;
-    if (Config.getGameMajorVersion() >= 13) {
-        actorElements = html.querySelectorAll('.directory-item.actor');
-    } else {
-        actorElements = html.find('.directory-item.document.actor').toArray(); // v12 jQuery → array
-    }
+    actorElements = html.querySelectorAll('.directory-item.actor');
 
     actorElements.forEach(element => {
         handleActorElementOverlay(element, imgPath);
@@ -515,73 +495,10 @@ function itemDeletedGMAlertUIMessage(userName, itemName) {
     Logger.warn(message);
 }
 
-function renderHUDIcon() {
-    // Logger.debug("(renderHUDIcon)");
-
-    if (LockTheSheets.isActive && !Config.setting("showHUDIconLocked")
-        || !LockTheSheets.isActive && !Config.setting("showHUDIconOpen")) {
-        Logger.debug("(renderHUDIcon) - no HUD icon to render (overlays are disabled for the current lock state)");
-        return;
-    }
-
-    // Check if "coffiarts-hud" already exists. Only create if it doesn't.'
-    let hud = document.getElementById(Config.HUD_NAME);
-    if (!hud) {
-        hud = document.createElement("div");
-        hud.id = Config.HUD_NAME;
-        hud.style.position = "absolute";
-        hud.style.top = "0px";
-    }
-
-    // Create and append the hud icon
-    clearHUDIcon();
-    const leftPos =
-        (Config.getGameMajorVersion() >= 13)
-        ? (game.system.id === "dsa5")
-            ? -270 * Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")] // v13 dsa5
-            : 300 - 220 * Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")] // v13 dnd5
-        : 0; // v12
-    if (Config.getGameMajorVersion() >= 13) {
-        hud.style.left = leftPos + "px";
-    } else {
-        hud.style.right = leftPos + "px";
-    }
-    hud.style.display = "inline-block";
-    hud.style.marginTop = (Config.getGameMajorVersion() >= 13) ? "10px" : "20px";
-    hud.style.marginRight = (Config.getGameMajorVersion() >= 13) ? "0px" : "20px";
-
-    const icon = document.createElement("img");
-    const size = 250 * Config.OVERLAY_SCALE_MAPPING[Config.setting("overlayScale")];
-    icon.id = Config.HUD_ICON_NAME;
-    icon.src = (LockTheSheets.isActive) ? Config.OVERLAY_ICONS.locked : Config.OVERLAY_ICONS.open;
-    icon.width = size;
-    icon.height = size;
-    icon.style.border = "none";
-    icon.style.filter = `opacity(${Config.setting("hudIconOpacity")})`;
-    icon.style.transition = "filter 10s";
-    hud.appendChild(icon);
-
-    // insert into Foundry's own UI container
-    const parentName = (Config.getGameMajorVersion() >= 13) ? "sidebar" : "ui-middle";
-    const parent = document.getElementById(parentName);
-    Logger.debug("(renderHUDIcon) - inserting HUD icon", parent, hud);
-    parent.appendChild(hud);
-
-    if (Config.setting("hudIconTimeoutSeconds") > 0) {
-        setTimeout(() => {
-            fadeOutHUDIcon(icon);
-        }, Config.setting("hudIconTimeoutSeconds") * 1000);
-    }
-}
-
-function clearHUDIcon() {
-    document.getElementById(Config.HUD_ICON_NAME)?.remove();
-}
-
 function fadeOutHUDIcon(icon) {
     Logger.debug("(fadeOutHUDIcon))");
     icon.style.filter = "opacity(0)";
-    clearHUDIcon();
+    LockTheSheets.clearHUDIcon();
 }
 
 async function toggleNativeUILock() {
@@ -621,9 +538,7 @@ async function toggleNativeUILockButton() {
             elements = window.document.querySelectorAll("slide-toggle");
             break;
         case "dsa5": // dsa5 has a "lock advancement button"
-            elements = (Config.getGameMajorVersion() >= 13)
-                ? window.document.querySelectorAll(`button.header-control[data-action="locksheet"]`)
-                : window.document.querySelectorAll(`.header-button.control.locksheet`); // v12
+            elements = window.document.querySelectorAll(`button.header-control[data-action="locksheet"]`);
             break;
     }
 
@@ -656,7 +571,7 @@ async function toggleNativeUILockButton() {
                     case "dsa5":
                         // Logger.debug("(toggleNativeUILockButton) - toggleElement.classList: ", toggleElement.classList);
                         toggleElement.setAttribute("data-tooltip", "Locked by GM");
-                        const lockElement = (Config.getGameMajorVersion() >= 13) ? toggleElement : toggleElement.children[0];
+                        const lockElement = toggleElement;
                         if (lockElement?.classList.contains("fa-unlock")) { // simulate click if state is unlocked
                             toggleElement.setAttribute("was-unlocked", "true");
                             LockTheSheets.isActive = false; // temporarily disable global lock flag, to avoid inintentionally blocking our own action here
@@ -777,4 +692,82 @@ export class LockTheSheets {
         // Might be an ugly workaround, better ideas welcome!
         await Config.modifySetting('isActive', newStateIsON);
     }
+
+    static renderHUDIcon() {
+
+        LockTheSheets.clearHUDIcon();
+
+        // Logger.debug("(renderHUDIcon)");
+        if (LockTheSheets.isActive && !Config.setting("showHUDIconLocked")
+            || !LockTheSheets.isActive && !Config.setting("showHUDIconOpen")) {
+            Logger.debug("(renderHUDIcon) - no HUD icon to render (overlays are disabled for the current lock state)");
+            return;
+
+        }
+        // Check if HUD already exists. Only create it if it doesn't.
+        let hud = document.getElementById(Config.HUD_NAME);
+        if (!hud) {
+            hud = document.createElement("div");
+            hud.id = Config.HUD_NAME;
+            hud.style.position = "absolute";
+
+        }
+        if (Config.setting("hudIconAnchor").startsWith("bottom")) { // "bottomleft" or "bottomright"
+            hud.style.removeProperty("top");
+            hud.style.bottom = parseInt(Config.setting("hudIconOffsetY")) * -1 + "px";
+        } else { // "topleft" or "topright"
+            hud.style.removeProperty("bottom");
+            hud.style.top = parseInt(Config.setting("hudIconOffsetY")) + "px";
+
+        }
+
+        let leftPos = 0;
+        // Fine-tune horizontal position. This is VERY hacky - still searching for a better solution
+        if (Config.setting("hudIconAnchor").endsWith("left")) { // "topleft" or "bottomleft"
+            leftPos = parseInt(Config.setting("hudIconOffsetX"));
+        } else { // "topright" or "bottomright"
+            leftPos = (game.system.id === "dsa5")
+                ? -270 * Config.OVERLAY_SCALE_MAPPING[Config.setting("hudIconScale")] // dsa5
+                : 300 - 220 * Config.OVERLAY_SCALE_MAPPING[Config.setting("hudIconScale")]; // others (tested only for dnd5!)
+            leftPos += parseInt(Config.setting("hudIconOffsetX"));
+        }
+
+        hud.style.left = leftPos + "px";
+
+        // Finalize icon settings
+        hud.style.display = "inline-block";
+        hud.style.margin = "10px";
+        const icon = document.createElement("img");
+        const size = 250 * Config.OVERLAY_SCALE_MAPPING[Config.setting("hudIconScale")];
+        icon.id = Config.HUD_ICON_NAME;
+        icon.src = LockTheSheets.isActive && Config.setting("showHUDIconLocked") ? Config.OVERLAY_ICONS.locked : Config.OVERLAY_ICONS.open;
+        icon.width = size;
+        icon.height = size;
+        icon.style.border = "none";
+        icon.style.filter = `opacity(${Config.setting("hudIconOpacity")})`;
+        hud.appendChild(icon);
+
+        // insert into Foundry's own UI container
+        let parentName = null;
+        if (Config.setting("hudIconAnchor").endsWith("left")) { // "topleft" or "bottomleft"
+            parentName = "ui-left-column-1";
+        } else { // "topright" or "bottomright"
+            parentName = "sidebar";
+        }
+        const parent = document.getElementById(parentName);
+        Logger.debug("(renderHUDIcon) - inserting HUD icon", parent, hud);
+        parent.appendChild(hud);
+
+        if (Config.setting("hudIconTimeoutSeconds") > 0) {
+            setTimeout(() => {
+                fadeOutHUDIcon(icon);
+            }, Config.setting("hudIconTimeoutSeconds") * 1000);
+        }
+    }
+
+    static clearHUDIcon() {
+        document.getElementById(Config.HUD_ICON_NAME)?.remove();
+    }
+
+
 }

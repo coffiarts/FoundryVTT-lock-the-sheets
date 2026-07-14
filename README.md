@@ -1,12 +1,5 @@
-### v13-compatibility is finally here - including a complete overhaul!
-This module is now **fully migrated to Foundry VTT v13** (and also still backwards-compatible with v12).<br/>
-**Supported game systems are (as before):** dnd5e and tde5/dsa5.
-If you need it for other systems, feel free to request it by open an issue on github.<br>
-It's not the same as before - I have given it a **huge revamp**, so that it can now be considered much more reliable, stable, and clean.<br>
-Please have a look at the [CHANGELOG.md](CHANGELOG.md) for details, especially the **notes on migrating from v12 to v13**.
-
-![](https://img.shields.io/badge/Foundry-v12-informational)
 ![](https://img.shields.io/badge/Foundry-v13-informational)
+![](https://img.shields.io/badge/Foundry-v14-informational)
 [![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Flock-the-sheets)](https://forge-vtt.com/bazaar#package=lock-the-sheets)
 [![The Forge](https://img.shields.io/badge/The%20Forge-Pay%20What%20You%20Want-success?style=flat-square)](https://eu.forge-vtt.com/bazaar#package=lock-the-sheets)
 
@@ -89,6 +82,8 @@ And let's see what happens if a player **accidentally** happens to **delete an i
 Optionally, the **GM receives alerts about every blocked action**:
 
 ![](src/lock-the-sheets/artwork/lock-the-sheets-readme-gm-alert.png)
+
+As of version 14.0.0, the HUD Icon position can be fine-controlled to avoid UI interferences in specific systems.
 
 ## Why I created this ...
 No, I did **not** create this out of paranoia towards my players!

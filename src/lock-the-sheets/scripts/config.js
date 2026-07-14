@@ -18,8 +18,8 @@ export class Config {
         modlink: MOD_LINK
     };
 
-    static HUD_NAME = "coffiarts-hud";
-    static HUD_ICON_NAME = "lock-the-sheets-hud";
+    static HUD_NAME = "lock-the-sheets-hud";
+    static HUD_ICON_NAME = "lock-the-sheets-hud-icon";
 
     static OVERLAY_ICONS = {
         locked: `${Config.data.modPath}/artwork/lock-red-closed.png`,
@@ -29,38 +29,18 @@ export class Config {
     static OVERLAY_SCALE_MAPPING = { zero: 0, small: 0.2, normal: 0.3, large: 0.4 };
 
     static getUIButtonDefinition() {
-        if (Config.getGameMajorVersion() >= 13) {
-            // v13 or newer: use onChange handler instead of onClick handler
-            return {
-                group: ControlButtonManager.CONTROL_GROUPS.TOKENS,
-                tool: {
-                    name: 'lockTheSheets', // this MUST be a js code-compatible property name (i.e. no blanks, no spaces, no hyphens, no special chars!)
-                    title: Config.localize('controlButton.label'),
-                    icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
-                    button: true,
-                    toggle: true,
-                    active: () => (game.user.isGM && LockTheSheets.isActive),
-                    visible: () => (game.user.isGM && Config.setting('showUIButton')),
-                    onChange: () => {
-                        Config.toggleActiveState();
-                    }
-                }
-            }
-        } else {
-            // v12: use onClick handler instead of onChange handler
-            return {
-                group: ControlButtonManager.CONTROL_GROUPS.TOKENS,
-                tool: {
-                    name: 'lockTheSheets', // this MUST be a js code-compatible property name (i.e. no blanks, no spaces, no hyphens, no special chars!)
-                    title: Config.localize('controlButton.label'),
-                    icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
-                    button: true,
-                    toggle: true,
-                    active: () => (game.user.isGM && LockTheSheets.isActive),
-                    visible: () => (game.user.isGM && Config.setting('showUIButton')),
-                    onClick: () => {
-                        Config.toggleActiveState();
-                    }
+        return {
+            group: ControlButtonManager.CONTROL_GROUPS.TOKENS,
+            tool: {
+                name: 'lockTheSheets', // this MUST be a js code-compatible property name (i.e. no blanks, no spaces, no hyphens, no special chars!)
+                title: Config.localize('controlButton.label'),
+                icon: "fa-solid fa-user-lock", // see https://fontawesome.com/search?o=r&m=free
+                button: true,
+                toggle: true,
+                active: () => (game.user.isGM && LockTheSheets.isActive),
+                visible: () => (game.user.isGM && Config.setting('showUIButton')),
+                onChange: () => {
+                    Config.toggleActiveState();
                 }
             }
         }
@@ -74,9 +54,11 @@ export class Config {
 
     static init() {
 
+        let settingsData;
+
         // Register all globally relevant game settings here
 
-        const settingsData1 = {
+        settingsData = {
             modVersion: {
                 scope: 'client', config: true, type: String, default: game.modules.get(MOD_ID).version,
                 onChange: value => {
@@ -88,29 +70,19 @@ export class Config {
                 }
             }
         }
-        Config.registerSettings(settingsData1);
+        Config.registerSettings(settingsData);
 
         // create separator and title at the beginning of this settings section
-        if (Config.getGameMajorVersion() >= 13) {
-            Hooks.on('renderSettingsConfig', (app, html) => {
-                // Core
-                let formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.isActive`)?.closest(".form-group");
-                formGroup?.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">Core</h4></div>`);
-                // UI
-                formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.alertGMOnReject`)?.closest(".form-group");
-                formGroup?.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">UI</h4></div>`);
-            });
-        }
-        else {
-            Hooks.on('renderSettingsConfig', (app, [html]) => {
-                // Core
-                html.querySelector(`[data-setting-id="${Config.data.modID}.isActive"]`)?.insertAdjacentHTML('beforeBegin', `<h3>Core</h3>`)
-                // UI
-                html.querySelector(`[data-setting-id="${Config.data.modID}.alertGMOnReject"]`)?.insertAdjacentHTML('beforeBegin', `<h3>UI</h3>`)
-            });
-        }
+        Hooks.on('renderSettingsConfig', (app, html) => {
+            // Core
+            let formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.isActive`)?.closest(".form-group");
+            formGroup?.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">Core</h4></div>`);
+            // UI
+            formGroup = html.querySelector(`#settings-config-${Config.data.modID.replace(/\./g, "\\.")}\\.alertGMOnReject`)?.closest(".form-group");
+            formGroup?.insertAdjacentHTML("beforebegin", `<div><h4 style="margin-top: 0; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 6px;">UI</h4></div>`);
+        });
 
-        const settingsData2 = {
+        settingsData = {
             isActive: {
                 scope: 'world', config: true, type: Boolean, default: false,
             },
@@ -145,9 +117,15 @@ export class Config {
             },
             showHUDIconLocked: {
                 scope: 'world', config: true, type: Boolean, default: true,
+                onChange: () => {
+                    LockTheSheets.renderHUDIcon();
+                }
             },
             showHUDIconOpen: {
                 scope: 'world', config: true, type: Boolean, default: true,
+                onChange: () => {
+                    LockTheSheets.renderHUDIcon();
+                }
             },
             hudIconTimeoutSeconds: {
                 scope: 'world', config: true, type: Number, default: 10,
@@ -155,23 +133,79 @@ export class Config {
                     min: 0,
                     max: 30,
                     step: 1
+                },
+                onChange: () => {
+                    LockTheSheets.renderHUDIcon();
+                }
+            },
+            hudIconScale: {
+                scope: 'client', config: true, type: String,
+                choices: {
+                    "zero": Config.localize("setting.hudIconScaleOptions.zero"),
+                    "small": Config.localize("setting.hudIconScaleOptions.small"),
+                    "normal": Config.localize("setting.hudIconScaleOptions.normal"),
+                    "large": Config.localize("setting.hudIconScaleOptions.large")
+                },
+                default: "normal",
+                render: "radio",
+                onChange: () => {
+                    LockTheSheets.renderHUDIcon();
                 }
             },
             hudIconOpacity: {
-                scope: 'world', config: true, type: Number, default: 0.5,
+                scope: 'client', config: true, type: Number, default: 0.5,
                 range: { // define a slider
                     min: 0.2,
                     max: 1,
                     step: 0.1
+                },
+                onChange: () => {
+                    LockTheSheets.renderHUDIcon();
+                }
+            },
+            hudIconAnchor: {
+                scope: 'client', config: true, type: String,
+                choices: {
+                    "topleft": Config.localize("setting.hudIconAnchorOptions.topleft"),
+                    "topright": Config.localize("setting.hudIconAnchorOptions.topright"),
+                    "bottomleft": Config.localize("setting.hudIconAnchorOptions.bottomleft"),
+                    "bottomright": Config.localize("setting.hudIconAnchorOptions.bottomright")
+                },
+                default: "topleft",
+                render: "radio",
+                onChange: () => {
+                    LockTheSheets.renderHUDIcon();
+                }
+            },
+            hudIconOffsetX: {
+                scope: 'client', config: true, type: Number, default: 100,
+                range: { // define a slider
+                    min: -200,
+                    max: 200,
+                    step: 1
+                },
+                onChange: () => {
+                    LockTheSheets.renderHUDIcon();
+                }
+            },
+            hudIconOffsetY: {
+                scope: 'client', config: true, type: Number, default: 50,
+                range: { // define a slider
+                    min: -200,
+                    max: 200,
+                    step: 1
+                },
+                onChange: () => {
+                    LockTheSheets.renderHUDIcon();
                 }
             },
             showUIButton: {
                 scope: 'world', config: true, type: Boolean, default: true,
             },
         };
-        Config.registerSettings(settingsData2);
+        Config.registerSettings(settingsData);
 
-        // Add the keybinding
+        // Add the keybindings
         game.keybindings.register("lock-the-sheets", "active", {
             name: Config.localize('setting.keybindingNames.toggle'),
             editable: [
@@ -333,7 +367,7 @@ export class Config {
         let className;
         switch (game.system.id) {
             case "dnd5e":
-                className = (Config.getGameMajorVersion() >= 13) ? "CharacterActorSheet" : "ActorSheet5eCharacter2";
+                className = "CharacterActorSheet";
                 break;
             case "dsa5":
                 className = "ActorSheetdsa5Character";
@@ -347,10 +381,10 @@ export class Config {
         let querySelector;
         switch (game.system.id) {
             case "dnd5e":
-                querySelector = (Config.getGameMajorVersion() >= 13) ? ".application.sheet.dnd5e2.actor.standard-form.character" : ".app.window-app.dnd5e2.sheet.actor.character";
+                querySelector = ".application.sheet.dnd5e2.actor.standard-form.character";
                 break;
             case "dsa5":
-                querySelector = (Config.getGameMajorVersion() >= 13) ? ".application.sheet.dsa5.actor.character-sheet" : ".app.window-app.sheet.dsa5.actor.character-sheet";
+                querySelector = ".application.sheet.dsa5.actor.character-sheet";
                 break;
         }
         Logger.debug("(getActorSheetCSSQuerySelector) querySelector:", querySelector);

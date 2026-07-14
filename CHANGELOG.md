@@ -1,13 +1,21 @@
-The **major** version number in my modules (like "12") always reflects the
+The **major** version number in my modules (like "14") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
+
+## 14.0.0
+### 2026-??-?? - HUD Status Icon position now configurable
+- Now supporting fine-tuning of the HUD Icon's position. This is meant to help avoid UI conflicts in specific systems (like PF2).
+- Players can now adjust position, scale and transparency of the HUD Icon locally (overriding GM settings).
+- Formal declaration of v14 compatibility (though it had already been compatible). We're still backward-compatible with v13, **but: v12 compatibility has been dropped**
+- minor background fixes and optimizations
+- fixed broken image links in this changelog
 
 ## 13.0.4
 ### 2025-10-01 - Cross-compatibility for [Hot Pan & Zoom!](https://github.com/coffiarts/FoundryVTT-hot-pan)'s new HUD Icon
 You may have noticed that this mod now has a nice HUD Status Icon since the last updates. 
 However, as my other mod [Hot Pan & Zoom!](https://github.com/coffiarts/FoundryVTT-hot-pan) (feel free to check it out as well!) complained about this bitterly, I had to give it such an icon, too.
 
-<img src="src/lock-the-sheets/artwork/lock-red-closed.png" width="100" alt="New HUD Status icon"/>
-<img src="src/lock-the-sheets/artwork/hot-pan-hud-icon.png" width="100" alt="New HUD Status icon"/>
+<img src="/modules/lock-the-sheets/artwork/lock-red-closed.png" width="100" alt="New HUD Status icon"/>
+<img src="/modules/lock-the-sheets/artwork/hot-pan-hud-icon.png" width="100" alt="New HUD Status icon"/>
 
 Well, now both icons need to get along in the UI with each other, so that they don't interfere or overlap.
 That's what this technical update ensures.
