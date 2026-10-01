@@ -3,51 +3,59 @@
     "setting": {
       "modVersion": {
         "name": "Version",
-        "hint": "Aktuell installierte Modulversion (hier nicht änderbar)."
+        "hint": "Aktuell installierte Modulversion (kann hier nicht geändert werden)."
       },
       "debug": {
         "name": "Debug-Modus",
-        "hint": "Aktiviert das Debug Logging."
+        "hint": "Clientseitige Einstellung, die eine erweiterte Debug-Protokollierung aktiviert."
       },
       "isActive": {
-        "name": "Sperrung aktivieren",
-        "hint": "Schaltet die Sperrung aller Charakterbögen AN (kann im Spiel per Tastenkombination, Macro oder UI Button umgeschaltet werden)."
+        "name": "Sperre aktivieren",
+        "hint": "Sperrstatus auf AN setzen (kann im Spiel über eine Tastaturbelegung, Makros oder eine UI-Schaltfläche umgeschaltet werden)."
       },
       "allowEquip": {
-        "name": "Aktion zulassen: Ausrüsten",
-        "hint": "Soll das An- und Ablegen (\"Ausrüsten\") von Gegenständen im Inventory auch bei aktiviertem Lock erlaubt sein?"
+        "name": "Ausrüsten und Ablegen erlauben",
+        "hint": "Soll das Ausrüsten und Ablegen von Inventargegenständen erlaubt sein, während die Sperre aktiv ist?"
       },
       "showUIButton": {
-        "name": "UI Button anzeigen",
-        "hint": "Button in der linken Menüleiste anzeigen, um Actor Sheet Lock an- und auszuschalten."
+        "name": "UI-Schaltfläche anzeigen",
+        "hint": "Eine Schaltfläche im Szenensteuerungsmenü auf der linken Seite anzeigen, um den Sperrstatus an- und auszuschalten."
       },
       "hideChatInfo": {
-        "name": "Modulinfo im Chat ausblenden",
-        "hint": "Unterdrückt Start den einmaligen Chat-Infotext zu diesem Modul (zum einmaligen Wiederanzeigen hier abwählen)."
+        "name": "Modulinformationen im Chatfenster ausblenden",
+        "hint": "Blendet den Informationstext zu diesem Modul beim Spielstart im Chatfenster aus (deaktiviere diese Option, um ihn erneut anzuzeigen)."
       },
       "notifyOnChange": {
-        "name": "UI-Meldungen beim Umschalten",
-        "hint": "Zeige kurze Bannermeldungen an, wenn das Panning & Zooming aus- oder eingeschaltet wird."
+        "name": "UI-Nachrichten beim Umschalten",
+        "hint": "Zeigt beim An- und Ausschalten vorübergehende UI-Nachrichten an."
+      },
+      "notifyPermanentlyWhileLOCKED": {
+        "name": "Dauerhafte Bildschirmnachricht beim Aktivieren",
+        "hint": "Zeigt beim Umschalten auf AN eine dauerhafte UI-Nachricht an (sichtbar bis zur Deaktivierung). Die Option „UI-Nachrichten beim Umschalten“ muss aktiviert sein."
+      },
+      "notifyPermanentlyWhileUNLOCKED": {
+        "name": "Dauerhafte Bildschirmnachricht beim Deaktivieren",
+        "hint": "Zeigt beim Umschalten auf AUS eine dauerhafte UI-Nachricht an (sichtbar bis zur Reaktivierung). Die Option „UI-Nachrichten beim Umschalten“ muss aktiviert sein."
       },
       "alertGMOnReject": {
-        "name": "Spielleiter bei blockierten Änderungen alarmieren",
-        "hint": "Bildschirmwarnung für den SL anzeigen, wenn ein Spieler einen gesperrten Charakterbogen ändern will."
+        "name": "Spielleitung über abgelehnte Änderungen benachrichtigen",
+        "hint": "Zeigt der Spielleitung eine Warnung auf dem Bildschirm an, wenn ein Spieler versucht, einen gesperrten Charakterbogen zu bearbeiten."
       },
       "lockForGM": {
-        "name": "Sperrung auch für Spielleiter anwenden",
-        "hint": "Gleiche Regeln für alle! Sperrung gilt auch für den SL (als Schutz vor unbeabsichtigten Änderungen)."
+        "name": "Änderungen auch für die Spielleitung sperren",
+        "hint": "Die gleichen Regeln für alle! Wende die Sperre auch auf mich als Spielleitung an (um mich vor versehentlichen Änderungen zu schützen)."
       },
       "showOverlayLocked": {
-        "name": "Icons auf gesperrten Akteuren anzeigen",
-        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie gesperrt sind (Standard: AUS). ACHTUNG: Dies kann die Performance beim Szenenwechsel (in großem Szenen und/oder Welten) beeinträchtigen. Das Ausschalten kann auch durch die Größen-Option 'unsichtbar' simuliert werden."
+        "name": "Symbole bei gesperrten Akteuren anzeigen",
+        "hint": "Zeigt bei gesperrten Tokens und Akteuren ein Symbol an (Standard: AUS). ACHTUNG: Dies kann beim Wechseln der Szenen die Leistung beeinträchtigen, insbesondere bei großen Szenen und/oder Welten. Das Ausblenden der Überlagerungen kann auch durch die Verwendung der Skalierungsoption „invisible“ simuliert werden."
       },
       "showOverlayOpen": {
-        "name": "Icons auf freigegebenen Akteuren anzeigen",
-        "hint": "Auf Tokens und Akteuren wird ein Icon angezeigt, wenn sie entsperrt sind (Standard: AUS). ACHTUNG: Dies kann die Performance beim Szenenwechsel (in großem Szenen und/oder Welten) beeinträchtigen. Das Ausschalten kann auch durch die Größen-Option 'unsichtbar' simuliert werden."
+        "name": "Symbole bei entsperrten Akteuren anzeigen",
+        "hint": "Zeigt bei entsperrten Tokens und Akteuren ein Symbol an (Standard: AUS). ACHTUNG: Dies kann beim Wechseln der Szenen die Leistung beeinträchtigen, insbesondere bei großen Szenen und/oder Welten. Das Ausblenden der Überlagerungen kann auch durch die Verwendung der Skalierungsoption „invisible“ simuliert werden."
       },
       "overlayScale": {
-        "name": "Größe der Icons",
-        "hint": "Größe der Icons auf gesperrten/freigegebenen Akteuren in der Szenenansicht. Kann auch über eigene Tastenkombinationen in den globalen Kontrolleinstellungen umgeschaltet werden."
+        "name": "Symbolgröße",
+        "hint": "Skalierung der Symbole für gesperrte und entsperrte Akteure in der Szenenansicht. Kann auch über benutzerdefinierte Tastaturbelegungen in den globalen Steuerungseinstellungen umgeschaltet werden."
       },
       "overlayScaleOptions": {
         "small": "klein",
@@ -55,20 +63,20 @@
         "large": "groß"
       },
       "showHUDIconLocked": {
-        "name": "HUD Status Icon bei Sperrung anzeigen",
-        "hint": "Erzeugt ein Symbol auf der Szenenansicht (rechts oben), das den Zustand GESPERRT anzeigt (Standard: AN).\n Kann automatisch nach einer bestimmten Zeitspanne ausgeblendet werden. Dazu bitte untenstehenden Slider anpassen."
+        "name": "HUD-Statussymbol anzeigen, wenn die Sperre AN ist",
+        "hint": "Zeigt oben rechts auf dem Bildschirm ein Symbol an, das den Sperrstatus angibt (Standard: AN).\n Du kannst festlegen, dass es nach einer bestimmten Zeit automatisch ausgeblendet wird, indem du den Schieberegler unten einstellst."
       },
       "showHUDIconOpen": {
-        "name": "HUD Status Icon bei Entsperrung anzeigen",
-        "hint": "Erzeugt ein Symbol auf der Szenenansicht (rechts oben), das den Zustand ENTSPERRT anzeigt (Standard: AN).\n Kann automatisch nach einer bestimmten Zeitspanne ausgeblendet werden. Dazu bitte untenstehenden Slider anpassen."
+        "name": "HUD-Statussymbol anzeigen, wenn die Sperre AUS ist",
+        "hint": "Zeigt oben rechts auf dem Bildschirm ein Symbol an, das den entsperrten Status angibt (Standard: AN).\n Du kannst festlegen, dass es nach einer bestimmten Zeit automatisch ausgeblendet wird, indem du den Schieberegler unten einstellst."
       },
       "hudIconTimeoutSeconds": {
-        "name": "Timeout für den HUD Status Icon (Sekunden)",
-        "hint": "Zeitspanne in Sekunden, nach welcher der HUD Icon automatisch ausgeblendet wird. Auf 0 setzen, um den HUD Icon immer sichtbar zu halten. Standard: 10."
+        "name": "Zeitüberschreitung für das HUD-Statussymbol (Sekunden)",
+        "hint": "Zeitüberschreitung in Sekunden, nach der das HUD-Statussymbol automatisch ausgeblendet wird. Setze den Wert auf 0, damit das HUD-Statussymbol immer sichtbar bleibt. Standard: 10."
       },
       "hudIconScale": {
-        "name": "Größe des HUD Status Icons",
-        "hint": "Größe des HUD Status Icons. Kann auch über eigene Tastenkombinationen in den globalen Kontrolleinstellungen umgeschaltet werden."
+        "name": "HUD-Symbolgröße",
+        "hint": "Skalierung des HUD-Statussymbols. Kann auch über benutzerdefinierte Tastaturbelegungen in den globalen Steuerungseinstellungen umgeschaltet werden."
       },
       "hudIconScaleOptions": {
         "zero": "unsichtbar",
@@ -77,11 +85,12 @@
         "large": "groß"
       },
       "hudIconOpacity": {
-        "name": "Sichtbarkeit des HUD Status Icons",
-        "hint": "1 (Maximum) bedeutet vollständig sichtbar, 0.2 (Minimum) zu 20% sichtbar (zu 80% transparent). Standard: 0.7 (70%)."
-      },"hudIconAnchor": {
-        "name": "Ankerposition des HUD Status Icons",
-        "hint": "Ausgangsposition relativ zum Bildschirm (welche Ecke?). Kann durch die Offset-Einstellungen weiter unten verfeinert werden."
+        "name": "Deckkraft des HUD-Statussymbols",
+        "hint": "1 (Maximum) bedeutet vollständig sichtbar, 0,2 (Minimum) bedeutet zu 20 % sichtbar (zu 80 % transparent). Standard: 0,7 (70 %)"
+      },
+      "hudIconAnchor": {
+        "name": "Verankerungsposition des HUD-Statussymbols",
+        "hint": "Grundposition relativ zu deinem Bildschirm (welche Ecke?). Kann mit den weiter unten aufgeführten Versatzeinstellungen weiter angepasst werden."
       },
       "hudIconAnchorOptions": {
         "topleft": "oben links (Standard)",
@@ -90,40 +99,40 @@
         "bottomright": "unten rechts"
       },
       "hudIconOffsetX": {
-        "name": "Horizontaler Offset (in Pixeln) des HUD Status Icons",
-        "hint": "Relative Verschiebung der Links-Rechts-Position (Standard: 100)."
+        "name": "Horizontaler Versatz des HUD-Statussymbols (Pixel)",
+        "hint": "Relative Anpassung der Position von links nach rechts (Standard: 100)."
       },
       "hudIconOffsetY": {
-        "name": " Vertikaler Offset (in Pixeln) des HUD Status Icons",
-        "hint": "Relative Verschiebung der Oben-Unten-Position (Standard: 50)."
+        "name": "Vertikaler Versatz des HUD-Statussymbols (Pixel)",
+        "hint": "Relative Anpassung der Position von oben nach unten (Standard: 50)."
       },
       "keybindingNames": {
-        "toggle": "Lock The Sheets! ein-/ausschalten",
-        "scaleZero": "Icon-Größe: unsichtbar",
-        "scaleSmall": "Icon-Größe: klein",
-        "scaleNormal": "Icon-Größe: normal",
-        "scaleLarge": "Icon-Größe: groß"
+        "toggle": "Lock The Sheets! (an/aus)",
+        "scaleZero": "Symbolgröße: unsichtbar",
+        "scaleSmall": "Symbolgröße: klein",
+        "scaleNormal": "Symbolgröße: normal",
+        "scaleLarge": "Symbolgröße: groß"
       }
     },
     "chatInfoContent": {
-      "title": "Lock The Sheets!<br/>(by coffiarts)",
-      "text1": "Sei der Türsteher!<br/>Alle Charakterbögen mit einem Klick sperren und entsperren!",
-      "text2": "Mit diesem kleinen, aber nützlichen Hilfsmodul kann der Game Master auf Knopfdruck jegliche Änderungen am Inhalt von Charakterbögen durch die Spieler sperren und entsperren.",
-      "text3": "Ein- und ausschaltbar wahlweise per Spieleinstellungen, mit einem (optionalen) UI Button, oder via Macro Code und Macro Button.<br/>Bitte Konfigurationsoptionen in den Spieleinstellungen beachten.<br/><br/>Mehr Details auf GitHub",
-      "footer": "Diese Nachricht wird nur einmal angezeigt. Zum Wiederanzeigen bitte die entsprechende Option in den Moduleinstellungen verwenden."
+      "title": "Lock The Sheets!<br/>(von coffiarts)",
+      "text1": "Sei der Torwächter!<br/>Sperre und entsperre alle Charakterbögen mit nur einem Klick!",
+      "text2": "Mit diesem praktischen kleinen Hilfsmodul kann die Spielleitung alle Änderungen an Charakterbögen durch Spieler blockieren und wieder freigeben.",
+      "text3": "Das An- und Ausschalten funktioniert auf verschiedene Arten: über die Spieleinstellungen, über eine praktische UI-Schaltfläche (optional) oder per Makrocode beziehungsweise Makroschaltfläche. <br/><br/>Sieh dir die Moduleinstellungen in den Spieleinstellungen an.<br/><br/>Weitere Informationen findest du auf GitHub.",
+      "footer": "Diese Chatkarte wird nur einmal angezeigt. Aktiviere sie bei Bedarf in den Moduleinstellungen erneut."
     },
     "onOffUIMessage": {
       "whenON": "Charakterbögen sind jetzt GESPERRT!",
-      "whenOFF": "Charakterbögen sind jetzt freigeschaltet."
+      "whenOFF": "Charakterbögen sind jetzt entsperrt."
     },
     "sheetEditRejected": {
-      "playerMsg": "Charakterbögen sind momentan zentral durch den Spielleiter gesperrt. Änderungen werden nicht übernommen.",
-      "gmMsgSheet": "[{userName}] versucht, einen Akteur zu verändern: [{sheetName}]",
-      "gmMsgItem": "[{userName}] versucht, auf einem Charakterbogen etwas zu ändern:  [{itemName}]",
-      "gmMsgItemDeleted": "[{userName}] versucht, auf einem Charakterbogen etwas zu löschen: Item [{itemName}]"
+      "playerMsg": "Charakterbögen sind derzeit von der Spielleitung aus der Ferne gesperrt. Änderungen werden nicht gespeichert.",
+      "gmMsgSheet": "[{userName}] versucht, den Akteur [{sheetName}] zu ändern.",
+      "gmMsgItem": "[{userName}] versucht, etwas im Charakterbogen des Akteurs zu ändern: [{itemName}]",
+      "gmMsgItemDeleted": "[{userName}] versucht, etwas aus dem Charakterbogen des Akteurs zu löschen: [{itemName}]"
     },
     "controlButton": {
-      "label": "Lock The Sheets! EIN/AUS"
+      "label": "Lock The Sheets! AN/AUS"
     }
   }
 }

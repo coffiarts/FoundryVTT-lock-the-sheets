@@ -1,0 +1,138 @@
+{
+  "lock-the-sheets": {
+    "setting": {
+      "modVersion": {
+        "name": "Version",
+        "hint": "Version du module actuellement installée (tu ne peux pas la modifier ici)."
+      },
+      "debug": {
+        "name": "Mode débogage",
+        "hint": "Paramètre côté client permettant une journalisation de débogage étendue."
+      },
+      "isActive": {
+        "name": "Activer le verrouillage",
+        "hint": "ACTIVER l’état de verrouillage des fiches (tu peux le basculer en jeu à l’aide d’un raccourci clavier, de macros ou d’un bouton d’interface)."
+      },
+      "allowEquip": {
+        "name": "Autoriser à équiper et déséquiper",
+        "hint": "Faut-il autoriser l’équipement et le déséquipement des objets d’inventaire lorsque le verrouillage des fiches est actif ?"
+      },
+      "showUIButton": {
+        "name": "Afficher le bouton d’interface",
+        "hint": "Afficher un bouton dans le menu des contrôles de scène à gauche pour basculer l’état de verrouillage."
+      },
+      "hideChatInfo": {
+        "name": "Masquer les informations du module dans la fenêtre de discussion",
+        "hint": "Masque le texte d’information sur ce module dans la fenêtre de discussion au démarrage du jeu (décoche cette option pour l’afficher à nouveau)."
+      },
+      "notifyOnChange": {
+        "name": "Messages d’interface lors du basculement",
+        "hint": "Afficher des messages d’interface temporaires lors de chaque activation et désactivation."
+      },
+      "notifyPermanentlyWhileLOCKED": {
+        "name": "Message permanent à l’écran lors de l’activation",
+        "hint": "Afficher un message d’interface permanent lors de l’activation (visible jusqu’à la désactivation). L’option « Messages d’interface lors du basculement » doit être activée."
+      },
+      "notifyPermanentlyWhileUNLOCKED": {
+        "name": "Message permanent à l’écran lors de la désactivation",
+        "hint": "Afficher un message d’interface permanent lors de la désactivation (visible jusqu’à la réactivation). L’option « Messages d’interface lors du basculement » doit être activée."
+      },
+      "alertGMOnReject": {
+        "name": "Avertir le MJ des modifications refusées",
+        "hint": "Afficher un avertissement à l’écran pour le MJ lorsqu’un joueur essaie de modifier une fiche verrouillée."
+      },
+      "lockForGM": {
+        "name": "Verrouiller également les modifications du MJ",
+        "hint": "Les mêmes règles pour tout le monde ! Appliquer également le verrouillage à toi-même en tant que MJ (pour te protéger contre les modifications accidentelles)."
+      },
+      "showOverlayLocked": {
+        "name": "Afficher des icônes sur les acteurs verrouillés",
+        "hint": "Afficher une icône sur les jetons et les acteurs lorsqu’ils sont verrouillés (par défaut : DÉSACTIVÉ). ATTENTION : cela peut affecter les performances lors du changement de scène pour les grandes scènes et/ou les grands mondes. La désactivation des superpositions peut également être simulée en utilisant l’option d’échelle « invisible »."
+      },
+      "showOverlayOpen": {
+        "name": "Afficher des icônes sur les acteurs déverrouillés",
+        "hint": "Afficher une icône sur les jetons et les acteurs lorsqu’ils sont déverrouillés (par défaut : DÉSACTIVÉ). ATTENTION : cela peut affecter les performances lors du changement de scène pour les grandes scènes et/ou les grands mondes. La désactivation des superpositions peut également être simulée en utilisant l’option d’échelle « invisible »."
+      },
+      "overlayScale": {
+        "name": "Taille de l’icône",
+        "hint": "Échelle des icônes sur les acteurs verrouillés/déverrouillés dans la vue de scène. Peut également être basculée à l’aide de raccourcis clavier personnalisés dans les paramètres des contrôles globaux."
+      },
+      "overlayScaleOptions": {
+        "small": "petite",
+        "normal": "normale",
+        "large": "grande"
+      },
+      "showHUDIconLocked": {
+        "name": "Afficher l’icône d’état du HUD lorsque le verrouillage est ACTIVÉ",
+        "hint": "Afficher une icône à l’écran (en haut à droite) indiquant l’état verrouillé (par défaut : ACTIVÉ).\\nTu peux la désactiver automatiquement après un délai en réglant le curseur ci-dessous."
+      },
+      "showHUDIconOpen": {
+        "name": "Afficher l’icône d’état du HUD lorsque le verrouillage est DÉSACTIVÉ",
+        "hint": "Afficher une icône à l’écran (en haut à droite) indiquant l’état déverrouillé (par défaut : ACTIVÉ).\\nTu peux la désactiver automatiquement après un délai en réglant le curseur ci-dessous."
+      },
+      "hudIconTimeoutSeconds": {
+        "name": "Délai d’affichage de l’icône d’état du HUD (secondes)",
+        "hint": "Délai en secondes avant la désactivation automatique de l’icône du HUD. Saisis 0 pour que l’icône du HUD reste toujours visible. Par défaut : 10."
+      },
+      "hudIconScale": {
+        "name": "Taille de l’icône du HUD",
+        "hint": "Échelle de l’icône d’état du HUD. Peut également être basculée à l’aide de raccourcis clavier personnalisés dans les paramètres des contrôles globaux."
+      },
+      "hudIconScaleOptions": {
+        "zero": "invisible",
+        "small": "petite",
+        "normal": "normale",
+        "large": "grande"
+      },
+      "hudIconOpacity": {
+        "name": "Opacité de l’icône d’état du HUD",
+        "hint": "1 (maximum) signifie totalement visible, tandis que 0,2 (minimum) signifie visible à 20 % (transparente à 80 %). Par défaut : 0,7 (70 %)."
+      },
+      "hudIconAnchor": {
+        "name": "Position d’ancrage de l’icône d’état du HUD",
+        "hint": "Position de base par rapport à ton écran (quel coin ?). Peut être ajustée avec précision à l’aide des paramètres de décalage ci-dessous."
+      },
+      "hudIconAnchorOptions": {
+        "topleft": "en haut à gauche (par défaut)",
+        "topright": "en haut à droite",
+        "bottomleft": "en bas à gauche",
+        "bottomright": "en bas à droite"
+      },
+      "hudIconOffsetX": {
+        "name": "Décalage horizontal (pixels) de l’icône d’état du HUD",
+        "hint": "Ajustement relatif de la position gauche-droite (par défaut : 100)."
+      },
+      "hudIconOffsetY": {
+        "name": "Décalage vertical (pixels) de l’icône d’état du HUD",
+        "hint": "Ajustement relatif de la position haut-bas (par défaut : 50)."
+      },
+      "keybindingNames": {
+        "toggle": "Lock The Sheets ! (activé/désactivé)",
+        "scaleZero": "Taille de l’icône : invisible",
+        "scaleSmall": "Taille de l’icône : petite",
+        "scaleNormal": "Taille de l’icône : normale",
+        "scaleLarge": "Taille de l’icône : grande"
+      }
+    },
+    "chatInfoContent": {
+      "title": "Lock The Sheets !<br/>(par coffiarts)",
+      "text1": "Sois le gardien !<br/>Verrouille et déverrouille toutes les fiches de personnage en un seul clic !",
+      "text2": "Avec ce petit module pratique, le maître de jeu peut bloquer et débloquer toutes les modifications des fiches de personnage par les joueurs.",
+      "text3": "Le basculement de l’activation et de la désactivation peut se faire de différentes manières : via les paramètres du jeu, avec un bouton d’interface pratique (facultatif), ou à l’aide du code d’une macro ou d’un bouton de macro. <br/><br/>Consulte les préférences du module dans les paramètres du jeu.<br/><br/>Tu trouveras plus de détails sur GitHub",
+      "footer": "Cette carte de discussion ne sera affichée qu’une seule fois. Réactive-la dans les paramètres du module si nécessaire."
+    },
+    "onOffUIMessage": {
+      "whenON": "Les fiches de personnage sont maintenant VERROUILLÉES !",
+      "whenOFF": "Les fiches de personnage sont maintenant déverrouillées."
+    },
+    "sheetEditRejected": {
+      "playerMsg": "Les fiches de personnage sont actuellement verrouillées à distance par le maître de jeu. Les modifications ne seront pas enregistrées.",
+      "gmMsgSheet": "[{userName}] essaie de modifier l’acteur : [{sheetName}].",
+      "gmMsgItem": "[{userName}] essaie de modifier quelque chose dans la fiche d’acteur : [{itemName}]",
+      "gmMsgItemDeleted": "[{userName}] essaie de supprimer quelque chose de la fiche d’acteur : [{itemName}]"
+    },
+    "controlButton": {
+      "label": "Lock The Sheets ! ACTIVÉ/DÉSACTIVÉ"
+    }
+  }
+}

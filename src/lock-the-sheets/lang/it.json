@@ -1,0 +1,138 @@
+{
+  "lock-the-sheets": {
+    "setting": {
+      "modVersion": {
+        "name": "Versione",
+        "hint": "Versione del modulo attualmente installata (non può essere modificata qui)."
+      },
+      "debug": {
+        "name": "Modalità debug",
+        "hint": "Impostazione lato client che abilita la registrazione estesa dei log di debug."
+      },
+      "isActive": {
+        "name": "Attiva il blocco",
+        "hint": "Attiva lo stato del blocco della scheda (può essere attivato o disattivato nel gioco tramite associazione di tasti, macro o pulsante dell'interfaccia)."
+      },
+      "allowEquip": {
+        "name": "Consenti di equipaggiare e rimuovere dall'equipaggiamento",
+        "hint": "Vuoi consentire di equipaggiare o rimuovere dall'equipaggiamento gli oggetti dell'inventario mentre il blocco della scheda è attivo?"
+      },
+      "showUIButton": {
+        "name": "Mostra il pulsante dell'interfaccia",
+        "hint": "Mostra un pulsante nel menu dei controlli della scena a sinistra per attivare o disattivare lo stato del blocco."
+      },
+      "hideChatInfo": {
+        "name": "Nascondi le informazioni sul modulo nella finestra della chat",
+        "hint": "Nasconde il testo informativo su questo modulo nella finestra della chat all'avvio del gioco (deseleziona questa opzione per visualizzarlo di nuovo)."
+      },
+      "notifyOnChange": {
+        "name": "Messaggi dell'interfaccia all'attivazione o disattivazione",
+        "hint": "Mostra messaggi temporanei dell'interfaccia ogni volta che il blocco viene attivato o disattivato."
+      },
+      "notifyPermanentlyWhileLOCKED": {
+        "name": "Messaggio persistente sullo schermo all'attivazione",
+        "hint": "Mostra un messaggio permanente dell'interfaccia quando il blocco viene attivato (visibile fino alla disattivazione). Richiede che l'opzione \"Messaggi dell'interfaccia all'attivazione o disattivazione\" sia abilitata."
+      },
+      "notifyPermanentlyWhileUNLOCKED": {
+        "name": "Messaggio persistente sullo schermo alla disattivazione",
+        "hint": "Mostra un messaggio permanente dell'interfaccia quando il blocco viene disattivato (visibile fino alla riattivazione). Richiede che l'opzione \"Messaggi dell'interfaccia all'attivazione o disattivazione\" sia abilitata."
+      },
+      "alertGMOnReject": {
+        "name": "Avvisa il GM delle modifiche rifiutate",
+        "hint": "Mostra un avviso sullo schermo al GM ogni volta che un giocatore tenta di modificare una scheda bloccata."
+      },
+      "lockForGM": {
+        "name": "Blocca le modifiche anche per il GM",
+        "hint": "Stesse regole per tutti! Applica il blocco anche a me in quanto GM (proteggendomi dalle modifiche accidentali)."
+      },
+      "showOverlayLocked": {
+        "name": "Mostra le icone sugli attori bloccati",
+        "hint": "Mostra un'icona sui token e sugli attori quando sono bloccati (predefinito: DISATTIVATO). ATTENZIONE: ciò può influire sulle prestazioni quando si cambia scena per scene e/o mondi di grandi dimensioni. La disattivazione delle sovrapposizioni può anche essere simulata usando l'opzione di dimensione \"invisibile\"."
+      },
+      "showOverlayOpen": {
+        "name": "Mostra le icone sugli attori sbloccati",
+        "hint": "Mostra un'icona sui token e sugli attori quando sono sbloccati (predefinito: DISATTIVATO). ATTENZIONE: ciò può influire sulle prestazioni quando si cambia scena per scene e/o mondi di grandi dimensioni. La disattivazione delle sovrapposizioni può anche essere simulata usando l'opzione di dimensione \"invisibile\"."
+      },
+      "overlayScale": {
+        "name": "Dimensione dell'icona",
+        "hint": "Dimensione delle icone sugli attori bloccati o sbloccati nella vista della scena. Può anche essere modificata tramite associazioni di tasti personalizzate nelle impostazioni dei controlli globali."
+      },
+      "overlayScaleOptions": {
+        "small": "piccola",
+        "normal": "normale",
+        "large": "grande"
+      },
+      "showHUDIconLocked": {
+        "name": "Mostra l'icona di stato dell'HUD quando il blocco è attivato",
+        "hint": "Mostra un'icona sullo schermo (in alto a destra) che indica lo stato bloccato (predefinito: ATTIVATO).\nPuoi impostare il cursore qui sotto per disattivarla automaticamente dopo un determinato intervallo."
+      },
+      "showHUDIconOpen": {
+        "name": "Mostra l'icona di stato dell'HUD quando il blocco è disattivato",
+        "hint": "Mostra un'icona sullo schermo (in alto a destra) che indica lo stato sbloccato (predefinito: ATTIVATO).\nPuoi impostare il cursore qui sotto per disattivarla automaticamente dopo un determinato intervallo."
+      },
+      "hudIconTimeoutSeconds": {
+        "name": "Intervallo dell'icona di stato dell'HUD (secondi)",
+        "hint": "Intervallo in secondi dopo il quale l'icona dell'HUD viene disattivata automaticamente. Imposta 0 per rendere l'icona dell'HUD sempre visibile. Predefinito: 10."
+      },
+      "hudIconScale": {
+        "name": "Dimensione dell'icona dell'HUD",
+        "hint": "Dimensione dell'icona di stato dell'HUD. Può anche essere modificata tramite associazioni di tasti personalizzate nelle impostazioni dei controlli globali."
+      },
+      "hudIconScaleOptions": {
+        "zero": "invisibile",
+        "small": "piccola",
+        "normal": "normale",
+        "large": "grande"
+      },
+      "hudIconOpacity": {
+        "name": "Opacità dell'icona di stato dell'HUD",
+        "hint": "1 (massimo) significa completamente visibile, 0,2 (minimo) significa visibile al 20% (trasparente all'80%). Predefinito: 0,7 (70%)"
+      },
+      "hudIconAnchor": {
+        "name": "Posizione di ancoraggio dell'icona di stato dell'HUD",
+        "hint": "Posizione di base relativa allo schermo (quale angolo?). Può essere regolata con precisione tramite le impostazioni di offset più sotto."
+      },
+      "hudIconAnchorOptions": {
+        "topleft": "in alto a sinistra (predefinita)",
+        "topright": "in alto a destra",
+        "bottomleft": "in basso a sinistra",
+        "bottomright": "in basso a destra"
+      },
+      "hudIconOffsetX": {
+        "name": "Offset orizzontale (pixel) dell'icona di stato dell'HUD",
+        "hint": "Regolazione relativa della posizione a sinistra-destra (predefinita: 100)."
+      },
+      "hudIconOffsetY": {
+        "name": "Offset verticale (pixel) dell'icona di stato dell'HUD",
+        "hint": "Regolazione relativa della posizione dall'alto verso il basso (predefinita: 50)."
+      },
+      "keybindingNames": {
+        "toggle": "Lock The Sheets! (attivato/disattivato)",
+        "scaleZero": "Dimensione dell'icona: invisibile",
+        "scaleSmall": "Dimensione dell'icona: piccola",
+        "scaleNormal": "Dimensione dell'icona: normale",
+        "scaleLarge": "Dimensione dell'icona: grande"
+      }
+    },
+    "chatInfoContent": {
+      "title": "Lock The Sheets!<br/>(di coffiarts)",
+      "text1": "Fai da guardiano!<br/>Blocca e sblocca tutte le schede dei personaggi in una volta sola con un semplice clic!",
+      "text2": "Con questo pratico piccolo modulo, il Game Master può bloccare e sbloccare qualsiasi modifica alle schede dei personaggi da parte dei giocatori.",
+      "text3": "L'attivazione e la disattivazione funzionano in vari modi: tramite le impostazioni di gioco, con un pratico pulsante dell'interfaccia (opzionale), tramite codice macro o pulsante macro. <br/><br/>Consulta le preferenze del modulo nelle impostazioni di gioco.<br/><br/>Trovi ulteriori dettagli su GitHub",
+      "footer": "Questa scheda della chat verrà mostrata una sola volta. Attivala di nuovo nelle impostazioni del modulo se necessario."
+    },
+    "onOffUIMessage": {
+      "whenON": "Le schede dei personaggi sono ora BLOCCATE!",
+      "whenOFF": "Le schede dei personaggi sono ora sbloccate."
+    },
+    "sheetEditRejected": {
+      "playerMsg": "Le schede dei personaggi sono attualmente bloccate a distanza dal Game Master. Le modifiche non verranno salvate.",
+      "gmMsgSheet": "[{userName}] sta tentando di modificare l'attore: [{sheetName}].",
+      "gmMsgItem": "[{userName}] sta tentando di modificare qualcosa nella scheda dell'attore: [{itemName}]",
+      "gmMsgItemDeleted": "[{userName}] sta tentando di eliminare qualcosa dalla scheda dell'attore: [{itemName}]"
+    },
+    "controlButton": {
+      "label": "Lock The Sheets! ATTIVATO/DISATTIVATO"
+    }
+  }
+}

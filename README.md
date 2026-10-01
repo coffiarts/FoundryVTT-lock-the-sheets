@@ -26,9 +26,22 @@
   </tr>
 </table>
 
+## Support This Project
+
+Crunch My Party! is free and always will be. If it brings you fun, or saved you time (or your sanity), consider buying me a Stamina Potion 𖠞
+
+[![GitHub Sponsors](src/lock-the-sheets/artwork/the-forge-logo.png)](https://eu.forge-vtt.com/bazaar#name=%22Lock%20The%20Sheets!%22&sort=featured&package=lock-the-sheets)
+&nbsp;[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/coffiarts) &nbsp;
+[![GitHub Sponsors](src/lock-the-sheets/artwork/github-sponsor.png)](https://github.com/sponsors/coffiarts)
+
+In "The Forge Bazaar" <img src="src/lock-the-sheets/artwork/the-forge-logo.png" alt="The Forge - Bazaar" width="20"/>, you can download this mod for free, or - which would make my heart go booom! - voluntarily pay for it whatever you want (PWYW)?
+
+
+
 - [What it does ...](#what-it-does-)
 - [Why I created this ...](#why-i-created-this-)
 - [Changelog](#changelog)
+- [Translations](#translations)
 - [Adjustable module settings](#adjustable-module-settings)
 - [Toggle by hotkeys](#toggle-by-hotkeys)
 - [Control it by macro](#control-it-by-macro)
@@ -101,6 +114,22 @@ _"Everybody now, get your hands off your sheets, stop clicking, lean back, liste
 
 ## Changelog
 See [CHANGELOG.md](CHANGELOG.md)
+
+## Translations
+Thanks to my new **Foundry Translation Tool**, which you can download and use for free ...
+
+[![CFBT - Coffiarts' Foundry Babele Translator](https://raw.githubusercontent.com/coffiarts/FoundryVTT-Babele-translator/fbefbc94f01ecf23e88c54afa420f34e44056f86/docs/img/readme-screenshot-theme-fantasy.jpg)](https://github.com/coffiarts/FoundryVTT-Babele-translator)
+**[=> Coffiart's Foundry VTT Babele Translator](https://github.com/coffiarts/FoundryVTT-Babele-translator)**
+
+... this mod now works in an increasing number of languages. So far (more to come):
+- English
+- Deutsch
+- Français
+- Italiano
+- Español
+- 日本語 (Japanese, experimental) => (experimental)
+
+Want your favourite language to be added to this list? Feel free to [request it on github](https://github.com/coffiarts/FoundryVTT-Babele-translator/issues).
 
 ## Adjustable module settings
 There are tons of settings to adjust to your liking (just a few examples):

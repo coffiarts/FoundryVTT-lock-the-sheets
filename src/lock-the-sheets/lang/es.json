@@ -1,0 +1,138 @@
+{
+  "lock-the-sheets": {
+    "setting": {
+      "modVersion": {
+        "name": "Versión",
+        "hint": "Versión del módulo instalada actualmente (no se puede cambiar aquí)."
+      },
+      "debug": {
+        "name": "Modo de depuración",
+        "hint": "Configuración del cliente que habilita un registro de depuración ampliado."
+      },
+      "isActive": {
+        "name": "Activar bloqueo",
+        "hint": "ACTIVAR el estado de bloqueo de la ficha (se puede alternar durante la partida mediante una asignación de teclas, macros o un botón de la interfaz)."
+      },
+      "allowEquip": {
+        "name": "Permitir equipar y desequipar",
+        "hint": "¿Se debe permitir equipar y desequipar objetos de inventario mientras el bloqueo de la ficha esté activo?"
+      },
+      "showUIButton": {
+        "name": "Mostrar botón de la interfaz",
+        "hint": "Mostrar un botón en el menú de controles de escena, a la izquierda, para activar y desactivar el estado de bloqueo."
+      },
+      "hideChatInfo": {
+        "name": "Ocultar información del módulo en la ventana de chat",
+        "hint": "Oculta el texto informativo sobre este módulo en la ventana de chat al iniciar la partida (desmarca esta opción para volver a verlo)."
+      },
+      "notifyOnChange": {
+        "name": "Mensajes de la interfaz al alternar",
+        "hint": "Mostrar mensajes temporales de la interfaz cada vez que se active o desactive."
+      },
+      "notifyPermanentlyWhileLOCKED": {
+        "name": "Mensaje persistente en pantalla al activar",
+        "hint": "Mostrar un mensaje permanente de la interfaz al ACTIVAR (visible hasta la desactivación). Requiere que la opción \"Mensajes de la interfaz al alternar\" esté habilitada."
+      },
+      "notifyPermanentlyWhileUNLOCKED": {
+        "name": "Mensaje persistente en pantalla al desactivar",
+        "hint": "Mostrar un mensaje permanente de la interfaz al DESACTIVAR (visible hasta la reactivación). Requiere que la opción \"Mensajes de la interfaz al alternar\" esté habilitada."
+      },
+      "alertGMOnReject": {
+        "name": "Alertar al DJ sobre las ediciones rechazadas",
+        "hint": "Mostrar una advertencia en pantalla al DJ cada vez que un jugador intente editar una ficha bloqueada."
+      },
+      "lockForGM": {
+        "name": "Bloquear también los cambios del DJ",
+        "hint": "¡Las mismas reglas para todos! Aplicar el bloqueo también a ti como DJ (para protegerte de ediciones accidentales)."
+      },
+      "showOverlayLocked": {
+        "name": "Mostrar iconos en los actores bloqueados",
+        "hint": "Mostrar un icono en los tokens y actores cuando estén bloqueados (predeterminado: DESACTIVADO). ATENCIÓN: Esto puede afectar al rendimiento al cambiar de escena en escenas o mundos grandes. También puedes simular la desactivación de las superposiciones utilizando la opción de escala \"invisible\"."
+      },
+      "showOverlayOpen": {
+        "name": "Mostrar iconos en los actores desbloqueados",
+        "hint": "Mostrar un icono en los tokens y actores cuando estén desbloqueados (predeterminado: DESACTIVADO). ATENCIÓN: Esto puede afectar al rendimiento al cambiar de escena en escenas o mundos grandes. También puedes simular la desactivación de las superposiciones utilizando la opción de escala \"invisible\"."
+      },
+      "overlayScale": {
+        "name": "Tamaño del icono",
+        "hint": "Escala de los iconos de los actores bloqueados/desbloqueados en la vista de escena. También se puede alternar mediante asignaciones de teclas personalizadas en la configuración de controles globales."
+      },
+      "overlayScaleOptions": {
+        "small": "pequeño",
+        "normal": "normal",
+        "large": "grande"
+      },
+      "showHUDIconLocked": {
+        "name": "Mostrar el icono de estado del HUD cuando el bloqueo esté ACTIVADO",
+        "hint": "Mostrar un icono en pantalla (arriba a la derecha) que indique el estado bloqueado (predeterminado: ACTIVADO).\n Puedes hacer que se desactive automáticamente después de un tiempo estableciendo el control deslizante de abajo."
+      },
+      "showHUDIconOpen": {
+        "name": "Mostrar el icono de estado del HUD cuando el bloqueo esté DESACTIVADO",
+        "hint": "Mostrar un icono en pantalla (arriba a la derecha) que indique el estado desbloqueado (predeterminado: ACTIVADO).\n Puedes hacer que se desactive automáticamente después de un tiempo estableciendo el control deslizante de abajo."
+      },
+      "hudIconTimeoutSeconds": {
+        "name": "Tiempo de espera del icono de estado del HUD (segundos)",
+        "hint": "Tiempo de espera en segundos para que el icono del HUD se desactive automáticamente después de un tiempo determinado. Establece 0 para que el icono del HUD esté siempre visible. Predeterminado: 10."
+      },
+      "hudIconScale": {
+        "name": "Tamaño del icono del HUD",
+        "hint": "Escala del icono de estado del HUD. También se puede alternar mediante asignaciones de teclas personalizadas en la configuración de controles globales."
+      },
+      "hudIconScaleOptions": {
+        "zero": "invisible",
+        "small": "pequeño",
+        "normal": "normal",
+        "large": "grande"
+      },
+      "hudIconOpacity": {
+        "name": "Opacidad del icono de estado del HUD",
+        "hint": "1 (máximo) significa completamente visible; 0.2 (mínimo) significa visible al 20 % (transparente al 80 %). Predeterminado: 0.7 (70 %)"
+      },
+      "hudIconAnchor": {
+        "name": "Posición de anclaje del icono de estado del HUD",
+        "hint": "Posición base relativa a tu pantalla (¿en qué esquina?). Puedes ajustarla con precisión mediante las opciones de desplazamiento que aparecen más abajo."
+      },
+      "hudIconAnchorOptions": {
+        "topleft": "arriba a la izquierda (predeterminado)",
+        "topright": "arriba a la derecha",
+        "bottomleft": "abajo a la izquierda",
+        "bottomright": "abajo a la derecha"
+      },
+      "hudIconOffsetX": {
+        "name": "Desplazamiento horizontal (píxeles) del icono de estado del HUD",
+        "hint": "Ajuste relativo de la posición izquierda-derecha (predeterminado: 100)."
+      },
+      "hudIconOffsetY": {
+        "name": "Desplazamiento vertical (píxeles) del icono de estado del HUD",
+        "hint": "Ajuste relativo de la posición arriba-abajo (predeterminado: 50)."
+      },
+      "keybindingNames": {
+        "toggle": "Lock The Sheets! (activado/desactivado)",
+        "scaleZero": "Tamaño del icono: invisible",
+        "scaleSmall": "Tamaño del icono: pequeño",
+        "scaleNormal": "Tamaño del icono: normal",
+        "scaleLarge": "Tamaño del icono: grande"
+      }
+    },
+    "chatInfoContent": {
+      "title": "Lock The Sheets!<br/>(por coffiarts)",
+      "text1": "¡Sé el guardián!<br/>¡Bloquea y desbloquea todas las fichas de personaje a la vez con un solo clic!",
+      "text2": "Con este práctico módulo, el director de juego puede bloquear y desbloquear cualquier edición de las fichas de personaje por parte de los jugadores.",
+      "text3": "La activación y desactivación funcionan de varias formas: mediante la configuración de la partida, con un práctico botón de la interfaz (opcional), mediante código de macro o con un botón de macro. <br/><br/>Consulta las preferencias del módulo en la configuración de la partida.<br/><br/>Encuentra más detalles en GitHub",
+      "footer": "Esta tarjeta de chat solo se mostrará una vez. Vuelve a activarla en la configuración del módulo si es necesario."
+    },
+    "onOffUIMessage": {
+      "whenON": "¡Las fichas de personaje están BLOQUEADAS!",
+      "whenOFF": "Las fichas de personaje están desbloqueadas."
+    },
+    "sheetEditRejected": {
+      "playerMsg": "El director de juego ha bloqueado las fichas de personaje de forma remota. Los cambios no se guardarán.",
+      "gmMsgSheet": "[{userName}] está intentando modificar el actor: [{sheetName}].",
+      "gmMsgItem": "[{userName}] está intentando cambiar algo en la ficha de actor: [{itemName}]",
+      "gmMsgItemDeleted": "[{userName}] está intentando eliminar algo de la ficha de actor: [{itemName}]"
+    },
+    "controlButton": {
+      "label": "Lock The Sheets! ACTIVADO/DESACTIVADO"
+    }
+  }
+}
