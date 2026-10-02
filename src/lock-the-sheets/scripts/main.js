@@ -347,8 +347,10 @@ function renderTokenOverlays() {
         // Register in cache
         token.lockTheSheetsOverlay = sprite;
 
-        ui.sidebar.render(true);
     }
+
+    ui.sidebar.render(true);
+
 }
 
 function getScaledOverlaySize(parentWidth, parentHeight) {
@@ -511,7 +513,7 @@ async function toggleNativeUILock() {
 }
 
 function registerUserInteractionListeners() {
-    // We add a catch-all listeners that detect any user interactions on the Actor Sheet's form elements and marks them as such.
+    // We add a catch-all listener that detects any user interactions on the Actor Sheet's form elements and marks them as such.
     // This is needed later for heuristic distinction of user-initiated changes from programmatic or system-initiated changes
     const openActorSheets = window.document.querySelectorAll(Config.getActorSheetCSSQuerySelector());
     // Logger.debug("(toggleNativeUILock-registerUserInteractionListeners) - found open Actor Sheets:", openActorSheets);
