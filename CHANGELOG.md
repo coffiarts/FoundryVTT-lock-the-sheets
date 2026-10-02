@@ -1,6 +1,12 @@
 The **major** version number in my modules (like "14") always reflects the
 Foundry VTT **core** version it is compatible with (and recommended for).
 
+## 14.0.2
+### 2026-10-02 - Small performance fix
+Improves performance by optimizing how token overlays are rendered. This *might* make scene loading a bit faster, given that you have *many* player tokens and overlays of this mod are enabled.
+
+Found as a "byproduct" of otherwise unrelated [issue #8](https://github.com/coffiarts/FoundryVTT-lock-the-sheets/issues/8), thanks to [Joseph Thomas (thejoester)](https://github.com/thejoester), creator of [Big Bad Module Manager](https://github.com/thejoester/bbmm).
+
 ## 14.0.1
 ### 2026-10-01 - Additional translations
 Mod now works in an increasing number of languages: So far (more to come):
